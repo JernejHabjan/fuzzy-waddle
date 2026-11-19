@@ -2,6 +2,7 @@ import type { Browser, Page } from "@playwright/test";
 import type { RuntimeFixture } from "../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariant } from "../setup/skirmish-ai-runtime-variant";
 import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeNativeEvidenceProbe } from "./skirmish-ai-runtime-native-evidence-probe";
 import type { RuntimeCheckpoint } from "../capture/skirmish-ai-runtime-checkpoint";
 import { captureCheckpoint } from "../capture/skirmish-ai-runtime-checkpoint-capture";
 import { last } from "../contracts/skirmish-ai-runtime-value";
@@ -36,7 +37,8 @@ export async function runVariant(
   afterVariant?: (page: Page, result: RuntimeVariantResult) => Promise<void>,
   beforeVariant?: (page: Page) => Promise<void>,
   beforeCheckpoint?: (page: Page, checkpointIndex: number, targetTick: number) => Promise<boolean>,
-  beforeFinalize?: (page: Page) => Promise<void>
+  beforeFinalize?: (page: Page) => Promise<void>,
+  nativeEvidence?: RuntimeNativeEvidenceProbe
 ): Promise<RuntimeVariantResult> {
   const profiling = process.env.AI_SKIRMISH_PROFILE === "1";
   const variantStartedAt = performance.now();
@@ -69,6 +71,7 @@ export async function runVariant(
       debugProbe
     );
     const setupMs = Math.round(performance.now() - variantStartedAt);
+    const variantStart = projectRuntimeVariantStart(variant, initialBoundary, effectiveSeed, fixture.recipe.mapLabel);
     const checkpoints: RuntimeCheckpoint[] = [];
     const perturbations: { id: string; tick: number; dispatchedActors: number; subjectName: string | null }[] = [];
     const pendingPerturbations = [...(variant.perturbations ?? [])].sort(
@@ -171,18 +174,27 @@ export async function runVariant(
         ...(variant.presetWorld?.controls ?? []).map((control) => Math.max(control.requestTick, control.applicationTick))
       ];
       const terminal = canStopAfterTerminal(fixture.assertions, applicableScenarioIds, checkpoint, pendingEventTicks);
+      const probe =
+        captureProduction &&
+        checkpoint.tick === targetTick &&
+        nativeEvidence?.checkpoints.includes(targetTick) === true &&
+        pendingEventTicks.every((tick) => tick <= checkpoint.tick);
       // A terminal score does not seal its own native tick. Close that tick before reading early-terminal proof.
+      // An ordinary evidence checkpoint also needs the next native frame to seal its prefix.
       if (
         captureProduction &&
-        checkpoint.gameResult === "win" &&
-        applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory) &&
-        productionClosedThrough < checkpoint.tick
-      )
+        productionClosedThrough < checkpoint.tick &&
+        (probe ||
+          (checkpoint.gameResult === "win" && applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory)))
+      ) {
         await advanceRuntimeToTick(page, fixture, checkpoint.tick + 1, index);
+        if (probe) await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
+      }
       if (captureProduction) {
         const needsReport =
           index === checkpointTicks.length - 1 ||
           terminal ||
+          probe ||
           variant.evidenceStop !== undefined ||
           beforeCheckpoint !== undefined ||
           process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1";
@@ -208,6 +220,23 @@ export async function runVariant(
       }
       if (terminal) {
         stopReason = "terminal_result";
+        break;
+      }
+      if (
+        probe &&
+        nativeEvidence &&
+        productionCapture &&
+        (await nativeEvidence.accepts(page, {
+          ...variantStart,
+          stopReason: "native_evidence_satisfied",
+          outcomeDigest: "",
+          productionCapture,
+          checkpoints,
+          perturbations,
+          aiErrors: [...aiErrors]
+        }))
+      ) {
+        stopReason = "native_evidence_satisfied";
         break;
       }
       if (variant.evidenceStop) {
@@ -248,7 +277,7 @@ export async function runVariant(
         ? buildRuntimeProductionReport(productionCapture, initialBoundary.presetApplication ?? undefined)
         : undefined;
     const result: RuntimeVariantResult = {
-      ...projectRuntimeVariantStart(variant, initialBoundary, effectiveSeed, fixture.recipe.mapLabel),
+      ...variantStart,
       stopReason,
       outcomeDigest,
       ...(productionCapture

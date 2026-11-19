@@ -27,6 +27,9 @@ import {
 import { runNativeRetentionVariant } from "../reproduction/save/skirmish-ai-native-retention-runner";
 import { runNativeSequenceVariant } from "../runner/skirmish-ai-native-sequence-runner";
 import { runNativeReproVariant } from "../reproduction/incident/skirmish-ai-native-repro-runner";
+import { nativeEvidenceCheckpoints } from "../evaluation/scenario/skirmish-ai-native-proof-window";
+import { evaluateRuntimeVariant } from "../evaluation/controls/skirmish-ai-runtime-variant-evaluation";
+import type { RuntimeNativeEvidenceProbe } from "../runner/skirmish-ai-runtime-native-evidence-probe";
 
 /** The existing runner owns the match. Bound cases additionally arm/read the same observer for the real human opponent. */
 export async function runRegisteredRuntimeVariant(
@@ -73,6 +76,22 @@ export async function runRegisteredRuntimeVariant(
   const lateBranch = fixture.assertions["H-08"]?.requiredNativeScenario?.branchByVariant[variant.id];
   const debugBranch = fixture.assertions["DBG-04"]?.requiredNativeScenario?.branchByVariant[variant.id];
   const parityBranch = fixture.assertions["DBG-06"]?.requiredNativeScenario?.branchByVariant[variant.id];
+  const id = fixture.scenarioIds.length === 1 ? fixture.scenarioIds[0] : undefined;
+  const assertion = id && request.scenarioIds.includes(id) ? fixture.assertions[id] : undefined;
+  const checkpoints = id && assertion ? nativeEvidenceCheckpoints(id, fixture, variant) : [];
+  const nativeEvidence: RuntimeNativeEvidenceProbe | undefined =
+    id && assertion && contract && checkpoints.length
+      ? {
+          checkpoints,
+          async accepts(page, candidate) {
+            const evidence = await captureRuntimeHumanAuthority(page, contract.humanPlayerNumber);
+            if (evaluateRuntimeVariant(id, assertion, { ...candidate, opponentCapture: evidence }, fixture).length)
+              return false;
+            opponentCapture = evidence;
+            return true;
+          }
+        }
+      : undefined;
   const result = await runVariant(
     browser,
     fixture,
@@ -139,7 +158,11 @@ export async function runRegisteredRuntimeVariant(
               lateBranch === "host_command_then_receipt" ? "command_then_receipt" : "receipt_then_command"
           });
         }
-      : undefined
+      : undefined,
+    undefined,
+    undefined,
+    undefined,
+    nativeEvidence
   );
   return contract
     ? {

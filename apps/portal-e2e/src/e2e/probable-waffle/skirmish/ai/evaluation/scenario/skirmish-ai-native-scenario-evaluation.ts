@@ -19,6 +19,7 @@ import { evaluateNativeOptionalRelease } from "../../recovery/skirmish-ai-native
 import { evaluateNativeDebugParity } from "../../debug/skirmish-ai-native-debug-parity-evaluation";
 import { evaluateNativeIslandEstablishment } from "../../combat/access/skirmish-ai-native-island-establishment";
 import { nativeScenarioBinding } from "./skirmish-ai-native-binding";
+import { nativeEvidenceWindow } from "./skirmish-ai-native-proof-window";
 import type { RuntimeAssertion } from "../controls/skirmish-ai-runtime-assertion";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
@@ -223,10 +224,13 @@ export function evaluateNativeScenarioVariant(
     win && sealed !== undefined && sealed >= win.tick && sealed <= contract.latestTick ? sealed : undefined;
   if (id === "STRAT-08" && terminalPrefix === undefined)
     return ["native_finish_has_no_sealed_authoritative_win_prefix"];
+  const evidenceWindow = nativeEvidenceWindow(id, result, fixture, variant, contract.latestTick);
+  if (result.stopReason === "native_evidence_satisfied" && !evidenceWindow)
+    return ["native_scenario_evidence_window_invalid"];
   const context = nativeScenarioContext(
     result,
-    terminalPrefix ?? contract.latestTick,
-    terminalPrefix !== undefined ? contract.latestTick : undefined,
+    evidenceWindow?.[0] ?? terminalPrefix ?? contract.latestTick,
+    evidenceWindow?.[1] ?? (terminalPrefix !== undefined ? contract.latestTick : undefined),
     // These worlds assert exact native transactions/outcomes; routine actor/source changes invalidate broad coverage.
     { requireResourceCoverage: nativeScenarioRequiresResourceCoverage(id) }
   );
