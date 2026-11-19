@@ -10,13 +10,13 @@ import { MovementOccupancyService } from "../movement-occupancy.service";
 import { NavigationObjectRoutes } from "../navigation-object-routes";
 import { NavigableComponent } from "../../../entity/components/movement/navigable-component";
 
-jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../library/tile-under-object", () => ({
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../library/tile-under-object", () => ({
   getCenterTileCoordUnderObject: jest.fn(),
   getTileCoordsUnderObject: jest.fn()
 }));
-jest.mock("../../data/game-object-helper", () => ({ isGameObjectActiveInActiveScene: jest.fn() }));
-jest.mock("./scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({ isGameObjectActiveInActiveScene: jest.fn() }));
+jest.mock("../scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 describe("navigation object route candidates", () => {
   beforeEach(() => jest.clearAllMocks());

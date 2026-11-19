@@ -10,10 +10,10 @@ import type { ProbableWaffleScene } from "../../../../../../core/probable-waffle
 import { captureAiRuntimeProductionFrontier } from "../capture-ai-runtime-production-frontier";
 import { AiRuntimeProductionProofCapture } from "../ai-runtime-production-proof-capture";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../fixtures/capture-ai-runtime-production-setup", () => ({ captureAiRuntimeProductionSetup: jest.fn(() => ({})) }));
-jest.mock("./capture-ai-runtime-production-frontier", () => ({ captureAiRuntimeProductionFrontier: jest.fn() }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../fixtures/capture-ai-runtime-production-setup", () => ({ captureAiRuntimeProductionSetup: jest.fn(() => ({})) }));
+jest.mock("../capture-ai-runtime-production-frontier", () => ({ captureAiRuntimeProductionFrontier: jest.fn() }));
 
 it("pins an existing deposit without a queue or weapon before its first delivery", () => {
   const scene = { players: [{ playerNumber: 2 }] } as unknown as ProbableWaffleScene;

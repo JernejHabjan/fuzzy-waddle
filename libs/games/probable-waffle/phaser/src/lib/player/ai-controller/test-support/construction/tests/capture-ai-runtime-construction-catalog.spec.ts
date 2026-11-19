@@ -6,8 +6,8 @@ import { getSceneService } from "../../../../../world/services/scene-component-h
 import type { ProductionSpatialAuthorityEvent } from "../../../../../world/services/multiplayer/production-spatial-authority-event";
 import { captureAiRuntimeConstructionCatalog } from "../capture-ai-runtime-construction-catalog";
 
-jest.mock("../../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
-jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 /** Synthetic authorities prove projection distinctions, never native payment or a live researched site. */
 function fixture() {

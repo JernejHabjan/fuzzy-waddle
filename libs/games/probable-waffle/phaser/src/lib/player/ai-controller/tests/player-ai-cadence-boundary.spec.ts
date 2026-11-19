@@ -1,8 +1,8 @@
 import { PlayerAiController } from "../player-ai-controller";
 import { isSceneActive } from "../../../data/game-object-helper";
 
-jest.mock("../../data/game-object-helper", () => ({ isSceneActive: jest.fn(() => true) }));
-jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({ isSceneActive: jest.fn(() => true) }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 afterEach(() => jest.mocked(isSceneActive).mockReturnValue(true));
 

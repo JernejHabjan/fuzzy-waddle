@@ -5,8 +5,8 @@ import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { getActorComponent } from "../../../data/actor-component";
 import { NavigationTileSelection } from "../navigation-tile-selection";
 
-jest.mock("../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
-jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 
 function fixture() {
   let grid = [

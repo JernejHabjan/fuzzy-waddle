@@ -5,7 +5,7 @@ import { captureAiRuntimeCreatedActor } from "../../../harness/capture/capture-a
 import { AiRuntimeResourceServiceCapture } from "../ai-runtime-resource-service-capture";
 import type { AiRuntimeProductionSpatial } from "../../../production/world/ai-runtime-production-spatial";
 
-jest.mock("../../harness/capture/capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
+jest.mock("../../../harness/capture/capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
 
 describe("detached cargo/credit capture (unrun until final gate)", () => {
   it("fences pending extraction even when the cargo-only restore record is lost", () => {

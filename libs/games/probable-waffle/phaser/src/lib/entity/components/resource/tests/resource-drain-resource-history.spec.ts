@@ -8,10 +8,10 @@ import { OwnerComponent } from "../../owner-component";
 import { ContainerComponent } from "../../building/container-component";
 import { ResourceDrainComponent } from "../resource-drain-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({ emitResource: jest.fn(), getPlayer: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
-jest.mock("../../../world/services/simulation-time", () => ({ waitForSimulationDuration: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({ emitResource: jest.fn(), getPlayer: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
+jest.mock("../../../../world/services/simulation-time", () => ({ waitForSimulationDuration: jest.fn() }));
 
 describe("resource drain resource history boundary (authored; final gate pending)", () => {
   beforeEach(() => {

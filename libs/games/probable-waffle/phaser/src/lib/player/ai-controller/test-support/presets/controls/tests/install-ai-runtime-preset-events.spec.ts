@@ -15,14 +15,14 @@ import { installAiRuntimePresetEvents } from "../install-ai-runtime-preset-event
 import { applyAiRuntimePresetWorld } from "../../setup/apply-ai-runtime-preset-world";
 import type { SceneActorCreator } from "../../../../../../world/services/scene-actor-creator";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../browser/ai-runtime-browser-test-config", () => ({
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../browser/ai-runtime-browser-test-config", () => ({
   recordAiRuntimePresetEvent: jest.fn(),
   readAiRuntimeBrowserTestConfig: jest.fn(),
   recordAiRuntimePresetApplication: jest.fn()
 }));
-jest.mock("../../production/capture/install-ai-runtime-production-capture", () => ({ installAiRuntimeProductionCapture: jest.fn() }));
+jest.mock("../../../production/capture/install-ai-runtime-production-capture", () => ({ installAiRuntimeProductionCapture: jest.fn() }));
 
 function setup(pinned = true, cancellation = false, finished = false) {
   const tick$ = new Subject<void>();

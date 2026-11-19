@@ -4,9 +4,9 @@ import { FlyingComponent } from "../movement/flying-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { onObjectReady } from "../../../data/game-object-helper";
 
-jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
-jest.mock("../../world/services/depth.helper", () => ({ DepthHelper: { setActorDepth: jest.fn() } }));
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
+jest.mock("../../../world/services/depth.helper", () => ({ DepthHelper: { setActorDepth: jest.fn() } }));
 
 function fixture(flying: boolean, editorY: number, editorZ: number) {
   const actor = { hasTransformComponent: true, x: 400, y: editorY, z: editorZ };

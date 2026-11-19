@@ -12,29 +12,29 @@ import { getActorComponent } from "../../../data/actor-component";
 import { onObjectReady, getGameObjectDepth } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 
-jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../data/game-object-helper", () => ({ onObjectReady: jest.fn(), getGameObjectDepth: jest.fn() }));
-jest.mock("../../data/player-relation", () => ({ arePlayersAllied: jest.fn() }));
-jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
-jest.mock("../../world/scenes/GameProbableWaffleScene", () => ({ __esModule: true, default: class {} }));
-jest.mock("../../world/services/lighting/scene-lighting.service.ts", () => ({ SceneLightingService: class {} }));
-jest.mock("../../world/services/lighting/lighting-game-object-meta", () => ({
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn(), getGameObjectDepth: jest.fn() }));
+jest.mock("../../../data/player-relation", () => ({ arePlayersAllied: jest.fn() }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
+jest.mock("../../../world/scenes/GameProbableWaffleScene", () => ({ __esModule: true, default: class {} }));
+jest.mock("../../../world/services/lighting/scene-lighting.service.ts", () => ({ SceneLightingService: class {} }));
+jest.mock("../../../world/services/lighting/lighting-game-object-meta", () => ({
   markGameObjectAmbientResponsive: jest.fn()
 }));
-jest.mock("./combat/components/health-component", () => ({
+jest.mock("../combat/components/health-component", () => ({
   HealthComponent: class {
     static KilledEvent = "killed";
   }
 }));
-jest.mock("./movement/actor-translate-component", () => ({ ActorTranslateComponent: class {} }));
-jest.mock("./building/container-component", () => ({
+jest.mock("../movement/actor-translate-component", () => ({ ActorTranslateComponent: class {} }));
+jest.mock("../building/container-component", () => ({
   ContainerComponent: class {
     static GameObjectVisibilityChanged = "visibility";
   }
 }));
-jest.mock("./construction/construction-site-component", () => ({ ConstructionSiteComponent: class {} }));
-jest.mock("./vision-component", () => ({ VisionComponent: class {} }));
+jest.mock("../construction/construction-site-component", () => ({ ConstructionSiteComponent: class {} }));
+jest.mock("../vision-component", () => ({ VisionComponent: class {} }));
 
 function fixture() {
   const events = new Phaser.Events.EventEmitter(),

@@ -19,7 +19,7 @@ import { EffectsAnims } from "../../../../../animations/effects";
 import { CancelableSimDelay } from "../../../../../world/services/simulation-time";
 import { FadeOutComponent } from "../../../building/fade-out-component";
 
-jest.mock("./health-ui-component", () => ({
+jest.mock("../health-ui-component", () => ({
   HealthUiComponent: jest.fn().mockImplementation(() => ({
     setVisibility: jest.fn(),
     refresh: jest.fn(),
@@ -27,46 +27,46 @@ jest.mock("./health-ui-component", () => ({
     getBounds: () => ({ x: 10, y: 20, width: 30, height: 8 })
   }))
 }));
-jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../data/game-object-helper", () => ({
+jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../data/game-object-helper", () => ({
   onObjectReady: jest.fn(),
   isGameObjectActiveInActiveScene: jest.fn(),
   getGameObjectVisibility: () => ({ visible: true }),
   getGameObjectBounds: () => ({ top: 11 }),
   getGameObjectDepth: () => 7
 }));
-jest.mock("../../../../data/scene-data", () => ({ getCurrentPlayerNumber: jest.fn(), getPlayer: jest.fn() }));
-jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../../campaign/campaign-progression-modifier", () => ({
+jest.mock("../../../../../data/scene-data", () => ({ getCurrentPlayerNumber: jest.fn(), getPlayer: jest.fn() }));
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../campaign/campaign-progression-modifier", () => ({
   applyCampaignProgressionModifiers: jest.fn()
 }));
-jest.mock("../../../../animations/effects", () => ({
+jest.mock("../../../../../animations/effects", () => ({
   EffectsAnims: {
     ANIM_IMPACT_16: "heal",
     createAndPlayBloodAnimation: jest.fn(),
     createAndPlayEffectAnimation: jest.fn()
   }
 }));
-jest.mock("../../../../world/services/simulation-time", () => ({
+jest.mock("../../../../../world/services/simulation-time", () => ({
   getSimulationNow: () => 123,
   CancelableSimDelay: jest.fn().mockImplementation(() => ({ remove: jest.fn() }))
 }));
-jest.mock("../../../../world/services/simulation-tick.service.ts", () => ({ SimulationTickService: class {} }));
-jest.mock("../../../../world/services/audio.service.ts", () => ({ AudioService: class {} }));
-jest.mock("../../owner-component", () => ({ OwnerComponent: class {} }));
-jest.mock("../../selectable-component", () => ({ SelectableComponent: class {} }));
-jest.mock("../../actor-audio/audio-actor-component", () => ({ AudioActorComponent: class {} }));
-jest.mock("../../animation/animation-actor-component", () => ({ AnimationActorComponent: class {} }));
-jest.mock("../../movement/actor-translate-component", () => ({ ActorTranslateComponent: class {} }));
-jest.mock("../../building/container-component", () => ({
+jest.mock("../../../../../world/services/simulation-tick.service.ts", () => ({ SimulationTickService: class {} }));
+jest.mock("../../../../../world/services/audio.service.ts", () => ({ AudioService: class {} }));
+jest.mock("../../../owner-component", () => ({ OwnerComponent: class {} }));
+jest.mock("../../../selectable-component", () => ({ SelectableComponent: class {} }));
+jest.mock("../../../actor-audio/audio-actor-component", () => ({ AudioActorComponent: class {} }));
+jest.mock("../../../animation/animation-actor-component", () => ({ AnimationActorComponent: class {} }));
+jest.mock("../../../movement/actor-translate-component", () => ({ ActorTranslateComponent: class {} }));
+jest.mock("../../../building/container-component", () => ({
   ContainerComponent: class {
     static GameObjectVisibilityChanged = "visibility";
   }
 }));
-jest.mock("../../construction/construction-site-component", () => ({ ConstructionSiteComponent: class {} }));
-jest.mock("../../vision-component", () => ({ VisionComponent: class {} }));
-jest.mock("../../building/fade-out-component", () => ({ FadeOutComponent: jest.fn() }));
-jest.mock("../../building/building-destruction-effect", () => ({
+jest.mock("../../../construction/construction-site-component", () => ({ ConstructionSiteComponent: class {} }));
+jest.mock("../../../vision-component", () => ({ VisionComponent: class {} }));
+jest.mock("../../../building/fade-out-component", () => ({ FadeOutComponent: jest.fn() }));
+jest.mock("../../../building/building-destruction-effect", () => ({
   BuildingDestructionEffect: { spawnDestructionEffects: jest.fn() }
 }));
 

@@ -6,8 +6,8 @@ import { readAiRuntimeBrowserTestConfig } from "../../../browser/ai-runtime-brow
 import { installAiRuntimeProductionCapture } from "../install-ai-runtime-production-capture";
 
 jest.mock("@fuzzy-waddle/environments/environment", () => ({ environment: { production: false } }));
-jest.mock("./ai-runtime-production-capture", () => ({ AiRuntimeProductionCapture: jest.fn() }));
-jest.mock("../../browser/ai-runtime-browser-test-config", () => ({ readAiRuntimeBrowserTestConfig: jest.fn() }));
+jest.mock("../ai-runtime-production-capture", () => ({ AiRuntimeProductionCapture: jest.fn() }));
+jest.mock("../../../browser/ai-runtime-browser-test-config", () => ({ readAiRuntimeBrowserTestConfig: jest.fn() }));
 
 describe("installAiRuntimeProductionCapture", () => {
   beforeEach(() => {
