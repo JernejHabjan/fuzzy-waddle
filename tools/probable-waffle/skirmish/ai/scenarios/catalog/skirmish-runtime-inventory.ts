@@ -1,15 +1,7 @@
+import { selectedRuntimeCheckpoints } from "../validation/skirmish-runtime-recipe-metadata.ts";
+
 function applicableRows(rows, variant) {
   return rows.filter((row) => !variant.scenarioIds || variant.scenarioIds.includes(row.id));
-}
-
-/** Match the runner's selected-row ceiling rather than counting unreachable authored checkpoints. */
-function selectedCheckpoints(fixture, variant, rows) {
-  const recipe = fixture.recipe;
-  const ceiling = Math.max(
-    ...rows.map((row) => fixture.assertions?.[row.id]?.maximumTick ?? recipe.checkpointTicks?.at(-1) ?? 0)
-  );
-  const checkpoints: readonly number[] = variant.checkpointTicks ?? recipe.checkpointTicks ?? [];
-  return [...new Set(checkpoints)].filter((tick) => tick <= ceiling);
 }
 
 /** Summarize registered runtime recipes without treating registration as executed evidence. */
@@ -25,7 +17,7 @@ export function collectRuntimeInventory(manifest, readFixture) {
     const variants = fixture.recipe.variants.flatMap((variant) => {
       const matches = applicableRows(rows, variant);
       if (!matches.length) return [];
-      const checkpoints = selectedCheckpoints(fixture, variant, matches);
+      const checkpoints = selectedRuntimeCheckpoints(fixture, variant, matches.map((row) => row.id));
       return [{ variant, checkpoints, maximumTick: Math.max(0, ...checkpoints) }];
     });
     const focused = variants.filter(({ variant }) => variant.executionKind?.startsWith("focused_"));
