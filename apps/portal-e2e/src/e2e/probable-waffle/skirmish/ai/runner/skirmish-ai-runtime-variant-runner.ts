@@ -12,7 +12,10 @@ import { prepareRuntimeVariant } from "../setup/skirmish-ai-runtime-variant-setu
 import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
 import { evaluateEvidenceStopAtCheckpoint } from "../evaluation/controls/skirmish-ai-runtime-evidence-stop-evaluation";
 import { collectRuntimePresetEvents } from "../setup/skirmish-ai-runtime-preset-event-results";
-import { captureRuntimeProductionAuthority } from "../production/capture/skirmish-ai-runtime-production-capture";
+import {
+  captureRuntimeProductionAuthority,
+  recordRuntimeProductionBoundary
+} from "../production/capture/skirmish-ai-runtime-production-capture";
 import {
   buildRuntimeProductionReport,
   compactRuntimeProductionReport
@@ -100,6 +103,7 @@ export async function runVariant(
       ? await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber, productionHorizon)
       : undefined;
     const closedProductionHorizon = productionCapture?.frontiers?.latestTick ?? productionHorizon;
+    let productionClosedThrough = productionCapture?.frontiers?.closedThroughTick ?? -1;
     let stopReason: RuntimeVariantResult["stopReason"] = "checkpoint_ceiling";
     let satisfiedSinceTick: number | null = null;
     const maximumTick = Math.max(
@@ -160,20 +164,36 @@ export async function runVariant(
       if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
         process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=checkpoint complete\n`);
       checkpoints.push(checkpoint);
+      const pendingEventTicks = [
+        ...pendingPerturbations.map((event) => event.tick),
+        ...(variant.presetWorld?.events ?? []).map((event) => event.tick)
+      ];
+      const terminal = canStopAfterTerminal(fixture.assertions, applicableScenarioIds, checkpoint, pendingEventTicks);
       // A terminal score does not seal its own native tick. Close that tick before reading early-terminal proof.
       if (
         captureProduction &&
         checkpoint.gameResult === "win" &&
         applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory) &&
-        (productionCapture?.frontiers?.closedThroughTick ?? -1) < checkpoint.tick
+        productionClosedThrough < checkpoint.tick
       )
         await advanceRuntimeToTick(page, fixture, checkpoint.tick + 1, index);
       if (captureProduction) {
-        productionCapture = await captureRuntimeProductionAuthorityWithDiagnostics(
-          page,
-          fixture.recipe.aiPlayerNumber,
-          targetTick
-        );
+        const needsReport =
+          index === checkpointTicks.length - 1 ||
+          terminal ||
+          variant.evidenceStop !== undefined ||
+          beforeCheckpoint !== undefined ||
+          process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1";
+        if (needsReport) {
+          productionCapture = await captureRuntimeProductionAuthorityWithDiagnostics(
+            page,
+            fixture.recipe.aiPlayerNumber,
+            targetTick
+          );
+          productionClosedThrough = productionCapture.frontiers?.closedThroughTick ?? -1;
+        } else {
+          productionClosedThrough = await recordRuntimeProductionBoundary(page, fixture.recipe.aiPlayerNumber);
+        }
       }
       await debugProbe?.(page, index, checkpoint);
       if (profiling) {
@@ -184,11 +204,7 @@ export async function runVariant(
           captureMs: Math.round(performance.now() - captureStartedAt)
         });
       }
-      const pendingEventTicks = [
-        ...pendingPerturbations.map((event) => event.tick),
-        ...(variant.presetWorld?.events ?? []).map((event) => event.tick)
-      ];
-      if (canStopAfterTerminal(fixture.assertions, applicableScenarioIds, checkpoint, pendingEventTicks)) {
+      if (terminal) {
         stopReason = "terminal_result";
         break;
       }
