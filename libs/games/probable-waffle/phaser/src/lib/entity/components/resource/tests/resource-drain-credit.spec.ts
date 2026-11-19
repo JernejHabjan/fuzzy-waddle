@@ -24,7 +24,7 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { emitResource, getPlayer, getCommunicator, isSnapshotApplyInProgress } from "../../../../data/scene-data";
 import { waitForSimulationDuration } from "../../../../world/services/simulation-time";
 
-jest.mock("../owner-presentation", () => ({
+jest.mock("../../owner-presentation", () => ({
   OwnerPresentation: class {
     attach() {}
     tryToSetComponents() {}
@@ -33,18 +33,18 @@ jest.mock("../owner-presentation", () => ({
     playBlinkEffect() {}
   }
 }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
-jest.mock("../../../data/player-relation", () => ({ arePlayersAllied: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
+jest.mock("../../../../data/player-relation", () => ({ arePlayersAllied: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({
   emitResource: jest.fn(),
   getPlayer: jest.fn(),
   getCommunicator: jest.fn(),
   isSnapshotApplyInProgress: jest.fn()
 }));
-jest.mock("../../../world/services/simulation-time", () => ({ waitForSimulationDuration: jest.fn() }));
+jest.mock("../../../../world/services/simulation-time", () => ({ waitForSimulationDuration: jest.fn() }));
 
 describe("native drain credit policy", () => {
   it.each(["normal", "granted", "none"] as const)(

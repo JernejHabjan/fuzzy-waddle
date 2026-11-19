@@ -1,7 +1,7 @@
 import { AttackComponent } from "../attack-component";
 import { CancelableSimDelay } from "../../../../../world/services/simulation-time";
 
-jest.mock("../../../../world/services/simulation-time", () => ({
+jest.mock("../../../../../world/services/simulation-time", () => ({
   CancelableSimDelay: jest.fn().mockImplementation(() => ({ remove: jest.fn() }))
 }));
 

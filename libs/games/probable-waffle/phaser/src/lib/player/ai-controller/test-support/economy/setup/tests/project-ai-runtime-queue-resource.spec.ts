@@ -9,7 +9,7 @@ import type { QueueResourceEmissionEvent } from "../../../../../../data/queue-re
 import { OwnerComponent } from "../../../../../../entity/components/owner-component";
 import { projectAiRuntimeQueueResource } from "../project-ai-runtime-queue-resource";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 
 /** Synthetic callback and command metadata; no actual queue charge/refund or applied command is established here. */
 function event(): Extract<QueueResourceEmissionEvent, { phase: "finished" }> {

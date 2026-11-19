@@ -5,7 +5,7 @@ import { PlayerAiBlackboard } from "../../player-ai-blackboard";
 import { ActorIndexSystem } from "../../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 it("refreshes authoritative owned resources and supply without starting a legacy enemy query", () => {
   const resources = {

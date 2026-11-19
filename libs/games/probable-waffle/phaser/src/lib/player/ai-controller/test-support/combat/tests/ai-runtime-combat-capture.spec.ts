@@ -10,13 +10,13 @@ import { captureAiRuntimeCreatedActor } from "../../harness/capture/capture-ai-r
 import { AiRuntimeCombatCapture } from "../ai-runtime-combat-capture";
 import type { AiRuntimeCombatOperation } from "../ai-runtime-combat-operation";
 
-jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: () => ({ x: 10, y: 10 }) }));
-jest.mock("../../../../data/scene-data", () => ({ isSnapshotApplyInProgress: () => false }));
-jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../../library/distance-helper", () => ({ DistanceHelper: { getTileDistanceBetweenGameObjects: () => 1 } }));
-jest.mock("../../../../entity/components/combat/high-ground.helper.ts", () => ({ getHighGroundRangeBonus: () => 0 }));
-jest.mock("../harness/capture/capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
+jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: () => ({ x: 10, y: 10 }) }));
+jest.mock("../../../../../data/scene-data", () => ({ isSnapshotApplyInProgress: () => false }));
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../library/distance-helper", () => ({ DistanceHelper: { getTileDistanceBetweenGameObjects: () => 1 } }));
+jest.mock("../../../../../entity/components/combat/high-ground.helper.ts", () => ({ getHighGroundRangeBonus: () => 0 }));
+jest.mock("../../harness/capture/capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
 
 /** Synthetic call-through authorities exercise observer behavior; they do not prove real native combat or timing. */
 function fixture() {

@@ -7,10 +7,10 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { emitResource, getPlayer } from "../../../../data/scene-data";
 import { waitForSimulationDuration } from "../../../../world/services/simulation-time";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({ emitResource: jest.fn(), getPlayer: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
-jest.mock("../../../world/services/simulation-time", () => ({ waitForSimulationDuration: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({ emitResource: jest.fn(), getPlayer: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
+jest.mock("../../../../world/services/simulation-time", () => ({ waitForSimulationDuration: jest.fn() }));
 
 function fixture(contained = false) {
   const scene = new Phaser.Scene();

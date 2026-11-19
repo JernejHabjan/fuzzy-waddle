@@ -14,8 +14,8 @@ import type { ResearchComponent } from "../../research/research-component";
 import { QueueComponent } from "../queue-component";
 import { serializeActorQueueState } from "../../../../world/services/recovery/serialize-actor-queue-state";
 
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: () => undefined }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: () => undefined }));
 
 function production(id = "purchase", remainingTime = 100): UnifiedQueueItem {
   return {

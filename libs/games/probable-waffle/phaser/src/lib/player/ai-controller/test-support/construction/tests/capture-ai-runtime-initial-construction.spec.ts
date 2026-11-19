@@ -10,9 +10,9 @@ import { ConstructionSiteComponent } from "../../../../../entity/components/cons
 import { getSceneService } from "../../../../../world/services/scene-component-helpers";
 import { captureAiRuntimeInitialConstruction } from "../capture-ai-runtime-initial-construction";
 
-jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../data/scene-data", () => ({ isSnapshotApplyInProgress: jest.fn() }));
-jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../data/scene-data", () => ({ isSnapshotApplyInProgress: jest.fn() }));
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture(count = 1) {
   const scene = {

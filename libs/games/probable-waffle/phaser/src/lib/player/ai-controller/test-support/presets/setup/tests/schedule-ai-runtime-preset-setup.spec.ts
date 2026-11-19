@@ -6,10 +6,10 @@ import { isSceneActive } from "../../../../../../data/game-object-helper";
 import { scheduleAiRuntimePresetSetup } from "../schedule-ai-runtime-preset-setup";
 import { AI_RUNTIME_BROWSER_TEST_HOST_KEY } from "../../../browser/ai-runtime-browser-test-config";
 
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({
   getSceneInitializers: jest.fn(), getSceneService: jest.fn()
 }));
-jest.mock("../../../../../data/game-object-helper", () => ({ isSceneActive: jest.fn() }));
+jest.mock("../../../../../../data/game-object-helper", () => ({ isSceneActive: jest.fn() }));
 
 function setup() {
   const ready = new BehaviorSubject(false);

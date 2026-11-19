@@ -11,10 +11,10 @@ import type { ProbableWaffleScene } from "../../../../../../core/probable-waffle
 import type { AiRuntimePresetWorld } from "../ai-runtime-preset-world";
 import { bindAiRuntimeExistingActors } from "../bind-ai-runtime-existing-actors";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../../../data/game-object-helper", () => ({ getGameObjectLogicalTransform: jest.fn() }));
-jest.mock("../../../../../data/tech-tree/canonical-actor-name", () => ({
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../../data/game-object-helper", () => ({ getGameObjectLogicalTransform: jest.fn() }));
+jest.mock("../../../../../../data/tech-tree/canonical-actor-name", () => ({
   getCanonicalActorNameCached: (name: string) => name
 }));
 

@@ -4,8 +4,8 @@ import { subscribeSceneResourceLoss } from "../scene-resource-observation";
 import { getActorComponent } from "../actor-component";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 
-jest.mock("./actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
+jest.mock("../actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
 
 describe("actor data resource history boundary (authored; final gate pending)", () => {
   beforeEach(() => { jest.clearAllMocks(); jest.mocked(getActorComponent).mockReturnValue(undefined); });
