@@ -4,8 +4,23 @@ import type { Page } from "@playwright/test";
 import { parseChunked } from "@discoveryjs/json-ext";
 // prettier-ignore
 import type {
+  AiRuntimeBrowserTestHost
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
+// prettier-ignore
+import type {
   AiRuntimeProductionSnapshot
 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+
+/** Retains the normal checkpoint in the browser without transferring the full history to the runner. */
+export async function recordRuntimeProductionBoundary(page: Page, playerNumber: number): Promise<number> {
+  return page.evaluate((owner) => {
+    const host = (window as Window & { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+      .__fuzzyWaddleAiRuntimeBrowserTest;
+    const capture = host?.productionCapture;
+    if (!capture) throw new Error("runtime_production_capture_unavailable");
+    return capture.capture(owner).frontiers?.closedThroughTick ?? -1;
+  }, playerNumber);
+}
 
 /** Retains diagnostic authority facts, without converting incomplete provenance into passing production evidence. */
 export async function captureRuntimeProductionAuthority(
