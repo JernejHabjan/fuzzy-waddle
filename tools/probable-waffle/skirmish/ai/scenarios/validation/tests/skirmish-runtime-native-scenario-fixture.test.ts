@@ -8,7 +8,7 @@ import { validNativeScenarioFixture } from "../skirmish-runtime-native-scenario-
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 83);
+  assert.equal(ids.length, 85);
   const manifest = JSON.parse(
     readFileSync(new URL("../../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
   );
