@@ -1,3 +1,4 @@
+import { runtimeClosedHistoryFailures } from "../../capture/skirmish-ai-runtime-closed-history";
 import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
 import { hasNativeFieldFoodDelivery } from "../../economy/policy/skirmish-ai-field-food-delivery";
 import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
@@ -5,36 +6,15 @@ import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phas
 /** Safe-room owner outcome: native new fields, reserved-space exclusion and actual crop-to-food delivery. */
 export function evaluateFieldPlacementWorld(
   result: Pick<RuntimeVariantResult, "productionPreset" | "productionCapture" | "presetCreatedActorIds">,
-  minimumFields = 2
+  minimumFields = 2,
+  throughTick = 2400,
+  armedHorizon?: number
 ): string[] {
   const capture = result.productionCapture,
     baseline = result.productionPreset?.placementBaseline;
-  if (
-    !capture ||
-    !baseline ||
-    capture.startedTick !== 0 ||
-    capture.droppedFactCount ||
-    capture.droppedSnapshotCount ||
-    capture.frontiers?.latestTick !== 2400 ||
-    capture.frontiers.closedThroughTick !== 2400 ||
-    capture.frontiers.gaps.length
-  ) {
+  if (!capture?.frontiers || !baseline || runtimeClosedHistoryFailures(capture, throughTick, armedHorizon).length)
     return ["field_placement_native_history_incomplete"];
-  }
-  const facts = capture.facts.filter((fact) => fact.tick <= 2400);
-  let nextTick = 0;
-  for (const interval of capture.frontiers.intervals) {
-    if (
-      interval.closedFromTick !== nextTick ||
-      !Number.isSafeInteger(interval.closedThroughTick) ||
-      interval.closedThroughTick < interval.closedFromTick ||
-      interval.closedThroughTick > 2400 ||
-      interval.capturedAtTick !== interval.closedThroughTick + 1
-    )
-      return ["field_placement_closed_interval_missing_or_reordered"];
-    nextTick = interval.closedThroughTick + 1;
-  }
-  if (nextTick !== 2401) return ["field_placement_closed_interval_missing_or_reordered"];
+  const facts = capture.facts.filter((fact) => fact.tick <= throughTick);
   const placements = facts.filter(
     (fact): fact is Extract<AiRuntimeProductionFact, { kind: "spatial_authority" }> =>
       fact.kind === "spatial_authority" &&

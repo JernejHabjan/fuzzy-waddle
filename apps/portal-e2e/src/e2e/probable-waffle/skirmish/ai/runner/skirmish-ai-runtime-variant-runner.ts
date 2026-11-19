@@ -21,6 +21,7 @@ import {
   buildRuntimeProductionReport,
   compactRuntimeProductionReport
 } from "../production/evidence/skirmish-ai-runtime-production-report";
+import { nativeEvidenceInterventionsPending } from "../evaluation/scenario/skirmish-ai-native-proof-window";
 import { advanceRuntimeFrames } from "./skirmish-ai-runtime-frame-driver";
 
 const runtimeProgressStartedAt = performance.now();
@@ -171,21 +172,24 @@ export async function runVariant(
         ...pendingPerturbations.map((event) => event.tick),
         ...(variant.presetWorld?.events ?? []).map((event) => event.tick),
         // The request can precede its command's application by many ticks. Keep the whole authored intervention.
-        ...(variant.presetWorld?.controls ?? []).map((control) => Math.max(control.requestTick, control.applicationTick))
+        ...(variant.presetWorld?.controls ?? []).map((control) =>
+          Math.max(control.requestTick, control.applicationTick)
+        )
       ];
       const terminal = canStopAfterTerminal(fixture.assertions, applicableScenarioIds, checkpoint, pendingEventTicks);
       const probe =
         captureProduction &&
         checkpoint.tick === targetTick &&
         nativeEvidence?.checkpoints.includes(targetTick) === true &&
-        pendingEventTicks.every((tick) => tick <= checkpoint.tick);
+        !nativeEvidenceInterventionsPending(variant, checkpoint.tick);
       // A terminal score does not seal its own native tick. Close that tick before reading early-terminal proof.
       // An ordinary evidence checkpoint also needs the next native frame to seal its prefix.
       if (
         captureProduction &&
         productionClosedThrough < checkpoint.tick &&
         (probe ||
-          (checkpoint.gameResult === "win" && applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory)))
+          (checkpoint.gameResult === "win" &&
+            applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory)))
       ) {
         await advanceRuntimeToTick(page, fixture, checkpoint.tick + 1, index);
         if (probe) await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);

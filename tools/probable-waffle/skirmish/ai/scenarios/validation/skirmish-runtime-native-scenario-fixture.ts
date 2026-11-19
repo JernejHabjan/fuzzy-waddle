@@ -57,6 +57,8 @@ function validEvidenceCheckpoints(
     .every((variant) => {
       const samples = variant.checkpointTicks ?? fixture.recipe.checkpointTicks;
       const finalProbe = checkpoints.at(-1);
+      const world = variant.presetWorld;
+      const faults = [...(world?.routeOutages ?? []), world?.brainFault, world?.receiptFault];
       return (
         variant.executionKind === "focused_preset" &&
         variant.role !== "control" &&
@@ -64,7 +66,8 @@ function validEvidenceCheckpoints(
         !variant.additionalAiPlayers?.length &&
         variant.captureConstruction === true &&
         checkpoints.every((tick) => samples.includes(tick)) &&
-        runtimeVariantInterventions(variant).every((event) => event.tick <= finalProbe)
+        runtimeVariantInterventions(variant).every((event) => event.tick <= finalProbe) &&
+        faults.every((fault) => !fault || fault.throughTick < finalProbe)
       );
     });
 }
