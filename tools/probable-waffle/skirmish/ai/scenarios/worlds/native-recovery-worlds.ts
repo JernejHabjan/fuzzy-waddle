@@ -70,6 +70,13 @@ export function nativeRecoveryWorld(id, faction, branch): NativeScenarioWorld {
     }
   }
   if (id === "H-03") {
+    if (branch === "training" || branch === "crop") {
+      const duty = new Set(["ready-producer", "ready-house", "ready-granary", "own-deposit", "own-source"]);
+      world.actors = world.actors.filter(
+        (actor) => duty.has(actor.fixtureActorId) || /^worker-[0-3]$/.test(actor.fixtureActorId)
+      );
+      world.initialOrders = world.initialOrders.filter((order) => order.workerFixtureActorId !== "enemy-worker");
+    }
     if (branch === "training")
       world.queues = [{ producerFixtureActorId: "ready-producer", actorName: melee(faction), count: 4 }];
     if (branch === "crop") {

@@ -18,6 +18,7 @@ export function nativeProductionReplacementWorld(faction: string, branch: string
     ...structuredClone(baseline),
     fixtureId: "producer-replacement",
     requireFactionRoster: true,
+    resourceStarts: [],
     events:
       branch === "loss"
         ? [

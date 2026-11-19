@@ -57,6 +57,8 @@
       }
     },
     "PLACE-01": {
+      "evidenceCheckpoints": [800, 1200, 1600, 2000],
+      "combatCaptureBranches": [],
       "latestTick": 2400,
       "branches": ["room", "constrained"],
       "acceptance": {
@@ -92,6 +94,9 @@
       }
     },
     "PLACE-02": {
+      "evidenceCheckpoints": [1200, 1600, 2000],
+      "evidenceCheckpointBranches": ["safe", "exposed"],
+      "combatCaptureBranches": [],
       "latestTick": 2400,
       "branches": ["safe", "exposed", "both_exposed"],
       "acceptance": {
@@ -124,6 +129,8 @@
       }
     },
     "PLACE-03": {
+      "evidenceCheckpoints": [1200, 1600, 2000, 2400],
+      "combatCaptureBranches": [],
       "latestTick": 3000,
       "branches": ["layout", "concurrent", "completion", "loss"],
       "acceptance": {
@@ -193,6 +200,8 @@
       }
     },
     "WALL-01": {
+      "evidenceCheckpoints": [1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["terrain", "freestanding"],
       "latestTick": 3000,
       "branches": ["terrain", "freestanding", "no_value"],
       "acceptance": {
@@ -1577,6 +1586,8 @@
       }
     },
     "H-03": {
+      "evidenceCheckpoints": [1200, 1600, 2000, 2400, 3000],
+      "combatCaptureBranches": [],
       "latestTick": 4000,
       "branches": ["training", "crop", "travel", "stalled"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000],
@@ -1645,6 +1656,7 @@
       }
     },
     "H-19": {
+      "evidenceCheckpoints": [1200, 1600, 2000],
       "latestTick": 2400,
       "branches": ["pending", "late", "error"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400],
@@ -1673,6 +1685,8 @@
       }
     },
     "H-24": {
+      "evidenceCheckpoints": [1200, 1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["information", "raid", "denial"],
       "latestTick": 3000,
       "branches": ["information", "raid", "denial", "unsafe"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
@@ -1733,6 +1747,8 @@
       }
     },
     "H-26": {
+      "evidenceCheckpoints": [1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["grouping", "safe_alternate", "threat_clears"],
       "latestTick": 3000,
       "branches": ["grouping", "safe_alternate", "no_safe_route", "threat_clears"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],

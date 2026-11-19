@@ -22,8 +22,18 @@ export function configureNativeConstructionControls(context: NativeWorldSetupCon
       {
         id: id === "PLACE-03" && branch === "completion" ? "army-transit" : "production-army",
         playerNumber: 2,
-        from: id === "PLACE-03" && branch === "completion" ? tile(27, 25) : wall02OpeningTransit ? tile(30, 21) : tile(42, 25),
-        to: id === "PLACE-03" && branch === "completion" ? tile(28, 25) : wall02OpeningTransit ? tile(26, 21) : tile(27, 25),
+        from:
+          id === "PLACE-03" && branch === "completion"
+            ? tile(27, 25)
+            : wall02OpeningTransit
+              ? tile(30, 21)
+              : tile(42, 25),
+        to:
+          id === "PLACE-03" && branch === "completion"
+            ? tile(28, 25)
+            : wall02OpeningTransit
+              ? tile(26, 21)
+              : tile(27, 25),
         tileMargin: ["PLACE-01", "PLACE-03"].includes(id) ? 0 : 1
       },
       {
@@ -38,13 +48,19 @@ export function configureNativeConstructionControls(context: NativeWorldSetupCon
     const transitTicks = earlyTransitProbe
       ? [1]
       : wall02OpeningTransit
-        // One alternating crossing per actual prefix avoids repeatedly resetting movement.
-        ? [1041, 1398, 1641, 2363]
-        : [200, 600, 1000, 1400, 1800, 2200];
+        ? // One alternating crossing per actual prefix avoids repeatedly resetting movement.
+          [1041, 1398, 1641, 2363]
+        : id === "PLACE-02"
+          ? [200, 1000]
+          : [200, 600, 1000, 1400, 1800, 2200];
     const wall02TransitRoles =
-      branch === "worker" ? ["worker-transit"] :
-      branch === "army" ? ["army-transit"] :
-      branch === "concurrent" ? ["worker-transit", "army-transit"] : [];
+      branch === "worker"
+        ? ["worker-transit"]
+        : branch === "army"
+          ? ["army-transit"]
+          : branch === "concurrent"
+            ? ["worker-transit", "army-transit"]
+            : [];
     for (const [index, tick] of transitTicks.entries()) {
       if (earlyTransitProbe) {
         // These short, on-route probes must finish before the AI's next order refresh.
@@ -56,8 +72,7 @@ export function configureNativeConstructionControls(context: NativeWorldSetupCon
           // that, the AI owns its army's mission; workers exercise physical egress at each prefix.
           // Probe both sides of the actual entrance. The former y=25 endpoints landed on the
           // AI's independently selected perimeter instead of exercising its intentional opening.
-          if (wall02TransitRoles.includes("worker-transit"))
-            move("worker-transit", tick, index % 2 ? 26 : 28, 21);
+          if (wall02TransitRoles.includes("worker-transit")) move("worker-transit", tick, index % 2 ? 26 : 28, 21);
           if (wall02TransitRoles.includes("army-transit") && index === 0)
             move("army-transit", tick, index % 2 ? 28 : 26, 21);
         } else {
