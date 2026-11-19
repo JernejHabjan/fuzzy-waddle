@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import type { NativeScenarioWorld } from "../../../contracts/scenarios/native-scenario-world.ts";
+import { validateRuntimePresetRoles } from "../skirmish-runtime-preset-roles.ts";
 import {
   describeRuntimeVariant,
   validateEvidenceStopAssertions,
@@ -154,4 +156,33 @@ test("early evidence stop requires a subject, a finite stability window and mono
   Reflect.deleteProperty(fixture.assertions["PRO-01"], "minimumMilitaryTypeCount");
   Object.assign(fixture.assertions["PRO-01"], { minimumRepeatedMilitaryTypeCount: 3 });
   assert.throws(() => validateEvidenceStopAssertions(fixture), /runtime_recipe_evidence_stop_unsafe/);
+});
+
+test("fixture edits cannot leave a control bound to a removed role", () => {
+  const world: NativeScenarioWorld = {
+    fixtureId: "focused-world",
+    requireFactionRoster: true,
+    actors: [{ fixtureActorId: "scout", actorName: "TivaraMacemanMale", owner: 2, position: { x: 0, y: 0, z: 0 } }],
+    existingActorBindings: [{ fixtureActorId: "contact", actorName: "SkaduweeWarriorMale", owner: 1 }],
+    controls: [
+      {
+        id: "scout-contact",
+        producerFixtureActorId: "scout",
+        requestTick: 20,
+        applicationTick: 20,
+        action: { kind: "attack", targetFixtureActorId: "contact" }
+      }
+    ],
+    resourceGrants: [],
+    resourceStarts: [],
+    initialOrders: [],
+    events: [],
+    terrainPatches: []
+  };
+  assert.doesNotThrow(() => validateRuntimePresetRoles(world, "subject"));
+  world.existingActorBindings = [];
+  assert.throws(
+    () => validateRuntimePresetRoles(world, "subject"),
+    /runtime_recipe_unknown_actor_role:subject:controls:contact/
+  );
 });

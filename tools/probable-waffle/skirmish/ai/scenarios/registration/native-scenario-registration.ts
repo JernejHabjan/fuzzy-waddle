@@ -3,6 +3,7 @@ import type { NativeScenarioWorld } from "../../contracts/scenarios/native-scena
 import { readFileSync } from "node:fs";
 import { nativeScenarioWorld } from "../worlds/native-scenario-worlds.ts";
 import { nativeRaidWithdrawalWorld } from "../worlds/native-raid-withdrawal-world.ts";
+import { nativeProductionReplacementWorld } from "../worlds/native-production-replacement-world.ts";
 import { nativeDomainWorld } from "../worlds/native-domain-worlds.ts";
 import { nativeStrategicWorld } from "../worlds/native-strategic-worlds.ts";
 import { nativeClassicWorld } from "../worlds/native-classic-worlds.ts";
@@ -144,51 +145,56 @@ function nativeScenarioVariant(
 ): NativeScenarioVariant {
   const recovery = ["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id);
   const authority = ["H-06", "H-07", "H-10", "H-13", "H-14", "H-15", "H-11", "H-12", "H-30"].includes(id);
-  const world = ["DBG-01", "DBG-03"].includes(id)
-    ? nativeSaveWorld(faction, "during_active")
-    : id === "SEQ-08"
-      ? nativeLifecycleSequenceWorld(faction, branch)
-      : ["H-08", "H-09"].includes(id)
-        ? lateAuthorityWorld(faction)
-        : id === "D-02"
-          ? nativeSaveWorld(faction, branch.endsWith("pending_plan") ? "applied_pending" : "before_apply")
-          : id === "H-31"
-            ? nativeSaveWorld(faction, branch)
-            : id === "H-32"
-              ? nativeLifecycleWorld(faction, branch)
-              : id === "H-23"
-                ? nativeIslandEstablishmentWorld(faction, branch)
-                : id === "DBG-06"
-                  ? nativeDebugParityWorld(faction)
-                  : id === "H-05"
-                    ? nativeOptionalReleaseWorld(faction, branch)
-                    : ["SEQ-03", "SEQ-04", "SEQ-06", "SEQ-07"].includes(id)
-                      ? nativeContinuityWorld(id, faction, branch)
-                      : id === "D-05"
-                        ? nativeDifficultyPressureWorld(faction, branch)
-                        : id === "H-20"
-                          ? nativeTopologyChurnWorld(faction, branch)
-                          : id === "D-04"
-                            ? nativeEasyContinuityWorld(faction, branch)
-                            : id === "D-03"
-                              ? nativeDifficultyFairnessWorld(faction, branch)
-                              : ["D-01", "DBG-04", "DBG-05"].includes(id)
-                                ? nativeDifficultyWorld(faction, branch)
-                                : authority
-                                  ? nativeAuthorityWorld(id, faction, branch)
-                                  : recovery
-                                    ? nativeRecoveryWorld(id, faction, branch)
-                                    : id === "EXP-01"
-                                      ? expansionWorld(faction, branch)
-                                      : id === "RAID-02"
-                                        ? nativeRaidWithdrawalWorld(faction, branch)
-                                        : id.startsWith("DOMAIN-")
-                                          ? nativeDomainWorld(id, faction, branch)
-                                          : id.startsWith("C-")
-                                            ? nativeClassicWorld(id, faction, branch)
-                                            : ["STRAT-02", "STRAT-03", "STRAT-08", "STRAT-09", "RAID-03"].includes(id)
-                                              ? nativeStrategicWorld(id, faction, branch)
-                                              : nativeScenarioWorld(id, faction, branch);
+  const world =
+    id === "PRO-05"
+      ? nativeProductionReplacementWorld(faction, branch)
+      : ["DBG-01", "DBG-03"].includes(id)
+        ? nativeSaveWorld(faction, "during_active")
+        : id === "SEQ-08"
+          ? nativeLifecycleSequenceWorld(faction, branch)
+          : ["H-08", "H-09"].includes(id)
+            ? lateAuthorityWorld(faction)
+            : id === "D-02"
+              ? nativeSaveWorld(faction, branch.endsWith("pending_plan") ? "applied_pending" : "before_apply")
+              : id === "H-31"
+                ? nativeSaveWorld(faction, branch)
+                : id === "H-32"
+                  ? nativeLifecycleWorld(faction, branch)
+                  : id === "H-23"
+                    ? nativeIslandEstablishmentWorld(faction, branch)
+                    : id === "DBG-06"
+                      ? nativeDebugParityWorld(faction)
+                      : id === "H-05"
+                        ? nativeOptionalReleaseWorld(faction, branch)
+                        : ["SEQ-03", "SEQ-04", "SEQ-06", "SEQ-07"].includes(id)
+                          ? nativeContinuityWorld(id, faction, branch)
+                          : id === "D-05"
+                            ? nativeDifficultyPressureWorld(faction, branch)
+                            : id === "H-20"
+                              ? nativeTopologyChurnWorld(faction, branch)
+                              : id === "D-04"
+                                ? nativeEasyContinuityWorld(faction, branch)
+                                : id === "D-03"
+                                  ? nativeDifficultyFairnessWorld(faction, branch)
+                                  : ["D-01", "DBG-04", "DBG-05"].includes(id)
+                                    ? nativeDifficultyWorld(faction, branch)
+                                    : authority
+                                      ? nativeAuthorityWorld(id, faction, branch)
+                                      : recovery
+                                        ? nativeRecoveryWorld(id, faction, branch)
+                                        : id === "EXP-01"
+                                          ? expansionWorld(faction, branch)
+                                          : id === "RAID-02"
+                                            ? nativeRaidWithdrawalWorld(faction, branch)
+                                            : id.startsWith("DOMAIN-")
+                                              ? nativeDomainWorld(id, faction, branch)
+                                              : id.startsWith("C-")
+                                                ? nativeClassicWorld(id, faction, branch)
+                                                : ["STRAT-02", "STRAT-03", "STRAT-08", "STRAT-09", "RAID-03"].includes(
+                                                      id
+                                                    )
+                                                  ? nativeStrategicWorld(id, faction, branch)
+                                                  : nativeScenarioWorld(id, faction, branch);
   if (id === "H-28") {
     const inherited = structuredClone(
       expansion.recipe.variants[0].presetWorld.existingActorBindings.filter((actor) => actor.owner === null)
@@ -211,8 +217,10 @@ function nativeScenarioVariant(
   }
   const variantId = `${id.toLowerCase()}-${faction.toLowerCase()}-${branch.replaceAll("_", "-")}`;
   // Paired controls need identical stamped match/actor/command identities, not merely the same random seed.
-  world.fixtureId =
-    id === "DBG-06"
+  const pairedFocus = ["PRO-05", "RAID-02"].includes(id);
+  world.fixtureId = pairedFocus
+    ? id.toLowerCase() + "-" + faction.toLowerCase() + "-pair"
+    : id === "DBG-06"
       ? `dbg-06-${faction.toLowerCase()}-parity`
       : ["H-06", "H-07"].includes(id)
         ? `${id.toLowerCase()}-${faction.toLowerCase()}-receipt-pair`
@@ -237,7 +245,8 @@ function nativeScenarioVariant(
   return {
     id: variantId,
     executionKind: continuousSetup ? "continuous_preset" : "focused_preset",
-    role: "standalone",
+    role: pairedFocus ? (["served", "quiet"].includes(branch) ? "control" : "subject") : "standalone",
+    ...(pairedFocus ? { pairId: world.fixtureId } : {}),
     seed: id === "EXP-01" ? 759933 : id === "WALL-02" && faction === "Skaduwee" ? 759941 : 759940,
     deadlineRationale:
       continuousSetup ??

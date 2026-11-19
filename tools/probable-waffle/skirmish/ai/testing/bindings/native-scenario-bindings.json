@@ -1,6 +1,31 @@
 {
   "schemaVersion": 1,
   "cases": {
+    "PRO-05": {
+      "latestTick": 2600,
+      "branches": ["loss", "served"],
+      "checkpointTicks": [20, 199, 200, 400, 800, 1200, 1600, 2000, 2400, 2600],
+      "evidenceCheckpoints": [1200, 1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["loss"],
+      "combatCaptureBranches": [],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "Replace one lost producer that is still needed while leaving the other ready producer intact.",
+        "setup": ["Use a matched pair of fulfilled two-producer worlds with real workers and food service"],
+        "actions": ["Lose one bound producer at tick 200 in the subject while the other remains ready"],
+        "measurements": [
+          "Observe dated capacity demand, exact native construction and payment, ready replacement and the surviving original producer"
+        ],
+        "required": [
+          "One paid replacement after native loss and a bounded stabilization window",
+          "No additional producer in the served control"
+        ],
+        "forbidden": ["Capacity inferred from selecting construction or from repeated aggregate counts"],
+        "branches": ["Both supported factions", "Single native loss or still served"],
+        "checkpointPolicy": "The pure planner test owns the one-to-three demand transition, repeated callbacks, and 100-decision stress window.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
     "RAID-02": {
       "evidenceCheckpoints": [1600, 2000],
       "evidenceCheckpointBranches": ["reinforced"],
@@ -175,10 +200,10 @@
         "requiredOutcome": "Useful connected defense exploits terrain, covers assets and reduces required artificial wall length",
         "setup": [
           "Bind actual cliff/water edges, one important hostile ground approach and protected assets",
-          "Use a faction with legal wall/stair definitions and affordable measured defensive demand"
+          "Use the same base, force and resource start in both positive branches; widen only the terrain anchors in the control"
         ],
         "actions": [
-          "Let AI construct a connected defensive prefix against the real approach",
+          "Let AI finish the selected defense graph against the real approach, leaving the reserved opening clear",
           "Drive ordinary hostile and friendly traversal and occupy planned defender posts"
         ],
         "measurements": [

@@ -25,7 +25,7 @@ export function nativeScenarioWorld(id: string, faction: string, branch: string)
       amounts: {
         food: id.startsWith("PLACE-") ? 0 : 1200,
         wood: 1600,
-        stone: id === "WALL-01" && branch === "terrain" && playerNumber === 2 ? 4000 : 800,
+        stone: id === "WALL-01" && playerNumber === 2 ? 4000 : 800,
         minerals: 800
       }
     })),
