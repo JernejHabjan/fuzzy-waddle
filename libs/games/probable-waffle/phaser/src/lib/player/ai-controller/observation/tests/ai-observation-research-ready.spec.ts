@@ -6,7 +6,7 @@ import { createAiTestOwnedActor } from
 import { getActorComponent } from "../../../../data/actor-component";
 import { projectResearchCandidates } from "../ai-observation-context";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 
 it("offers research only after the observed producer finishes, even when its component already exists", () => {
   const actor = createAiTestOwnedActor("producer");
