@@ -30,9 +30,26 @@ The normal evaluation dispatches through apps/portal-e2e/src/e2e/probable-waffle
 
 Only Tivara offers current ships; real boat landing/escort uses that faction. Native hostile ship cases use the existing three-spawn map and a third Tivara opponent through the ordinary lobby, never a foreign prefab or synthesized player. Initial team and actual defeat support retargeting; no in-match diplomacy command exists. Recipes retain that explicit unsupported limit instead of claiming a dynamic diplomacy transition. Island content remains outside these land controls.
 
-Board/unload controls use normal shared commands. Optional routeOutages are finite original-actor query faults, applied only after navigation readiness; an actual interception result is required. Expiry/shutdown restores owned methods and fences retained wrappers without overwriting later hooks. Faults neither corrupt geometry nor establish strategic defeat. Early finishing accepts only an authoritative score win with its actual tick sealed in both native histories; generic history checks retain the full declared horizon. Paid output and physical arrival may not borrow post-horizon events.
+Board/unload controls use normal shared commands. Optional routeOutages are finite original-actor query faults, applied only after navigation readiness; an actual interception result is required. Expiry/shutdown restores owned methods and fences retained wrappers without overwriting later hooks. Faults neither corrupt geometry nor establish strategic defeat. A victory case can finish on an authoritative score win with its actual tick sealed in both native histories. Paid output and physical arrival must occur within the sealed window.
 
 Explicit captureCombat retains bounded oracle-only sight, transport/team state and native operations in the existing observer. Initial houses/unarmed carriers join lifetime proof only under that explicit combat capture. Ordinary gameplay receives no fault hook or combat listener. Additional opponent reads omit the shared recipient ledger retained once by the AI record. Raw proof stays local; use the existing maximum8192-byte model-facing summary, then narrow projections only when needed. No LLM evaluates raw reports or decides whether an assertion passes.
+
+### Focused scenario windows
+
+Place the units, paid work, and economy prerequisites just before the behavior under test. Leave the decision,
+payment, movement, or recovery itself to the ordinary game. Where the pure planner tests already cover a long
+decision sequence or repeated callbacks, use the native case for the effect that needs a real world.
+
+A focused branch can opt into evidence checkpoints in its native binding. The ordinary runner considers a
+checkpoint after all authored interventions and fault releases. It stops only when both players' native histories
+seal that tick and the scenario's final assertions pass on that history. Negative controls keep their observation
+window. Continuous variants keep the phases their proof requires, and save or transfer sequences may continue
+after the last ordinary checkpoint. Capture keeps tactical decision facts separate from damage callbacks.
+
+Use `pnpm ai:skirmish:catalog` to inspect configured branches, checkpoint ceilings, capture, and early-stop coverage
+without opening the game. Fixture validation checks that scheduled controls can run inside each branch's window
+and still refer to declared actors. The catalog reports authored ceilings. Wall-clock duration and gameplay outcomes
+come from actual runs.
 
 ### Native construction and continuation bindings
 
