@@ -11,8 +11,18 @@ export function configureNativeObjectiveActors(context: NativeActorLayoutContext
     (id === "STRAT-12" && branch === "own_threat") ||
     (["STRAT-13", "FIGHT-03"].includes(id) && ["escalated", "unequal"].includes(branch));
   const waveSize = counterforceWave ? 12 : nearFrontThreat ? 3 : 0;
-  for (let i = 0; i < waveSize; i++)
-    actors.push(actor("reinforcement-" + i, melee(enemy), 1, 4 + (i % 4), 8 + Math.floor(i / 4)));
+  for (let i = 0; i < waveSize; i++) {
+    const nearFight = id === "FIGHT-01";
+    actors.push(
+      actor(
+        "reinforcement-" + i,
+        melee(enemy),
+        1,
+        (nearFight ? 14 : 4) + (i % 4),
+        (nearFight ? 17 : 8) + Math.floor(i / 4)
+      )
+    );
+  }
 
   if (["STRAT-13", "FIGHT-03"].includes(id)) {
     if (id === "FIGHT-03") {

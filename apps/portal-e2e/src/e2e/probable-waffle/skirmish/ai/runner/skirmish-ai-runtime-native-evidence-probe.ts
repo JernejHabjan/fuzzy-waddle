@@ -4,6 +4,8 @@ import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result"
 /** Candidate reads are sparse because an oracle needs the actual detached history for both players. */
 export interface RuntimeNativeEvidenceProbe {
   readonly checkpoints: readonly number[];
+  /** Budget for one focused browser world, including setup and evidence reads. */
+  readonly wallClockBudgetMs: number;
   /** Reuses the final scenario oracle and retains needed opponent evidence only on acceptance. */
   accepts(page: Page, candidate: RuntimeVariantResult): Promise<boolean>;
 }

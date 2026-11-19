@@ -159,6 +159,7 @@ function configureMissionRecovery(world, id, faction, enemy, branch, actor, move
       );
   }
   if (id === "H-26") {
+    world.actors.find((a) => a.fixtureActorId === "enemy-worker").position = tile(15, 32);
     for (const a of world.actors.filter((a) => a.fixtureActorId.startsWith("army-")))
       a.position = tile(
         18 + (Number(a.fixtureActorId.split("-")[1]) % 3),

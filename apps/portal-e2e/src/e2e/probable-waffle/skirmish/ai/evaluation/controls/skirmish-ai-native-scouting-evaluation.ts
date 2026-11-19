@@ -1,3 +1,4 @@
+import { nativeWeaponHits } from "../../combat/effects/skirmish-ai-native-combat-effects";
 import type { nativeScenarioContext } from "../../contracts/skirmish-ai-native-scenario-context";
 import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { AiRuntimeProductionSpatial } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/world/ai-runtime-production-spatial";
@@ -432,21 +433,42 @@ export function evaluateNativeScouting(
         frame.tick <= (discovery?.tick ?? 0) + 400 &&
         nativeScoutingObjectiveResponse(frame.decision, targetId)
     );
-    const usefulNativeEffect =
-      discovery &&
-      context
-        .damageTo(targetId, discovery.tick)
-        .some(
-          (fact) =>
-            fact.kind === "native_damage" && fact.damage.initiator?.playerNumber === context.capture?.playerNumber
-        );
-    if (!discovery || !before || !considered || !usefulNativeEffect)
+    const usefulNativeEffect = targetId && considered && nativeWeaponHits(context, targetId, considered.tick).length;
+    if (
+      !discovery ||
+      !before ||
+      nativeScoutingObjectiveResponse(before.decision, targetId) ||
+      !considered ||
+      !usefulNativeEffect
+    )
       failures.push("scouting_discovery_has_no_causal_useful_objective_response");
     if (
       branch === "approach" &&
-      !context.frames.some((frame) => frame.decision.input?.accessGraph?.transferPoints.length)
+      (!discovery ||
+        !trips.some((trip) => {
+          if (trip.actorId !== scoutId || trip.selectedTick >= discovery.tick) return false;
+          const steps = context.capture?.facts.filter(
+            (fact) => isMovementAuthorityFact(fact) && fact.spatial.executionId === trip.movement.executionId
+          );
+          return (
+            steps?.some(
+              (fact) =>
+                isMovementAuthorityFact(fact) &&
+                fact.spatial.phase === "started" &&
+                (fact.spatial.actualTile?.x ?? -1) >= 24
+            ) &&
+            steps.some(
+              (fact) =>
+                isMovementAuthorityFact(fact) &&
+                ["arrived", "stopped"].includes(fact.spatial.phase) &&
+                !!fact.spatial.actualTile &&
+                fact.spatial.actualTile.x < 24 &&
+                fact.tick <= discovery.tick + 40
+            )
+          );
+        }))
     )
-      failures.push("scouting_native_alternate_approach_missing");
+      failures.push("scouting_scout_did_not_physically_cross_the_alternate_approach");
   }
   if (scenarioId === "H-22" && branch !== "remains") {
     const clear = context.frames.find((frame) =>

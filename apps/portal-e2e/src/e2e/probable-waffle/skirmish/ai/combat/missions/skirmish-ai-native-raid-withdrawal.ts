@@ -46,16 +46,28 @@ export function evaluateNativeRaidWithdrawal(
       .filter(([role]) => role.startsWith("raid-guard-"))
       .map(([, id]) => id)
   );
-  const seen = new Set(
-    context.frames
-      .filter((frame) => frame.tick >= reinforcementTick && frame.tick <= abort.tick)
-      .flatMap((frame) =>
-        (frame.tacticalBoundary?.actors ?? [])
-          .filter((actor) => actor.visible && actor.identity.alive && guards.has(actor.identity.actorId ?? ""))
-          .map((actor) => actor.identity.actorId)
-      )
+  const dispatchedGuards = new Set(
+    (context.opponent?.facts ?? []).flatMap((fact) =>
+      fact.kind === "preset_control" &&
+      fact.tick === reinforcementTick &&
+      fact.control.phase === "applied" &&
+      fact.control.id.startsWith("raid-guard-") &&
+      fact.control.command?.type === "MOVE" &&
+      !fact.control.outcomes.some((outcome) => ["failed", "rejected"].includes(outcome.kind)) &&
+      guards.has(fact.control.actorId)
+        ? [fact.control.actorId]
+        : []
+    )
   );
-  if (seen.size <= raiders.size) failures.push("raid_withdrawal_did_not_face_larger_visible_force");
+  const facedCounterforce = context.frames.some(
+    (frame) =>
+      frame.tick >= reinforcementTick &&
+      frame.tick <= abort.tick &&
+      (frame.tacticalBoundary?.actors.filter(
+        ({ visible, identity }) => visible && identity.alive && dispatchedGuards.has(identity.actorId ?? "")
+      ).length ?? 0) > raiders.size
+  );
+  if (!facedCounterforce) failures.push("raid_withdrawal_did_not_face_larger_visible_force");
   const withdrawal = nativeRetreats(context, abort.tick).find((movement) => {
     const actorId = movement.observations[0]?.spatial.source.actorId;
     return !!actorId && raiders.has(actorId);
