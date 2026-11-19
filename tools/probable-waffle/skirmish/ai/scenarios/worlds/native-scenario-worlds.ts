@@ -35,6 +35,11 @@ export function nativeScenarioWorld(id: string, faction: string, branch: string)
     protectedRoutes: [],
     terrainPatches: nativeScenarioTerrain(id, branch)
   };
+  if (id === "SCOUT-04" && branch === "approach") {
+    // Preserve starting upkeep without funding a new base that could reveal the target before the scout arrives.
+    const scoutingBank = world.resourceStarts.find((entry) => entry.playerNumber === 2);
+    if (scoutingBank) scoutingBank.amounts = { food: 300, wood: 0, stone: 0, minerals: 0 };
+  }
   const actors = new Map(world.actors.map((actor) => [actor.fixtureActorId, actor]));
   const move = (role, tick, x, y, suffix = "") =>
     world.controls.push({
