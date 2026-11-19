@@ -42,7 +42,10 @@ decision sequence or repeated callbacks, use the native case for the effect that
 
 A focused branch can opt into evidence checkpoints in its native binding. The ordinary runner considers a
 checkpoint after all authored interventions and fault releases. It stops only when both players' native histories
-seal that tick and the scenario's final assertions pass on that history. Negative controls keep their observation
+seal that tick and the scenario's final assertions pass on that history. Each probe includes already applied
+preset events. Variants with these checkpoints fail if proof is missing at their authored tick ceiling. A separate
+120-second wall-clock limit reports the last tick and recent unmet assertions if available. Logged AI exceptions,
+capture overflow and duplicate command ownership can fail the case earlier. Negative controls keep their observation
 window. Continuous variants keep the phases their proof requires, and save or transfer sequences may continue
 after the last ordinary checkpoint. Capture keeps tactical decision facts separate from damage callbacks.
 
