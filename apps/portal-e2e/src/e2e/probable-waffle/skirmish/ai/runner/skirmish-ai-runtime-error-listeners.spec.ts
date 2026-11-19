@@ -20,3 +20,11 @@ it("replaces only the previous native match's collector on a retained page", () 
   expect(unrelatedCalls).toBe(2);
   expect(emitter.listenerCount("pageerror")).toBe(2);
 });
+
+it("records the controller's step failure even when the console message is logged at info level", () => {
+  const emitter = new EventEmitter();
+  const errors: string[] = [];
+  installRuntimeErrorListeners(emitter as unknown as Page, errors);
+  emitter.emit("console", { text: () => "RangeError Error stepping AI controller" });
+  expect(errors).toEqual(["RangeError Error stepping AI controller"]);
+});

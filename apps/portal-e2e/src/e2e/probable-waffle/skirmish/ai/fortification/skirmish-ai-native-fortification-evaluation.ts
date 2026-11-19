@@ -5,7 +5,7 @@ import { evaluateRuntimePlacementPrefixes } from "../construction/evaluation/ski
 import { nativeProtectedTransits } from "../construction/evaluation/skirmish-ai-native-placement-evaluation";
 import { nativeWeaponHits } from "../combat/effects/skirmish-ai-native-combat-effects";
 import { runtimeControlTransitFailures } from "../navigation/skirmish-ai-runtime-control-transit";
-import { nativeCompletedFortificationWallCount } from "./skirmish-ai-native-completed-fortification";
+import { nativeCompletedFortification } from "./skirmish-ai-native-completed-fortification";
 import { nativeFortificationBudgetFailures } from "./skirmish-ai-native-fortification-budget";
 
 /** Real paid prefixes, friendly passage, hostile access and occupied compatible firing stay separate obligations. */
@@ -45,12 +45,28 @@ export function evaluateNativeFortification(
       )
     )
       failures.push("fortification_actual_terrain_anchor_missing");
-    if (
-      branch !== "no_value" &&
-      (!nativeWeaponHits(context, context.roles["contact-group"]).length ||
-        nativeCompletedFortificationWallCount(context) === undefined)
-    )
-      failures.push("fortification_graph_incomplete_or_has_no_native_defensive_effect");
+    if (branch !== "no_value") {
+      const line = nativeCompletedFortification(context);
+      const invader = context.role("wall-approach-probe");
+      const attack = context.opponent?.facts.find(
+        (fact) =>
+          fact.kind === "preset_control" &&
+          fact.control.phase === "applied" &&
+          fact.control.id === "attack-wall-approach-probe-2200" &&
+          fact.control.actorId === invader &&
+          fact.control.command?.type === "ACTOR_ACTION" &&
+          fact.control.command.targetObjectIds?.includes(context.role("protected-deposit")) &&
+          !fact.control.outcomes.some((outcome) => ["failed", "rejected"].includes(outcome.kind))
+      );
+      if (
+        !line ||
+        !attack ||
+        !nativeWeaponHits(context, invader, Math.max(line.readyTick + 1, attack.tick)).some(
+          (hit) => hit.damage.initiator?.actorId && line.towerIds.has(hit.damage.initiator.actorId)
+        )
+      )
+        failures.push("fortification_completed_line_did_not_intercept_native_approach");
+    }
     if (branch === "no_value" && nodes.some((node) => node.fact.tick > 200 && node.value.command.tileVec3.x < 34))
       failures.push("fortification_obsolete_remote_asset_still_funded");
   }

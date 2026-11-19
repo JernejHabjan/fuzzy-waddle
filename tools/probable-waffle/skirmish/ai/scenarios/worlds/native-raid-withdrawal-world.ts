@@ -12,7 +12,10 @@ export function nativeRaidWithdrawalWorld(faction: string, branch: string): Nati
   world.actors = world.actors.filter(
     (entry) => inheritedRoles.has(entry.fixtureActorId) || /^worker-[0-3]$/.test(entry.fixtureActorId)
   );
+  const housing = faction === "Tivara" ? "Olival" : "Emberstone";
   world.actors.push(
+    actor("raid-housing-a", housing, 2, 42, 16),
+    actor("raid-housing-b", housing, 2, 42, 20),
     actor("main-target", enemy === "Tivara" ? "Sandhold" : "FrostForge", 1, 20, 18),
     actor("raid-target", producer(enemy), 1, 20, 35)
   );

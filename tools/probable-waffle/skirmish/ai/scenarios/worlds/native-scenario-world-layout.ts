@@ -22,22 +22,26 @@ export function nativeScenarioActors(id: string, own: string, enemy: string, bra
   const wall = id.startsWith("WALL-") || ["H-27", "H-28"].includes(id);
   const hidden = id === "SCOUT-01" || id === "SCOUT-04";
   const target =
-    id === "RAID-01" && branch === "expansion"
-      ? melee(enemy)
-      : id === "SCOUT-02"
-        ? enemy === "Tivara"
-          ? "TivaraAlchemist"
-          : "SkaduweeOwl"
-        : id === "SCOUT-04" && branch === "producer"
-          ? producer(enemy)
-          : id === "SCOUT-04" || ["STRAT-07", "STRAT-12", "RAID-01"].includes(id)
-            ? "WorkMill"
-            : melee(enemy);
+    id === "FIGHT-01"
+      ? enemy === "Tivara"
+        ? "Sandhold"
+        : "FrostForge"
+      : id === "RAID-01" && branch === "expansion"
+        ? melee(enemy)
+        : id === "SCOUT-02"
+          ? enemy === "Tivara"
+            ? "TivaraAlchemist"
+            : "SkaduweeOwl"
+          : id === "SCOUT-04" && branch === "producer"
+            ? producer(enemy)
+            : id === "SCOUT-04" || ["STRAT-07", "STRAT-12", "RAID-01"].includes(id)
+              ? "WorkMill"
+              : melee(enemy);
   const actors = [
     ...Array.from({ length: placement ? 16 : 8 }, (_, i) =>
       actor(`worker-${i}`, `${own}WorkerMale`, 2, 32 + (i % 4), 21 + Math.floor(i / 4))
     ),
-    ...Array.from({ length: scouting || placement ? 0 : 8 }, (_, i) =>
+    ...Array.from({ length: scouting || placement ? 0 : id === "FIGHT-01" ? 1 : 8 }, (_, i) =>
       actor(`army-${i}`, i < 6 ? melee(own) : ranged(own), 2, 29 + (i % 4), 25 + Math.floor(i / 4))
     ),
     actor("ready-producer", producer(own), 2, 37, 23),
@@ -53,7 +57,7 @@ export function nativeScenarioActors(id: string, own: string, enemy: string, bra
     actor("ready-granary", "Granary", 2, 38, 29),
     actor("scout-probe", melee(own), 2, hidden ? 30 : 27, 24),
     actor("ranged-probe", ranged(own), 2, 30, 27),
-    actor("support-probe", caster(own), 2, 32, 27),
+    actor("support-probe", id === "FIGHT-01" ? ranged(own) : caster(own), 2, 32, 27),
     actor("contact-group", target, 1, hidden ? (branch === "hidden_b" ? 10 : 12) : 23, hidden ? 28 : 24),
     actor("enemy-producer", producer(enemy), 1, 12, 18),
     actor("enemy-deposit", "WorkMill", 1, 17, 28),
@@ -83,6 +87,25 @@ export function nativeScenarioActors(id: string, own: string, enemy: string, bra
   const combatRoster = configureNativeCombatActors(context);
   if (combatRoster) return combatRoster;
   configureNativeObjectiveActors(context);
+  if (id === "FIGHT-01") {
+    const extras = new Set(["ready-producer", "ranged-probe", "enemy-producer", "front-target-a", "front-target-b"]);
+    return actors.filter((entry) => !extras.has(entry.fixtureActorId));
+  }
+  if (id === "SCOUT-04" && branch === "approach") {
+    const distractions = new Set([
+      "ready-producer",
+      "ranged-probe",
+      "support-probe",
+      "front-target-a",
+      "front-target-b",
+      "noise-scout",
+      "enemy-producer",
+      "enemy-deposit",
+      "enemy-source",
+      "enemy-worker"
+    ]);
+    return actors.filter((entry) => !distractions.has(entry.fixtureActorId));
+  }
   if (["SCOUT-01", "SCOUT-03", "SCOUT-04"].includes(id)) {
     // Keep the scout, native base prerequisites and both scouting approaches. The extra combat probes
     // and duplicate enemy producers belong to the broader battle setups.
@@ -103,7 +126,8 @@ export function nativeScenarioTerrain(id, branch) {
   if (bridge)
     for (let y = 0; y < 50; y++)
       for (const x of [24, 25]) {
-        if ((y >= 20 && y <= 25) || (id === "SCOUT-04" && y >= 34 && y <= 37)) continue;
+        // The scouting approach keeps only the southern crossing executable.
+        if (id === "SCOUT-04" ? y >= 34 && y <= 37 : y >= 20 && y <= 25) continue;
         patches.push({ x, y, terrain: "water", blocked: false });
       }
   if (id === "WALL-01")

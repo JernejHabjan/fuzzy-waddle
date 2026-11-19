@@ -21,6 +21,12 @@ export function configureNativeContactActors(context: NativeActorLayoutContext):
   if (id === "FIGHT-01") {
     // Start the favorable contact within one decision's travel of the authored army.
     actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(27, 25);
+    actors.find((entry) => entry.fixtureActorId === "scout-probe").position = tile(27, 22);
+    actors.find((entry) => entry.fixtureActorId === "support-probe").position = tile(31, 26);
+  }
+  if (id === "SCOUT-04" && branch === "approach") {
+    actors.find((entry) => entry.fixtureActorId === "scout-probe").position = tile(27, 35);
+    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(13, 35);
   }
   if (id === "FIGHT-05" && branch === "target_loss") {
     // Let native AI damage the original target before the scheduled loss event.

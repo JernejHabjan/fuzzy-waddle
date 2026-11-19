@@ -94,8 +94,11 @@ export function evaluateNativeStrategy(
   }
   if (id === "STRAT-05") {
     const authoredFronts = [target, context.role("front-target-a"), context.role("front-target-b")];
-    if (!authoredFronts.some((actorId) => nativeWeaponHits(context, actorId).some((fact) => fact.tick < 400)))
-      failures.push("strategy_initial_offensive_effect_missing");
+    const initialHits = authoredFronts.flatMap((actorId) =>
+      actorId ? nativeWeaponHits(context, actorId).filter((fact) => fact.tick < 400) : []
+    );
+    const initialAttackers = new Set(initialHits.map(({ damage }) => damage.initiator?.actorId));
+    if (!initialHits.length) failures.push("strategy_initial_offensive_effect_missing");
     const quietContinuation = [
       target,
       context.role("front-target-a"),
@@ -126,7 +129,9 @@ export function evaluateNativeStrategy(
         ? !quietContinuation
         : branch === "blocked_retreat"
           ? !counterforceEffect
-          : !nativeRetreats(context, 400).length
+          : !nativeRetreats(context, discovery?.tick ?? Infinity).some((movement) =>
+              initialAttackers.has(movement.observations[0]?.spatial.source.actorId)
+            )
     )
       failures.push("strategy_counterforce_reassessment_or_control_continuation_missing");
     if (branch !== "quiet") {
@@ -278,25 +283,42 @@ export function evaluateNativeStrategy(
     }
     if (branch === "own_threat") {
       const deposit = context.role("own-deposit");
+      const attackers = new Set(
+        Object.entries(context.roles)
+          .filter(([role]) => role.startsWith("reinforcement-"))
+          .map(([, actorId]) => actorId)
+      );
+      const pressure = context.facts.find(
+        (fact) =>
+          fact.kind === "native_damage" &&
+          fact.tick >= 400 &&
+          fact.damage.target.actorId === deposit &&
+          fact.damage.initiator?.playerNumber === 1 &&
+          attackers.has(fact.damage.initiator.actorId ?? "") &&
+          fact.damage.amount > 0
+      );
+      if (!pressure) failures.push("strategy_own_dependency_never_threatened");
+      const defensiveHits = [...attackers].flatMap((actorId) => nativeWeaponHits(context, actorId, 400));
+      const defended =
+        pressure &&
+        context.frames.some((frame) => {
+          if (frame.tick < 400 || frame.tick > pressure.tick + 400) return false;
+          const squads = frame.decision.missionState?.squads ?? [];
+          const offense = new Set(squads.filter((squad) => squad.role === "attack").flatMap((squad) => squad.actorIds));
+          return squads.some(
+            (squad) =>
+              squad.role === "defense" &&
+              [...offense].some((actorId) => !squad.actorIds.includes(actorId)) &&
+              defensiveHits.some(
+                (hit) =>
+                  hit.tick >= frame.tick &&
+                  hit.tick <= pressure.tick + 400 &&
+                  squad.actorIds.some((actorId) => actorId === hit.damage.initiator?.actorId)
+              )
+          );
+        });
       if (
-        !context.facts.some(
-          (fact) =>
-            fact.kind === "native_damage" &&
-            fact.damage.target.actorId === deposit &&
-            fact.damage.initiator?.playerNumber === 1 &&
-            fact.damage.amount > 0
-        )
-      )
-        failures.push("strategy_own_dependency_never_threatened");
-      if (
-        !context.frames.some(
-          (frame) =>
-            frame.tick > 400 &&
-            frame.tick <= 800 &&
-            frame.decision.missionState?.squads.some(
-              (squad) => squad.role === "defense" && squad.actorIds.length > 0 && squad.actorIds.length < 8
-            )
-        ) ||
+        !defended ||
         !context.capture?.frontiers?.intervals
           .at(-1)
           ?.actors.some(({ identity }) => identity.actorId === deposit && identity.alive && identity.indexed)

@@ -31,31 +31,14 @@ export function evaluateNativePlacement(
   }
   if (id === "PLACE-02") {
     const fields = placed.filter((placement) => placement.value.site.canonicalObjectName === "Field");
-    for (const field of fields) {
-      const input = field.selected.decision.input?.observation;
-      const exposed = input?.actors
-        .filter(
-          (actor) =>
-            actor.relation === "enemy" &&
-            actor.visibility === "visible" &&
-            actor.logicalPosition.status === "known" &&
-            actor.combatProfile?.status === "known"
+    if (
+      fields.some((field) =>
+        field.value.footprint?.some((tile) =>
+          visibleGroundThreatCovers(field.selected, { ...tile, z: field.value.command.tileVec3.z })
         )
-        .some((actor) => {
-          if (actor.logicalPosition.status !== "known" || actor.combatProfile?.status !== "known") return false;
-          const position = actor.logicalPosition.value;
-          return field.value.footprint?.some(
-            (tile) =>
-              actor.combatProfile?.status === "known" &&
-              isWithinObservedGroundWeaponRange(
-                position,
-                { x: tile.x, y: tile.y, z: field.value.command.tileVec3.z },
-                actor.combatProfile.value.attacks
-              )
-          );
-        });
-      if (exposed) failures.push("placement_field_inside_observed_native_enemy_weapon_coverage");
-    }
+      )
+    )
+      failures.push("placement_field_inside_observed_native_enemy_weapon_coverage");
     if (
       branch !== "safe" &&
       !context.frames.some((frame) =>
@@ -81,8 +64,12 @@ export function evaluateNativePlacement(
       failures.push("placement_both_exposed_has_no_explicit_constrained_decision");
   }
   if (id === "PLACE-03") {
-    if (placed.length < 3 || new Set(placed.map((placement) => placement.value.site.canonicalObjectName)).size < 2)
-      failures.push("placement_competing_useful_building_layout_missing");
+    const completions = placed.toSorted((a, b) => a.completionTick - b.completionTick);
+    const third = completions[2];
+    const firstType = completions[0]?.value.site.canonicalObjectName;
+    const differentType = completions.find((placement) => placement.value.site.canonicalObjectName !== firstType);
+    if (!third || !differentType) failures.push("placement_competing_useful_building_layout_missing");
+    else failures.push(...postLayoutTransits(context, Math.max(third.completionTick, differentType.completionTick)));
     if (
       branch === "concurrent" &&
       !context.frames.some(
@@ -110,8 +97,69 @@ export function evaluateNativePlacement(
   }
   if (branch !== "both_exposed")
     failures.push(...evaluateRuntimePlacementPrefixes(preset, context.result, id === "PLACE-03" ? 3 : 1));
-  failures.push(...nativeProtectedTransits(context, preset));
+  const opening =
+    id === "PLACE-03"
+      ? { ...preset, controls: preset.controls?.filter((control) => control.requestTick === 1) }
+      : preset;
+  failures.push(...nativeProtectedTransits(context, opening));
   return [...new Set(failures)];
+}
+
+/** Use the weapon profile actually permitted at the construction decision, including native range. */
+export function visibleGroundThreatCovers(
+  frame: ReturnType<typeof nativeScenarioContext>["frames"][number],
+  tile: { readonly x: number; readonly y: number; readonly z: number },
+  threatId?: string
+): boolean {
+  return (
+    frame.decision.input?.observation?.actors.some(
+      (actor) =>
+        actor.relation === "enemy" &&
+        actor.visibility === "visible" &&
+        (!threatId || actor.actorId === threatId) &&
+        actor.logicalPosition.status === "known" &&
+        actor.combatProfile?.status === "known" &&
+        isWithinObservedGroundWeaponRange(actor.logicalPosition.value, tile, actor.combatProfile.value.attacks)
+    ) ?? false
+  );
+}
+
+/** A late order only proves a crossing when it starts on the declared side of the finished layout. */
+function postLayoutTransits(context: ReturnType<typeof nativeScenarioContext>, layoutReadyTick: number): string[] {
+  const capture = context.capture;
+  const routes = context.result.productionPreset?.placementBaseline?.routes;
+  if (!capture || !routes || !Number.isFinite(layoutReadyTick)) return ["placement_post_layout_scope_missing"];
+  const bindings = [
+    { role: "worker-transit", route: routes.find((entry) => entry.declaration.id === "worker-service") },
+    {
+      role: "army-transit",
+      route: routes.find((entry) => ["production-army", "army-transit"].includes(entry.declaration.id))
+    }
+  ];
+  return bindings.flatMap(({ role, route }) => {
+    const controlId = "post-layout-cross-" + role;
+    const applied = capture.facts.find(
+      (fact) => fact.kind === "preset_control" && fact.control.id === controlId && fact.control.phase === "applied"
+    );
+    if (
+      !route ||
+      !applied ||
+      applied.kind !== "preset_control" ||
+      applied.tick <= layoutReadyTick ||
+      applied.control.actorId !== context.role(role) ||
+      applied.control.command?.type !== "MOVE" ||
+      applied.control.command.tileVec3.x !== route.toTile.x ||
+      applied.control.command.tileVec3.y !== route.toTile.y
+    )
+      return ["placement_post_layout_crossing_not_bound:" + role];
+    return runtimeControlTransitFailures(
+      capture,
+      controlId,
+      capture.frontiers?.closedThroughTick ?? 0,
+      "arrive",
+      route.fromTile
+    );
+  });
 }
 
 /** Retain each declared original probe's stamped command and actual endpoint. A route query alone never suffices. */

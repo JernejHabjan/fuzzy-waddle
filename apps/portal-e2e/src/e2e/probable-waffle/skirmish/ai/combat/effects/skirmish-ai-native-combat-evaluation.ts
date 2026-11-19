@@ -44,6 +44,8 @@ export function evaluateNativeCombat(
     const hits = target ? nativeWeaponHits(context, target) : [];
     if (!hits.some((fact) => fact.tick < 400)) failures.push("combat_initial_favorable_fight_missing");
     const changeTick = 400;
+    const engaged = new Set(hits.filter((hit) => hit.tick < changeTick).map((hit) => hit.damage.initiator?.actorId));
+    let regroupAfter = changeTick + 1;
     if (branch === "reinforced") {
       const reserves = new Set(
         Object.entries(context.roles)
@@ -59,7 +61,7 @@ export function evaluateNativeCombat(
           fact.control.command?.type === "MOVE" &&
           fact.control.command.actorIds.some((actorId) => reserves.has(actorId))
       );
-      const seen = context.frames.some(
+      const seen = context.frames.find(
         (frame) =>
           frame.tick > changeTick &&
           frame.decision.input?.observation?.actors.some(
@@ -67,6 +69,7 @@ export function evaluateNativeCombat(
           )
       );
       if (!moved || !seen) failures.push("combat_real_reinforcement_change_missing");
+      if (seen) regroupAfter = seen.tick;
     }
     if (["support_loss", "completed"].includes(branch)) {
       const role = branch === "support_loss" ? "support-probe" : "contact-group";
@@ -81,8 +84,32 @@ export function evaluateNativeCombat(
         branch === "completed" && hits.some((hit) => hit.tick <= changeTick && hit.damage.healthAfter === 0);
       if (!removed && !defeated) failures.push("combat_bound_support_or_target_loss_missing");
     }
-    if (branch !== "quiet" && !nativeRetreats(context, changeTick).length)
-      failures.push("combat_changed_risk_has_no_physical_regroup");
+    if (
+      ["reinforced", "support_loss"].includes(branch) &&
+      hits.some((hit) => hit.tick < regroupAfter && hit.damage.healthAfter === 0)
+    )
+      failures.push("combat_opening_target_defeated_before_risk_change");
+    const continuedAfterSupportLoss =
+      branch === "support_loss" &&
+      hits.some(
+        ({ tick, damage }) =>
+          tick >= regroupAfter &&
+          tick <= regroupAfter + 200 &&
+          engaged.has(damage.initiator?.actorId) &&
+          nativeRetainedActor(context, damage.initiator?.actorId ?? undefined)
+      );
+    if (
+      branch !== "quiet" &&
+      !continuedAfterSupportLoss &&
+      !nativeRetreats(context, regroupAfter).some((movement) =>
+        engaged.has(movement.observations[0]?.spatial.source.actorId)
+      )
+    )
+      failures.push(
+        branch === "support_loss"
+          ? "combat_original_engagement_has_no_useful_response_to_support_loss"
+          : "combat_original_engagement_has_no_physical_regroup"
+      );
     // A legally matched lethal weapon hit completes this target; disappearance alone cannot replace continued fighting.
     const defeated = hits.some((fact) => fact.damage.healthAfter === 0 && !fact.damage.target.alive);
     if (branch === "quiet" && !defeated && !hits.some((fact) => fact.tick >= 400))
@@ -337,14 +364,19 @@ export function evaluateNativeFronts(branch: string, context: ReturnType<typeof 
   const a = context.roles["front-target-a"],
     b = context.roles["front-target-b"],
     failures: string[] = [];
-  const pair = context.frames.find((frame) => {
+  const hitsA = a ? nativeWeaponHits(context, a) : [];
+  const hitsB = b ? nativeWeaponHits(context, b) : [];
+  const pair = context.frames.some((frame) => {
     const squads = frame.decision.missionState?.squads ?? [];
     const left = squads.find((squad) => squad.tactics?.targetActorId === a && squad.actorIds.length);
     const right = squads.find((squad) => squad.tactics?.targetActorId === b && squad.actorIds.length);
-    return left && right && !left.actorIds.some((id) => right.actorIds.includes(id));
+    if (!left || !right || left.actorIds.some((id) => right.actorIds.includes(id))) return false;
+    return (
+      hitsA.some((hit) => hit.tick >= frame.tick && left.actorIds.some((id) => id === hit.damage.initiator?.actorId)) &&
+      hitsB.some((hit) => hit.tick >= frame.tick && right.actorIds.some((id) => id === hit.damage.initiator?.actorId))
+    );
   });
-  if (!pair || !nativeWeaponHits(context, a).length || !nativeWeaponHits(context, b).length)
-    failures.push("combat_independent_physically_useful_fronts_missing");
+  if (!pair) failures.push("combat_independent_physically_useful_fronts_missing");
   if (["unequal", "escalated"].includes(branch)) {
     const responsive = context.frames.some(
       (frame) =>

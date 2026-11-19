@@ -25,8 +25,10 @@ export function configureNativePlacementActors(context: NativeActorLayoutContext
     if (["exposed", "both_exposed"].includes(branch)) actors.push(actor("outer-threat", "WatchTower", 1, 29, 29));
     if (branch === "both_exposed") actors.push(actor("inner-threat", "WatchTower", 1, 38, 15));
   }
-  if (id === "STRAT-05" && branch === "blocked_retreat")
+  if (id === "STRAT-05" && branch === "blocked_retreat") {
     actors.find((entry) => entry.fixtureActorId === "front-target-b").position = tile(20, 20);
+    actors.find((entry) => entry.fixtureActorId === "enemy-deposit").position = tile(16, 30);
+  }
   if (wall) {
     if (id === "WALL-01")
       actors.push(
@@ -55,6 +57,8 @@ export function configureNativePlacementActors(context: NativeActorLayoutContext
       actors.push(actor("second-home", own === "Tivara" ? "Sandhold" : "FrostForge", 2, 38, 36));
   }
   if (id === "WALL-01") {
+    if (branch === "freestanding") actors.find((entry) => entry.fixtureActorId === "army-0").position = tile(29, 24);
+    if (branch !== "no_value") actors.push(actor("wall-approach-probe", melee(enemy), 1, 15, 24));
     // WALL-01 isolates the optional fortification plan. Start with its essential housing
     // buffer met so the manager is not correctly held behind unmet supply demand.
     const housing = own === "Tivara" ? "Olival" : "Emberstone";
@@ -76,5 +80,8 @@ export function configureNativePlacementActors(context: NativeActorLayoutContext
     actors.find((entry) => entry.fixtureActorId === "front-target-a").position = tile(28, 18);
     actors.find((entry) => entry.fixtureActorId === "front-target-b").position = tile(28, 32);
   }
-  if (id === "STRAT-07" && branch === "breach") actors.push(actor("opportunity-wall", "Wall", 1, 27, 24));
+  if (id === "STRAT-07" && branch === "breach") {
+    actors.find((entry) => entry.fixtureActorId === "scout-probe").position = tile(29, 24);
+    actors.push(actor("opportunity-wall", "Wall", 1, 27, 24));
+  }
 }

@@ -2,9 +2,7 @@ import type { nativeScenarioContext } from "../contracts/skirmish-ai-native-scen
 import { nativeCompletedPlacements } from "../construction/evaluation/skirmish-ai-native-construction-evidence";
 
 /** A paid wall line is complete only when every physical node in one selected graph still exists. */
-export function nativeCompletedFortificationWallCount(
-  context: ReturnType<typeof nativeScenarioContext>
-): number | undefined {
+export function nativeCompletedFortification(context: ReturnType<typeof nativeScenarioContext>) {
   const protectedAsset = context.role("protected-deposit");
   const placements = new Map(nativeCompletedPlacements(context).map((placement) => [placement.siteId, placement]));
   for (const frame of context.frames) {
@@ -22,8 +20,12 @@ export function nativeCompletedFortificationWallCount(
       const opening = graph.nodes.find((node) => node.nodeId === graph.openingNodeId);
       if (opening?.kind !== "gate_slot" || opening.lifecycle !== "finished") continue;
       const walls = graph.nodes.filter((node) => node.kind === "wall").length;
+      const towerIds = new Set(
+        graph.nodes.flatMap((node) => (node.kind === "tower" && node.completedActorId ? [node.completedActorId] : []))
+      );
       if (
         walls > 0 &&
+        towerIds.size > 0 &&
         graph.nodes.every((node) => {
           if (node === opening && node.objectName === null) return true;
           const placement = node.completedActorId ? placements.get(node.completedActorId) : undefined;
@@ -39,7 +41,7 @@ export function nativeCompletedFortificationWallCount(
           );
         })
       )
-        return walls;
+        return { walls, readyTick: frame.tick, towerIds };
     }
   }
   return undefined;

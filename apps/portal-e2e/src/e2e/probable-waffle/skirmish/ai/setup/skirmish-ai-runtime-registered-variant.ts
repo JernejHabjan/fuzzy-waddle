@@ -83,12 +83,29 @@ export async function runRegisteredRuntimeVariant(
     id && assertion && contract && checkpoints.length
       ? {
           checkpoints,
-          async accepts(page, candidate) {
+          wallClockBudgetMs: 120_000,
+          async failures(page, candidate) {
             const evidence = await captureRuntimeHumanAuthority(page, contract.humanPlayerNumber);
-            if (evaluateRuntimeVariant(id, assertion, { ...candidate, opponentCapture: evidence }, fixture).length)
-              return false;
-            opponentCapture = evidence;
-            return true;
+            if (
+              [candidate.productionCapture, evidence].some(
+                (capture) => capture && (capture.droppedFactCount || capture.droppedSnapshotCount)
+              )
+            )
+              throw new Error("runtime_focused_capture_overflow:" + variant.id);
+            const failures = evaluateRuntimeVariant(
+              id,
+              assertion,
+              { ...candidate, opponentCapture: evidence },
+              fixture
+            );
+            const ownershipFailure = failures.find((failure) =>
+              ["native_actor_owned_by_multiple_squads", "native_actor_commanded_twice_in_decision"].some(
+                (reason) => failure === variant.id + ":" + reason
+              )
+            );
+            if (ownershipFailure) throw new Error("runtime_focused_irreversible_failure:" + ownershipFailure);
+            if (failures.length === 0) opponentCapture = evidence;
+            return failures;
           }
         }
       : undefined;
