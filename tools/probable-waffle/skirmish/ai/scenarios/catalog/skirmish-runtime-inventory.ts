@@ -2,9 +2,14 @@ function applicableRows(rows, variant) {
   return rows.filter((row) => !variant.scenarioIds || variant.scenarioIds.includes(row.id));
 }
 
-function tickLimit(recipe, variant) {
-  const checkpoints = variant.checkpointTicks ?? recipe.checkpointTicks ?? [];
-  return checkpoints.length ? Math.max(...checkpoints) : 0;
+/** Match the runner's selected-row ceiling rather than counting unreachable authored checkpoints. */
+function selectedCheckpoints(fixture, variant, rows) {
+  const recipe = fixture.recipe;
+  const ceiling = Math.max(
+    ...rows.map((row) => fixture.assertions?.[row.id]?.maximumTick ?? recipe.checkpointTicks?.at(-1) ?? 0)
+  );
+  const checkpoints: readonly number[] = variant.checkpointTicks ?? recipe.checkpointTicks ?? [];
+  return [...new Set(checkpoints)].filter((tick) => tick <= ceiling);
 }
 
 /** Summarize registered runtime recipes without treating registration as executed evidence. */
@@ -19,7 +24,9 @@ export function collectRuntimeInventory(manifest, readFixture) {
     const rows = registered.filter((row) => row.fixture === path);
     const variants = fixture.recipe.variants.flatMap((variant) => {
       const matches = applicableRows(rows, variant);
-      return matches.length ? [{ variant, matches }] : [];
+      if (!matches.length) return [];
+      const checkpoints = selectedCheckpoints(fixture, variant, matches);
+      return [{ variant, checkpoints, maximumTick: Math.max(0, ...checkpoints) }];
     });
     const focused = variants.filter(({ variant }) => variant.executionKind?.startsWith("focused_"));
     const continuous = variants.filter(({ variant }) => variant.executionKind === "continuous");
@@ -27,16 +34,23 @@ export function collectRuntimeInventory(manifest, readFixture) {
     if (variants.some(({ variant }) => !variant.executionKind)) flags.push("execution_kind_missing");
     if (focused.length && continuous.length) flags.push("mixed_focused_continuous");
     if (focused.some(({ variant }) => !variant.presetWorld)) flags.push("focused_without_preset");
-    if (focused.some(({ variant }) => tickLimit(fixture.recipe, variant) > 2000)) flags.push("focused_over_2000");
+    if (focused.some(({ maximumTick }) => maximumTick > 2000)) flags.push("focused_over_2000");
     if (variants.some(({ variant }) => (variant.repetitions ?? 1) > 1)) flags.push("repeated");
-    if (variants.some(({ variant }) => !tickLimit(fixture.recipe, variant))) flags.push("missing_tick_limit");
+    if (variants.some(({ maximumTick }) => !maximumTick)) flags.push("missing_tick_limit");
     return {
       path,
       ids: rows.map((row) => row.id),
       variants: variants.length,
       runs: variants.reduce((sum, { variant }) => sum + (variant.repetitions ?? 1), 0),
       presetVariants: variants.filter(({ variant }) => variant.presetWorld).length,
-      maximumTick: Math.max(0, ...variants.map(({ variant }) => tickLimit(fixture.recipe, variant))),
+      maximumTick: Math.max(0, ...variants.map(({ maximumTick }) => maximumTick)),
+      scheduledTicks: variants.reduce((sum, { variant, maximumTick }) => sum + maximumTick * (variant.repetitions ?? 1), 0),
+      scheduledCheckpoints: variants.reduce(
+        (sum, { variant, checkpoints }) => sum + checkpoints.length * (variant.repetitions ?? 1),
+        0
+      ),
+      combatCaptureVariants: variants.filter(({ variant }) => variant.captureCombat === true).length,
+      evidenceStopVariants: variants.filter(({ variant }) => variant.evidenceStop !== undefined).length,
       flags
     };
   });
@@ -56,12 +70,14 @@ export function renderRuntimeInventory(inventory) {
     `runtime: ${registered}/${inventory.required} registered, ${inventory.missing} supported missing, ` +
       `${inventory.deferred} deferred, ${inventory.recipes.length} recipe files`,
     `native specifications: ${inventory.authoredDrafts ?? 0} authored, not executable or executed; excluded from registered counts`,
-    "recipe | ids | variants/runs | preset variants | max tick | audit flags"
+    "recipe | ids | variants/runs | preset variants | max tick | scheduled ticks/checkpoints | combat/early stop | audit flags"
   ];
   for (const recipe of inventory.recipes) {
     lines.push(
       `${recipe.path} | ${recipe.ids.join(",")} | ${recipe.variants}/${recipe.runs} | ` +
-        `${recipe.presetVariants}/${recipe.variants} | ${recipe.maximumTick} | ${recipe.flags.join(",") || "none"}`
+        `${recipe.presetVariants}/${recipe.variants} | ${recipe.maximumTick} | ` +
+        `${recipe.scheduledTicks}/${recipe.scheduledCheckpoints} | ${recipe.combatCaptureVariants}/${recipe.evidenceStopVariants} | ` +
+        `${recipe.flags.join(",") || "none"}`
     );
   }
   return `${lines.join("\n")}\n`;

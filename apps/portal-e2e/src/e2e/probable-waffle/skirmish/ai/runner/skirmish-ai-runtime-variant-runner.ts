@@ -166,7 +166,9 @@ export async function runVariant(
       checkpoints.push(checkpoint);
       const pendingEventTicks = [
         ...pendingPerturbations.map((event) => event.tick),
-        ...(variant.presetWorld?.events ?? []).map((event) => event.tick)
+        ...(variant.presetWorld?.events ?? []).map((event) => event.tick),
+        // The request can precede its command's application by many ticks. Keep the whole authored intervention.
+        ...(variant.presetWorld?.controls ?? []).map((control) => Math.max(control.requestTick, control.applicationTick))
       ];
       const terminal = canStopAfterTerminal(fixture.assertions, applicableScenarioIds, checkpoint, pendingEventTicks);
       // A terminal score does not seal its own native tick. Close that tick before reading early-terminal proof.
