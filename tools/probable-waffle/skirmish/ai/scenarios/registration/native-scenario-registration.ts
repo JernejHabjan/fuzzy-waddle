@@ -224,7 +224,7 @@ function nativeScenarioVariant(
               ? `wall-02-${faction.toLowerCase()}-shared-match`
               : variantId;
   branches[variantId] = branch;
-  const combatCaptureBranches = nativeScenarioBindings.cases[id].combatCaptureBranches;
+  const { combatCaptureBranches, continuousSetup } = nativeScenarioBindings.cases[id];
   const captureCombat = combatCaptureBranches === undefined || combatCaptureBranches.includes(branch);
   // An explicit route declaration requires at least one route; empty factory scratch arrays are not declarations.
   if (world.protectedRoutes?.length === 0) delete world.protectedRoutes;
@@ -236,10 +236,11 @@ function nativeScenarioVariant(
     }));
   return {
     id: variantId,
-    executionKind: "focused_preset",
+    executionKind: continuousSetup ? "continuous_preset" : "focused_preset",
     role: "standalone",
     seed: id === "EXP-01" ? 759933 : id === "WALL-02" && faction === "Skaduwee" ? 759941 : 759940,
     deadlineRationale:
+      continuousSetup ??
       "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
     aiFaction: faction,
     humanFaction: faction === "Tivara" ? "Skaduwee" : "Tivara",

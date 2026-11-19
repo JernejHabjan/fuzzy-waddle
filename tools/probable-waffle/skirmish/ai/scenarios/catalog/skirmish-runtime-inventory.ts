@@ -18,12 +18,16 @@ export function collectRuntimeInventory(manifest, readFixture) {
     const variants = fixture.recipe.variants.flatMap((variant) => {
       const matches = applicableRows(rows, variant);
       if (!matches.length) return [];
-      const checkpoints = selectedRuntimeCheckpoints(fixture, variant, matches.map((row) => row.id));
+      const checkpoints = selectedRuntimeCheckpoints(
+        fixture,
+        variant,
+        matches.map((row) => row.id)
+      );
       const nativeProbe = matches.length === 1 && nativeScenarioBindings.cases[matches[0].id]?.evidenceCheckpoints;
       return [{ variant, checkpoints, maximumTick: Math.max(0, ...checkpoints), nativeProbe: !!nativeProbe }];
     });
     const focused = variants.filter(({ variant }) => variant.executionKind?.startsWith("focused_"));
-    const continuous = variants.filter(({ variant }) => variant.executionKind === "continuous");
+    const continuous = variants.filter(({ variant }) => variant.executionKind?.startsWith("continuous"));
     const flags = [];
     if (variants.some(({ variant }) => !variant.executionKind)) flags.push("execution_kind_missing");
     if (focused.length && continuous.length) flags.push("mixed_focused_continuous");
@@ -38,13 +42,18 @@ export function collectRuntimeInventory(manifest, readFixture) {
       runs: variants.reduce((sum, { variant }) => sum + (variant.repetitions ?? 1), 0),
       presetVariants: variants.filter(({ variant }) => variant.presetWorld).length,
       maximumTick: Math.max(0, ...variants.map(({ maximumTick }) => maximumTick)),
-      scheduledTicks: variants.reduce((sum, { variant, maximumTick }) => sum + maximumTick * (variant.repetitions ?? 1), 0),
+      scheduledTicks: variants.reduce(
+        (sum, { variant, maximumTick }) => sum + maximumTick * (variant.repetitions ?? 1),
+        0
+      ),
       scheduledCheckpoints: variants.reduce(
         (sum, { variant, checkpoints }) => sum + checkpoints.length * (variant.repetitions ?? 1),
         0
       ),
       combatCaptureVariants: variants.filter(({ variant }) => variant.captureCombat === true).length,
-      evidenceStopVariants: variants.filter(({ variant, nativeProbe }) => nativeProbe || variant.evidenceStop !== undefined).length,
+      evidenceStopVariants: variants.filter(
+        ({ variant, nativeProbe }) => nativeProbe || variant.evidenceStop !== undefined
+      ).length,
       flags
     };
   });

@@ -1,4 +1,4 @@
-const executionKinds = new Set(["focused_preset", "focused_natural", "continuous"]);
+const executionKinds = new Set(["focused_preset", "focused_natural", "continuous", "continuous_preset"]);
 const variantRoles = new Set(["subject", "control", "standalone"]);
 const monotonicAssertionKeys = new Set([
   "maximumTick",
@@ -70,10 +70,9 @@ export function validateRuntimeRecipeMetadata(recipe) {
       members.push(variant);
       pairs.set(variant.pairId, members);
     } else if (variant.pairId !== undefined) throw new Error(`runtime_recipe_standalone_pair:${variant.id}`);
-    if (kind === "focused_preset" && !variant.presetWorld)
-      throw new Error(`runtime_recipe_preset_missing:${variant.id}`);
-    if (kind !== "focused_preset" && variant.presetWorld)
-      throw new Error(`runtime_recipe_unexpected_preset:${variant.id}`);
+    const expectsPreset = kind === "focused_preset" || kind === "continuous_preset";
+    if (expectsPreset && !variant.presetWorld) throw new Error(`runtime_recipe_preset_missing:${variant.id}`);
+    if (!expectsPreset && variant.presetWorld) throw new Error(`runtime_recipe_unexpected_preset:${variant.id}`);
     if (kind === "focused_natural" && !nonempty(variant.setupRationale))
       throw new Error(`runtime_recipe_natural_rationale_missing:${variant.id}`);
     if (kind !== "continuous" && deadline > 2000 && !nonempty(variant.deadlineRationale))

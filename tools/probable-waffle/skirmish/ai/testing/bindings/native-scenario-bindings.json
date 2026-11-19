@@ -1061,6 +1061,7 @@
       }
     },
     "STRAT-08": {
+      "continuousSetup": "Start with a clear finishing opportunity and observe normal victory and its physical outcome.",
       "latestTick": 18000,
       "branches": ["exposed", "defended"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
@@ -2130,6 +2131,7 @@
       }
     },
     "D-04": {
+      "continuousSetup": "Observe multiple linked phases on Easy from legal opening through useful production, countering and recovery.",
       "latestTick": 18000,
       "checkpointTicks": [40, 400, 1200, 2400, 2600, 3000, 3200, 4000, 5000, 6000, 12000, 18000],
       "branches": ["opening_counter_retreat_recovery"],
@@ -2218,6 +2220,7 @@
       }
     },
     "SEQ-03": {
+      "continuousSetup": "Retain the same economy across demand, collection congestion, outage, recovery and useful expansion.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["partial_pack", "congested", "efficient"],
@@ -2248,6 +2251,7 @@
       }
     },
     "SEQ-04": {
+      "continuousSetup": "Retain the same queue and command identities across supply and producer loss, rebuild and useful production.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["immediate_paid", "cancel_race"],
@@ -2280,6 +2284,7 @@
       }
     },
     "SEQ-06": {
+      "continuousSetup": "Retain the finished defensive front across approach, breach, repair and a mobile counterattack.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["wall", "stair", "value_lost", "ground_air"],
@@ -2309,6 +2314,7 @@
       }
     },
     "SEQ-07": {
+      "continuousSetup": "Retain the same force and knowledge across confirmed adaptation, failed assault and renewed pressure.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["confirmed", "stale", "alternate"],
