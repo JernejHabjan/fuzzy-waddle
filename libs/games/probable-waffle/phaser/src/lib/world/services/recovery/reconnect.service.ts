@@ -29,6 +29,8 @@ import { GameSessionState, type PlayerNumber } from "@fuzzy-waddle/platform-game
 import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 import { getNgxSocketIoRawSocket, type NgxSocketIoRawSocket } from "../../../core/ngx-socket-io-access";
+import { SummonExpiryService } from "../../../entity/systems/summon-expiry.service";
+import { AoeZoneManager } from "../../../entity/systems/aoe-zone-manager";
 
 /**
  * Handles the reconnect flow for a client that drops and rejoins mid-game.
@@ -344,7 +346,14 @@ export class ReconnectService {
         gameStateData.campaignMission = snapshot.campaignMission
           ? structuredClone(snapshot.campaignMission)
           : undefined;
+        gameStateData.commandAuthority = snapshot.commandAuthority
+          ? structuredClone(snapshot.commandAuthority)
+          : undefined;
+        gameStateData.summonExpiries = structuredClone(snapshot.summonExpiries ?? []);
+        gameStateData.aoeZones = structuredClone(snapshot.aoeZones ?? []);
       }
+      getSceneService(scene, SummonExpiryService)?.setData(snapshot.summonExpiries ?? []);
+      getSceneService(scene, AoeZoneManager)?.setData(snapshot.aoeZones ?? []);
 
       // Advance sim clock to match the snapshot so command sequences stay coherent.
       simTick?.fastForwardTo(snapshot.tick);
@@ -354,7 +363,8 @@ export class ReconnectService {
           tick: batch.tick,
           playerNumber: batch.playerNumber,
           commands: batch.commands
-        }))
+        })),
+        snapshot.commandAuthority
       );
 
       simTick?.resumeTick(pauseReason);

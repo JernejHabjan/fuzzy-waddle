@@ -41,7 +41,8 @@ export interface GameInstanceClientServiceInterface {
   createGameInstance(
     name: string,
     visibility: ProbableWaffleGameInstanceVisibility,
-    type: ProbableWaffleGameInstanceType
+    type: ProbableWaffleGameInstanceType,
+    options?: { localOnly: true }
   ): Promise<void>;
   /**
    * operation exposed by {@link GameInstanceClientServiceInterface}. Its signature is the compatibility boundary
@@ -100,14 +101,14 @@ export interface GameInstanceClientServiceInterface {
    */
   gameModeChanged(
     property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
-    gameModeData: ProbableWaffleGameModeData
+    gameModeData: Partial<ProbableWaffleGameModeData>
   ): Promise<void>;
   /**
    * operation exposed by {@link GameInstanceClientServiceInterface}. Its signature is the compatibility boundary
    * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
    * implementations.
    */
-  playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void>;
+  playerSlotOpened(playerDefinition?: PositionPlayerDefinition): Promise<void>;
   /**
    * operation exposed by {@link GameInstanceClientServiceInterface}. Its signature is the compatibility boundary
    * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
