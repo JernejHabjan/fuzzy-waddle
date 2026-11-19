@@ -28,13 +28,24 @@ export function collectRuntimeInventory(manifest, readFixture) {
       const nativeProbe =
         nativeCase?.evidenceCheckpoints &&
         (nativeCase.evidenceCheckpointBranches === undefined || nativeCase.evidenceCheckpointBranches.includes(branch));
-      return [{ variant, checkpoints, maximumTick: Math.max(0, ...checkpoints), nativeProbe: !!nativeProbe }];
+      const maximumTick = Math.max(0, ...checkpoints);
+      const continuationTick = nativeCase?.continuousSetup ? nativeCase.latestTick : undefined;
+      return [
+        {
+          variant,
+          checkpoints,
+          maximumTick,
+          nativeProbe: !!nativeProbe,
+          hasContinuation: continuationTick !== undefined && continuationTick > maximumTick
+        }
+      ];
     });
     const focused = variants.filter(({ variant }) => variant.executionKind?.startsWith("focused_"));
     const continuous = variants.filter(({ variant }) => variant.executionKind?.startsWith("continuous"));
     const flags = [];
     if (variants.some(({ variant }) => !variant.executionKind)) flags.push("execution_kind_missing");
     if (focused.length && continuous.length) flags.push("mixed_focused_continuous");
+    if (variants.some(({ hasContinuation }) => hasContinuation)) flags.push("native_continuation_after_checkpoints");
     if (focused.some(({ variant }) => !variant.presetWorld)) flags.push("focused_without_preset");
     if (focused.some(({ maximumTick }) => maximumTick > 2000)) flags.push("focused_over_2000");
     if (variants.some(({ variant }) => (variant.repetitions ?? 1) > 1)) flags.push("repeated");
