@@ -89,13 +89,27 @@ export function evaluateNativeCombat(
       hits.some((hit) => hit.tick < regroupAfter && hit.damage.healthAfter === 0)
     )
       failures.push("combat_opening_target_defeated_before_risk_change");
+    const continuedAfterSupportLoss =
+      branch === "support_loss" &&
+      hits.some(
+        ({ tick, damage }) =>
+          tick >= regroupAfter &&
+          tick <= regroupAfter + 200 &&
+          engaged.has(damage.initiator?.actorId) &&
+          nativeRetainedActor(context, damage.initiator?.actorId ?? undefined)
+      );
     if (
       branch !== "quiet" &&
+      !continuedAfterSupportLoss &&
       !nativeRetreats(context, regroupAfter).some((movement) =>
         engaged.has(movement.observations[0]?.spatial.source.actorId)
       )
     )
-      failures.push("combat_original_engagement_has_no_physical_regroup");
+      failures.push(
+        branch === "support_loss"
+          ? "combat_original_engagement_has_no_useful_response_to_support_loss"
+          : "combat_original_engagement_has_no_physical_regroup"
+      );
     // A legally matched lethal weapon hit completes this target; disappearance alone cannot replace continued fighting.
     const defeated = hits.some((fact) => fact.damage.healthAfter === 0 && !fact.damage.target.alive);
     if (branch === "quiet" && !defeated && !hits.some((fact) => fact.tick >= 400))

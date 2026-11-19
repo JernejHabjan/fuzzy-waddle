@@ -23,7 +23,9 @@ export function nativeScenarioActors(id: string, own: string, enemy: string, bra
   const hidden = id === "SCOUT-01" || id === "SCOUT-04";
   const target =
     id === "FIGHT-01"
-      ? producer(enemy)
+      ? enemy === "Tivara"
+        ? "Sandhold"
+        : "FrostForge"
       : id === "RAID-01" && branch === "expansion"
         ? melee(enemy)
         : id === "SCOUT-02"

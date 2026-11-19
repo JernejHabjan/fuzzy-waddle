@@ -84,7 +84,7 @@ export async function runRegisteredRuntimeVariant(
       ? {
           checkpoints,
           wallClockBudgetMs: 120_000,
-          async accepts(page, candidate) {
+          async failures(page, candidate) {
             const evidence = await captureRuntimeHumanAuthority(page, contract.humanPlayerNumber);
             if (
               [candidate.productionCapture, evidence].some(
@@ -104,9 +104,8 @@ export async function runRegisteredRuntimeVariant(
               )
             );
             if (ownershipFailure) throw new Error("runtime_focused_irreversible_failure:" + ownershipFailure);
-            if (failures.length) return false;
-            opponentCapture = evidence;
-            return true;
+            if (failures.length === 0) opponentCapture = evidence;
+            return failures;
           }
         }
       : undefined;

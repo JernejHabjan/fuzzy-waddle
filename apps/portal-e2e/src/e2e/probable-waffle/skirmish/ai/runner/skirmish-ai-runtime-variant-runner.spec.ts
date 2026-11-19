@@ -38,7 +38,7 @@ test("a focused variant has its own deadline and closes a hung browser context",
       }
     })
   } as unknown as Browser;
-  const probe = { checkpoints: [20], wallClockBudgetMs: 10, accepts: async () => false };
+  const probe = { checkpoints: [20], wallClockBudgetMs: 10, failures: async () => ["missing_proof"] };
   await expect(
     runVariant(
       browser,

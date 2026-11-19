@@ -886,7 +886,7 @@
       }
     },
     "FIGHT-01": {
-      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpoints": [600, 1000, 1600, 2000],
       "evidenceCheckpointBranches": ["reinforced", "support_loss", "completed"],
       "latestTick": 2400,
       "branches": ["reinforced", "support_loss", "completed", "quiet"],
@@ -904,7 +904,10 @@
         "measurements": [
           "Effective native weapons, health/losses, contact tick, last useful purpose and actual escape movement"
         ],
-        "required": ["Changed risk or completed purpose causes bounded reassessment and useful retreat/regroup"],
+        "required": [
+          "Reinforcement or completed purpose causes a useful retreat or regroup by a participant in the original fight",
+          "If the assault remains viable after support is lost, an original surviving attacker can prove useful continuation"
+        ],
         "forbidden": ["Fighting to total destruction to retain old goal", "Retreat label without physical withdrawal"],
         "branches": ["Enemy reinforcement", "Support lost", "Objective completed", "No-change favorable control"],
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
