@@ -64,8 +64,8 @@ describe("installAiRuntimeProductionCapture", () => {
     installAiRuntimeProductionCapture(scene);
     expect(AiRuntimeProductionCapture).not.toHaveBeenCalled();
     jest.mocked(readAiRuntimeBrowserTestConfig).mockReturnValue({ ...config, captureProduction: true });
-    const capture = jest.fn(), captureHumanQueueBoundary = jest.fn();
-    jest.mocked(AiRuntimeProductionCapture).mockImplementation(() => ({ capture, captureHumanQueueBoundary }) as never);
+    const capture = jest.fn(), captureHumanQueueBoundary = jest.fn(), recordBoundary = jest.fn(() => 19);
+    jest.mocked(AiRuntimeProductionCapture).mockImplementation(() => ({ capture, captureHumanQueueBoundary, recordBoundary }) as never);
     installAiRuntimeProductionCapture(scene);
     installAiRuntimeProductionCapture(scene);
     expect(AiRuntimeProductionCapture).toHaveBeenCalledTimes(1);
@@ -76,6 +76,9 @@ describe("installAiRuntimeProductionCapture", () => {
     expect(capture).toHaveBeenLastCalledWith(2, 400);
     window.__fuzzyWaddleAiRuntimeBrowserTest?.productionCapture?.captureHuman?.(1, 400);
     expect(captureHumanQueueBoundary).toHaveBeenCalledWith(1, 400);
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTest?.productionCapture?.recordBoundary?.(2)).toBe(19);
+    expect(recordBoundary).toHaveBeenCalledWith(2);
+    expect(capture).toHaveBeenCalledTimes(2);
     events.emit(Phaser.Scenes.Events.DESTROY);
     expect(window.__fuzzyWaddleAiRuntimeBrowserTest?.productionCapture).toBeUndefined();
   });

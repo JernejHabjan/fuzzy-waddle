@@ -155,6 +155,10 @@ export class AiRuntimeProductionProofCapture {
     this.tracked.set(playerNumber, ids);
   }
 
+  closedThroughTick(playerNumber: number): number {
+    return this.frontiers.get(playerNumber)?.closedThroughTick ?? -1;
+  }
+
   read(playerNumber: number) {
     return { setup: this.setup, setupGaps: this.setupGaps, frontiers: this.frontiers.get(playerNumber)?.read() };
   }
