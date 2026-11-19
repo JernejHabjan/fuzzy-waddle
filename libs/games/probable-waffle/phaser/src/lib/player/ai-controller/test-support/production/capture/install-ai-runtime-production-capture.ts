@@ -17,6 +17,9 @@ export function installAiRuntimeProductionCapture(scene: ProbableWaffleScene): v
     : new AiRuntimeProductionCapture(scene, [], config.presetWorld?.protectedRoutes, config.captureCombat === true);
   const handle = {
     capture: (playerNumber: number, latestTick?: number) => capture.capture(playerNumber, latestTick),
+    ...("recordBoundary" in capture
+      ? { recordBoundary: (playerNumber: number) => capture.recordBoundary(playerNumber) }
+      : {}),
     captureHuman: (playerNumber: number, latestTick?: number) => capture.captureHumanQueueBoundary(playerNumber, latestTick)
   };
   window.__fuzzyWaddleAiRuntimeBrowserTest = { ...host, productionCapture: handle };

@@ -82,6 +82,10 @@ export class AiRuntimeProductionFrontiers {
     if (this.latestTick !== null) this.gaps.add(reason);
   };
 
+  get closedThroughTick(): number {
+    return this.lastClosed;
+  }
+
   read() {
     return structuredClone({
       latestTick: this.latestTick,
