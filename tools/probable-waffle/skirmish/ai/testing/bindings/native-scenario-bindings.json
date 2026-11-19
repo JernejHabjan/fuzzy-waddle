@@ -1,6 +1,34 @@
 {
   "schemaVersion": 1,
   "cases": {
+    "RAID-02": {
+      "latestTick": 2400,
+      "branches": ["reinforced", "quiet"],
+      "checkpointTicks": [20, 200, 400, 600, 799, 800, 1000, 1200, 1600, 2000, 2400],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "A native raid withdraws when its target is reinforced, preserving part of the original raiding party.",
+        "setup": [
+          "Stage a stable home economy and a reachable enemy economic objective with an initially clear approach"
+        ],
+        "actions": [
+          "Allow the AI to launch the raid; move the staged enemy defenders to its target at tick 800 in the reinforced branch"
+        ],
+        "measurements": [
+          "Selected and applied raid orders, physical attack, observed reinforcement, subsequent orders and survival of original raiders"
+        ],
+        "required": [
+          "An original raider reaches the safe fallback through an AI movement order",
+          "A matched quiet branch demonstrates an uncontested raid"
+        ],
+        "forbidden": [
+          "Unrelated home-defense commands, selected-but-unapplied orders, or late attacks by the withdrawn raiders standing in for withdrawal"
+        ],
+        "branches": ["Both AI factions", "Opposing defenders advance or stay out of contact"],
+        "checkpointPolicy": "Seal the preparation, intervention and response on the native fixed-step timeline.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
     "PLACE-01": {
       "latestTick": 2400,
       "branches": ["room", "constrained"],

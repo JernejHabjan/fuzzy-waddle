@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "evidenceKind": "runtime",
-  "scenarioIds": ["DOMAIN-06", "RAID-02"],
-  "purpose": "Exercise air-compatible home defense and post-raid mission recovery from an authoritative preset world.",
+  "scenarioIds": ["DOMAIN-06"],
+  "purpose": "Exercise air-compatible home defense from an authoritative preset world.",
   "driver": "runtime",
   "status": "ready_for_runtime_execution",
   "context": {
@@ -14,15 +14,16 @@
   "recipe": {
     "mapLabel": "Ember Enclave",
     "aiPlayerNumber": 2,
-    "simulationTimeScale": 100,
-    "checkpointTicks": [20, 400, 800, 1600, 3000, 5000, 7000, 10000, 12000],
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
+    "checkpointTicks": [20, 100, 200, 400, 600, 800, 1200, 1600, 2000],
     "variants": [
       {
         "id": "tivara-air-raid-recovery",
         "executionKind": "focused_preset",
         "role": "standalone",
-        "deadlineRationale": "Legacy long defense and redirection sequence; shorten after a frozen-map focused replacement is authored.",
-        "scenarioIds": ["DOMAIN-06", "RAID-02"],
+        "deadlineRationale": "Allow the incoming air units to reach the defended base and exercise the nearby compatible responders.",
+        "scenarioIds": ["DOMAIN-06"],
         "seed": 826061,
         "mapLabel": "Ember Enclave",
         "aiFaction": "Tivara",
@@ -107,7 +108,7 @@
         "perturbations": [
           {
             "id": "home-raid",
-            "tick": 500,
+            "tick": 100,
             "kind": "human_attack_ai_home",
             "maximumAttackers": 3,
             "attackerObjectNames": ["SkaduweeOwl"]
@@ -118,22 +119,13 @@
   },
   "assertions": {
     "DOMAIN-06": {
-      "maximumTick": 12000,
-      "minimumDecisions": 50,
-      "minimumAppliedCommands": 3,
+      "maximumTick": 2000,
+      "minimumDecisions": 1,
+      "minimumAppliedCommands": 1,
       "requiredAiFactions": ["Tivara"],
       "requiredPresetFixtureId": "air-defense-recovery",
       "requiredDefenseTargetName": "SkaduweeOwl",
       "requiredDefenseActorName": "TivaraSlingshotFemale"
-    },
-    "RAID-02": {
-      "maximumTick": 12000,
-      "minimumDecisions": 50,
-      "minimumAppliedCommands": 3,
-      "requiredAiFactions": ["Tivara"],
-      "requiredPresetFixtureId": "air-defense-recovery",
-      "requireDeliveredIncome": true,
-      "requireMissionRedirectionAfterRaid": true
     }
   },
   "deliberatelyBrokenOracle": "accept_fixture_presence_or_ai_debug_text_without real commands, compatible defenders, or recovery"

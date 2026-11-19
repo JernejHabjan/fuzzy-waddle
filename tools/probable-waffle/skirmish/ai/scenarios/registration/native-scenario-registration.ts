@@ -2,6 +2,7 @@ import type { NativeScenarioVariant } from "../../contracts/scenarios/native-sce
 import type { NativeScenarioWorld } from "../../contracts/scenarios/native-scenario-world.ts";
 import { readFileSync } from "node:fs";
 import { nativeScenarioWorld } from "../worlds/native-scenario-worlds.ts";
+import { nativeRaidWithdrawalWorld } from "../worlds/native-raid-withdrawal-world.ts";
 import { nativeDomainWorld } from "../worlds/native-domain-worlds.ts";
 import { nativeStrategicWorld } from "../worlds/native-strategic-worlds.ts";
 import { nativeClassicWorld } from "../worlds/native-classic-worlds.ts";
@@ -179,13 +180,15 @@ function nativeScenarioVariant(
                                     ? nativeRecoveryWorld(id, faction, branch)
                                     : id === "EXP-01"
                                       ? expansionWorld(faction, branch)
-                                      : id.startsWith("DOMAIN-")
-                                        ? nativeDomainWorld(id, faction, branch)
-                                        : id.startsWith("C-")
-                                          ? nativeClassicWorld(id, faction, branch)
-                                          : ["STRAT-02", "STRAT-03", "STRAT-08", "STRAT-09", "RAID-03"].includes(id)
-                                            ? nativeStrategicWorld(id, faction, branch)
-                                            : nativeScenarioWorld(id, faction, branch);
+                                      : id === "RAID-02"
+                                        ? nativeRaidWithdrawalWorld(faction, branch)
+                                        : id.startsWith("DOMAIN-")
+                                          ? nativeDomainWorld(id, faction, branch)
+                                          : id.startsWith("C-")
+                                            ? nativeClassicWorld(id, faction, branch)
+                                            : ["STRAT-02", "STRAT-03", "STRAT-08", "STRAT-09", "RAID-03"].includes(id)
+                                              ? nativeStrategicWorld(id, faction, branch)
+                                              : nativeScenarioWorld(id, faction, branch);
   if (id === "H-28") {
     const inherited = structuredClone(
       expansion.recipe.variants[0].presetWorld.existingActorBindings.filter((actor) => actor.owner === null)
@@ -217,9 +220,9 @@ function nativeScenarioVariant(
           ? `d-03-${faction.toLowerCase()}-${branch.split("_")[0]}`
           : id === "SCOUT-02"
             ? `scout-02-${faction.toLowerCase()}-withdrawal-pair`
-        : id === "WALL-02"
-          ? `wall-02-${faction.toLowerCase()}-shared-match`
-            : variantId;
+            : id === "WALL-02"
+              ? `wall-02-${faction.toLowerCase()}-shared-match`
+              : variantId;
   branches[variantId] = branch;
   const combatCaptureBranches = nativeScenarioBindings.cases[id].combatCaptureBranches;
   const captureCombat = combatCaptureBranches === undefined || combatCaptureBranches.includes(branch);
