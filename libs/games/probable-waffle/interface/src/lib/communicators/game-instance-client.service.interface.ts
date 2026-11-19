@@ -43,7 +43,7 @@ export interface GameInstanceClientServiceInterface {
     visibility: ProbableWaffleGameInstanceVisibility,
     type: ProbableWaffleGameInstanceType,
     options?: { localOnly: true }
-  ): Promise<void>;
+  ): Promise<ProbableWaffleGameInstance>;
   /**
    * operation exposed by {@link GameInstanceClientServiceInterface}. Its signature is the compatibility boundary
    * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
@@ -120,7 +120,7 @@ export interface GameInstanceClientServiceInterface {
    * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
    * implementations.
    */
-  addSelfAsSpectator(): Promise<void>;
+  addSelfAsSpectator(signal?: AbortSignal): Promise<void>;
   /**
    * operation exposed by {@link GameInstanceClientServiceInterface}. Its signature is the compatibility boundary
    * for implementers and callers; keep ordering, return semantics, and error behavior aligned across

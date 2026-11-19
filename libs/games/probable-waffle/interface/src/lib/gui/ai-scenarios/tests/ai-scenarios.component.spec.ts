@@ -68,7 +68,7 @@ describe("AiScenariosComponent", () => {
     const match = new ProbableWaffleGameInstance();
     const client = {
       gameInstance: match,
-      createGameInstance: jest.fn().mockResolvedValue(undefined),
+      createGameInstance: jest.fn().mockResolvedValue(match),
       gameModeChanged: jest.fn().mockResolvedValue(undefined),
       startGame: jest.fn().mockResolvedValue(undefined),
       playerSlotOpened: jest.fn().mockResolvedValue(undefined),
@@ -129,15 +129,16 @@ describe("AiScenariosComponent", () => {
     http.verify();
   });
 
-  it("stops a pending launch before mutating a replacement match", async () => {
-    let releaseSlot!: () => void;
-    const slot = new Promise<void>((resolve) => {
-      releaseSlot = resolve;
+  it.each(["creation", "slot setup"])("protects a replacement match during %s", async (step) => {
+    let release!: () => void;
+    const pending = new Promise<void>((resolve) => {
+      release = resolve;
     });
+    const match = new ProbableWaffleGameInstance();
     const client = {
-      gameInstance: new ProbableWaffleGameInstance(),
-      createGameInstance: jest.fn().mockResolvedValue(undefined),
-      playerSlotOpened: jest.fn(() => slot),
+      gameInstance: match,
+      createGameInstance: jest.fn(() => (step === "creation" ? pending.then(() => match) : Promise.resolve(match))),
+      playerSlotOpened: jest.fn(() => (step === "slot setup" ? pending : Promise.resolve())),
       addSelfAsSpectator: jest.fn()
     };
     const scenario = catalog.scenarios[0];
@@ -151,10 +152,11 @@ describe("AiScenariosComponent", () => {
       new AbortController().signal
     );
     await Promise.resolve();
-    expect(client.playerSlotOpened).toHaveBeenCalledTimes(1);
+    expect(client.playerSlotOpened).toHaveBeenCalledTimes(step === "creation" ? 0 : 1);
     client.gameInstance = new ProbableWaffleGameInstance();
-    releaseSlot();
+    release();
     await expect(launching).rejects.toThrow("The local match was replaced.");
+    expect(client.playerSlotOpened).toHaveBeenCalledTimes(step === "creation" ? 0 : 1);
     expect(client.addSelfAsSpectator).not.toHaveBeenCalled();
   });
 

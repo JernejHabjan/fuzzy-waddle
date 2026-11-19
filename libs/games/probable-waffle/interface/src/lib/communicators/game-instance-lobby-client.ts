@@ -345,10 +345,15 @@ export abstract class GameInstanceLobbyClient extends GameInstanceEventClient {
     }
   }
 
-  async addSelfAsSpectator(): Promise<void> {
+  /** A delayed profile lookup must only join the match that requested it. */
+  async addSelfAsSpectator(signal?: AbortSignal): Promise<void> {
+    const match = this.gameInstance;
+    const displayName = await this.getCurrentPlayerName();
+    signal?.throwIfAborted();
+    if (this.gameInstance !== match) throw new Error("The local match was replaced.");
     await this.spectatorChanged("joined", {
       userId: this.authService.userId!,
-      displayName: await this.getCurrentPlayerName()
+      displayName
     });
   }
 
