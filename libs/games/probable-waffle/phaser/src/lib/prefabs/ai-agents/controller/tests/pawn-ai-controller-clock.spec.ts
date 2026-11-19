@@ -11,9 +11,9 @@ import { DebuggingService } from "../../../../world/services/DebuggingService";
 import { SimulationPauseReason, SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { HealthComponent } from "../../../../entity/components/combat/components/health-component";
 
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../behaviors/player-pawn-ai-controller.mdsl.ts", () => ({
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../behaviors/player-pawn-ai-controller.mdsl.ts", () => ({
   __esModule: true,
   PlayerPawnAiControllerMdsl: "root { sequence { wait [250] action [Succeed] } }"
 }));

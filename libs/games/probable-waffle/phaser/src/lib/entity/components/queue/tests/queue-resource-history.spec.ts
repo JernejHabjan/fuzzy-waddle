@@ -4,7 +4,7 @@ import { getSceneService } from "../../../../world/services/scene-component-help
 import { subscribeSceneResourceLoss } from "../../../../data/scene-resource-observation";
 import { QueueComponent } from "../queue-component";
 
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 describe("queue resource history boundary (authored; final gate pending)", () => {
   beforeEach(() => { jest.clearAllMocks(); jest.mocked(getSceneService).mockReturnValue(undefined); });

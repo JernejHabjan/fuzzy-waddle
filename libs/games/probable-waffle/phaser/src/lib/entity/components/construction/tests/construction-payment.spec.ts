@@ -17,22 +17,22 @@ import { subscribeSceneResourceLoss } from "../../../../data/scene-resource-obse
 import type { ConstructionSiteDefinition } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({
   emitResource: jest.fn(),
   getCommunicator: jest.fn(),
   getPlayer: jest.fn(),
   isSnapshotApplyInProgress: jest.fn()
 }));
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/game-object-helper", () => ({
   onObjectReady: jest.fn(),
   getGameObjectVisibility: () => undefined
 }));
-jest.mock("../../../data/actor-data", () => ({ upgradeFromConstructingToFullActorData: jest.fn() }));
-jest.mock("../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
-jest.mock("../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: () => undefined }));
-jest.mock("./construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: class {} }));
+jest.mock("../../../../data/actor-data", () => ({ upgradeFromConstructingToFullActorData: jest.fn() }));
+jest.mock("../../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
+jest.mock("../../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: () => undefined }));
+jest.mock("../construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: class {} }));
 
 function fixture(observe = true) {
   const changes = new Subject<{

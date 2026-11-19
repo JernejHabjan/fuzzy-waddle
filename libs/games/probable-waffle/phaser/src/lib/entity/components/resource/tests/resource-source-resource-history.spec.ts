@@ -6,9 +6,9 @@ import { waitForSimulationDuration } from "../../../../world/services/simulation
 import { ContainerComponent } from "../../building/container-component";
 import { ResourceSourceComponent } from "../resource-source-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ getGameObjectRenderedTransform: jest.fn(() => null) }));
-jest.mock("../../../world/services/simulation-time", () => ({ waitForSimulationDuration: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ getGameObjectRenderedTransform: jest.fn(() => null) }));
+jest.mock("../../../../world/services/simulation-time", () => ({ waitForSimulationDuration: jest.fn() }));
 
 function fixture(maximumResources = 10) {
   const scene = { events: { once: jest.fn() } } as unknown as Phaser.Scene;

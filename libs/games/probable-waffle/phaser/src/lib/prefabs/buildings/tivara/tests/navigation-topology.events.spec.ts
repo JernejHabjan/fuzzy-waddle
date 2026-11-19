@@ -3,13 +3,13 @@ import { getSceneComponent } from "../../../../world/services/scene-component-he
 import { getCenterTileCoordUnderObject } from "../../../../library/tile-under-object";
 import { StructureTopologyService, StructureTopologyChangedEvent } from "../navigation-topology.events";
 
-jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
-jest.mock("../../../library/tile-under-object", () => ({ getCenterTileCoordUnderObject: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneComponent: jest.fn() }));
-jest.mock("../../../entity/components/combat/components/health-component", () => ({
+jest.mock("../../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
+jest.mock("../../../../library/tile-under-object", () => ({ getCenterTileCoordUnderObject: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneComponent: jest.fn() }));
+jest.mock("../../../../entity/components/combat/components/health-component", () => ({
   HealthComponent: { KilledEvent: "killed" }
 }));
-jest.mock("../../../world/tilemap/tilemap.component", () => ({ TilemapComponent: class {} }));
+jest.mock("../../../../world/tilemap/tilemap.component", () => ({ TilemapComponent: class {} }));
 
 function fixture() {
   jest.clearAllMocks();

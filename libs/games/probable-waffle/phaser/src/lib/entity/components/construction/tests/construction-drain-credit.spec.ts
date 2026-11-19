@@ -28,31 +28,31 @@ import { AiRuntimeResourceCoverageCapture } from "../../../../player/ai-controll
 import type { AiRuntimeProductionFact } from "../../../../player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 
-jest.mock("../combat/components/health-presentation", () => ({
+jest.mock("../../combat/components/health-presentation", () => ({
   HealthPresentation: class {
     attach() {}
   }
 }));
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({
   onObjectReady: jest.fn(),
   getGameObjectVisibility: () => undefined
 }));
-jest.mock("../../../data/actor-data", () => ({ upgradeFromConstructingToFullActorData: jest.fn() }));
-jest.mock("../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
-jest.mock("../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({
+jest.mock("../../../../data/actor-data", () => ({ upgradeFromConstructingToFullActorData: jest.fn() }));
+jest.mock("../../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
+jest.mock("../../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({
   getPlayer: jest.fn(),
   emitResource: jest.fn(),
   getCommunicator: jest.fn(),
   isSnapshotApplyInProgress: jest.fn()
 }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: () => undefined }));
-jest.mock("../../../world/services/simulation-time", () => ({ waitForSimulationDuration: jest.fn() }));
-jest.mock("../owner-component", () => ({ OwnerComponent: class {} }));
-jest.mock("../building/container-component", () => ({ ContainerComponent: class {} }));
-jest.mock("./construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: class {} }));
-jest.mock("./construction-payment", () => ({
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: () => undefined }));
+jest.mock("../../../../world/services/simulation-time", () => ({ waitForSimulationDuration: jest.fn() }));
+jest.mock("../../owner-component", () => ({ OwnerComponent: class {} }));
+jest.mock("../../building/container-component", () => ({ ContainerComponent: class {} }));
+jest.mock("../construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: class {} }));
+jest.mock("../construction-payment", () => ({
   startConstructionPayment: jest.fn(),
   refundConstructionPayment: jest.fn()
 }));

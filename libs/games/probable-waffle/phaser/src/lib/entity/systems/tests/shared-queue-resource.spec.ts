@@ -30,23 +30,23 @@ import { ResearchComponent } from "../../components/research/research-component"
 import { QueueComponent } from "../../components/queue/queue-component";
 import { QueueCommandSystem } from "../queue-command.system";
 
-jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../data/scene-data", () => ({
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../data/scene-data", () => ({
   emitResource: jest.fn(),
   getCommunicator: jest.fn(),
   getPlayer: jest.fn(),
   isSnapshotApplyInProgress: jest.fn()
 }));
-jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../data/game-object-helper", () => ({
+jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({
   onObjectReady: (_actor: unknown, callback: () => void, context: unknown) => callback.call(context),
   isGameObjectActiveInActiveScene: () => true
 }));
-jest.mock("../../prefabs/buildings/misc/RallyPoint", () => ({
+jest.mock("../../../prefabs/buildings/misc/RallyPoint", () => ({
   __esModule: true,
   default: jest.fn(() => ({ init: jest.fn(), reset: jest.fn(), destroy: jest.fn() }))
 }));
-jest.mock("../../prefabs/definitions/actor-definitions", () => ({
+jest.mock("../../../prefabs/definitions/actor-definitions", () => ({
   getPwActorDefinition: () => ({
     components: {
       productionCost: {

@@ -16,10 +16,10 @@ import { OrderType } from "../../../../ai/order-type";
 import { PawnAiBlackboard } from "../../controller/pawn-ai-blackboard";
 import { PlayerPawnAiControllerAgent } from "../../controller/player-pawn-ai-controller.agent";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 /** Real native cargo/source/stop owners; only indexed service membership and path selection are controlled. */
 function fixture() {

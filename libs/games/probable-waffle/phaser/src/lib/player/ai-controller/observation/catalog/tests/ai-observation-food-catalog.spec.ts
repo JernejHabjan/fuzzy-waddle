@@ -7,7 +7,7 @@ import { projectAvailableCatalogEntries, projectCatalogDefinition } from "../ai-
 import { watchTowerDefinition } from "../../../../../prefabs/buildings/tivara/WatchTower/watch-tower.definition";
 import { wallDefinition } from "../../../../../prefabs/buildings/tivara/wall/wall.definition";
 
-jest.mock("../../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({
   getSceneService: jest.fn(),
   getSceneComponent: jest.fn()
 }));

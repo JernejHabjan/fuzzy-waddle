@@ -10,12 +10,12 @@ import { ConstructionSiteComponent } from "../../construction/construction-site-
 import { QueueComponent } from "../../queue/queue-component";
 import { ResearchComponent } from "../research-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({ getPlayer: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
-jest.mock("../../../data/emit-queue-item-resource", () => ({ emitQueueItemResource: jest.fn() }));
-jest.mock("./has-pending-player-research", () => ({ hasPendingPlayerResearch: () => false }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({ getPlayer: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
+jest.mock("../../../../data/emit-queue-item-resource", () => ({ emitQueueItemResource: jest.fn() }));
+jest.mock("../has-pending-player-research", () => ({ hasPendingPlayerResearch: () => false }));
 
 it("refuses unfinished, missing and full queues before charging research, then admits ready paid work", () => {
   let finished = false,
