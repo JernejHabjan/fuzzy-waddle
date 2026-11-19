@@ -12,8 +12,8 @@ import {
 } from "../queue-completion-authority-event";
 import { observeQueueCompletionAuthority } from "../observe-queue-completion-authority";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 /** Synthetic callback contracts exercise observation ordering, not actual spawning or tech correctness. */
 describe("shared queue completion authority observation", () => {

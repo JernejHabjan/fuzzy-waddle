@@ -5,7 +5,7 @@ import { EconomyManager } from "../economy-manager";
 import { GATHERED_RESOURCE_CREDITED } from "../../../../entity/components/resource/credit-gathered-resource";
 import { getSimulationNow } from "../../../../world/services/simulation-time";
 
-jest.mock("../../../world/services/simulation-time", () => ({ getSimulationNow: jest.fn(() => 0) }));
+jest.mock("../../../../world/services/simulation-time", () => ({ getSimulationNow: jest.fn(() => 0) }));
 
 function fixture() {
   const scene = { events: new Phaser.Events.EventEmitter() } as Phaser.Scene;

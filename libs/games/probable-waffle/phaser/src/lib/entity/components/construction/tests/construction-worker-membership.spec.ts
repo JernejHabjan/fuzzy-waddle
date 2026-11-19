@@ -5,8 +5,8 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { HealthComponent } from "../../combat/components/health-component";
 import { ConstructionWorkerMembership } from "../construction-worker-membership";
 
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 
 function fixture() {
   jest.clearAllMocks();

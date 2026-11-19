@@ -9,9 +9,9 @@ import { GathererResourceExecution } from "../gatherer-resource-execution";
 import { OwnerComponent } from "../../owner-component";
 import { emitResource, getPlayer } from "../../../../data/scene-data";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({ emitResource: jest.fn(), getPlayer: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({ emitResource: jest.fn(), getPlayer: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({
   onObjectReady: jest.fn(),
   getGameObjectVisibility: jest.fn(),
   getGameObjectLogicalTransform: jest.fn()

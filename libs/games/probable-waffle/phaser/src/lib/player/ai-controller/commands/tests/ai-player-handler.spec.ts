@@ -4,7 +4,7 @@ import type GameProbableWaffleScene from "../../../../world/scenes/GameProbableW
 import { PlayerAiController } from "../../player-ai-controller";
 import { AiPlayerHandler } from "../ai-player-handler";
 
-jest.mock("../player-ai-controller", () => ({
+jest.mock("../../player-ai-controller", () => ({
   PlayerAiController: jest.fn().mockImplementation((_scene, player) => ({
     player,
     setEnabled: jest.fn(),

@@ -27,18 +27,18 @@ jest.mock("phaser", () => {
   };
   return { ...phaser, default: phaser };
 });
-jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({
   getSceneComponent: jest.fn(),
   getSceneService: jest.fn()
 }));
-jest.mock("../../data/game-object-helper", () => ({
+jest.mock("../../../data/game-object-helper", () => ({
   getGameObjectCurrentTile: jest.fn(),
   isGameObjectActiveInActiveScene: jest.fn(),
   isSceneActive: jest.fn()
 }));
-jest.mock("../../world/services/simulation-time", () => ({ getInterpolatedSimulationNow: jest.fn() }));
-jest.mock("../../campaign/campaign-progression-modifier", () => ({ applyCampaignProgressionModifiers: () => 1 }));
+jest.mock("../../../world/services/simulation-time", () => ({ getInterpolatedSimulationNow: jest.fn() }));
+jest.mock("../../../campaign/campaign-progression-modifier", () => ({ applyCampaignProgressionModifiers: () => 1 }));
 
 function fixture() {
   const f = movementTestFixture(),

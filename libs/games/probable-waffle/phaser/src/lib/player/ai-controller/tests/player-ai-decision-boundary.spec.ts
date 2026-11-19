@@ -1,7 +1,7 @@
 import { PlayerAiControllerAgent } from "../player-ai-controller.agent";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 
-jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture() {
   const agent = Object.create(PlayerAiControllerAgent.prototype) as PlayerAiControllerAgent;

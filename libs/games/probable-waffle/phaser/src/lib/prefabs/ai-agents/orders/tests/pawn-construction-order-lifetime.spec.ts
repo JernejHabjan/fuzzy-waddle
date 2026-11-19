@@ -7,7 +7,7 @@ import { OrderType } from "../../../../ai/order-type";
 import { BuilderComponent } from "../../../../entity/components/construction/builder-component";
 import { getActorComponent } from "../../../../data/actor-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 
 function fixture() {
   let resolve!: (target: Phaser.GameObjects.GameObject | null) => void;
