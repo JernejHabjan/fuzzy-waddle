@@ -23,6 +23,39 @@ export function variantMaximumTick(recipe, variant) {
   return Array.isArray(checkpoints) && checkpoints.length ? Math.max(...checkpoints) : 0;
 }
 
+/** Follow the runner's selected assertion ceiling when deriving the scheduled checkpoint window. */
+export function selectedRuntimeCheckpoints(fixture, variant, scenarioIds: readonly string[]): readonly number[] {
+  const recipe = fixture.recipe;
+  const ceiling = Math.max(
+    ...scenarioIds.map((id) => fixture.assertions?.[id]?.maximumTick ?? recipe.checkpointTicks?.at(-1) ?? 0)
+  );
+  const checkpoints: readonly number[] = variant.checkpointTicks ?? recipe.checkpointTicks ?? [];
+  return [...new Set(checkpoints)].filter((tick) => tick <= ceiling).sort((left, right) => left - right);
+}
+
+/** A shortened observation window must still reach every authored intervention in the selected branch. */
+export function validateRuntimeScenarioWindow(fixture, scenarioId: string): void {
+  const variants = fixture.recipe.variants.filter(
+    (variant) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)
+  );
+  if (!variants.length) throw new Error(`runtime_recipe_window_missing_variant:${scenarioId}`);
+  for (const variant of variants) {
+    const lastTick = selectedRuntimeCheckpoints(fixture, variant, [scenarioId]).at(-1);
+    if (lastTick === undefined) throw new Error(`runtime_recipe_window_empty:${scenarioId}:${variant.id}`);
+    const interventions = [
+      ...(variant.perturbations ?? []),
+      ...(variant.presetWorld?.events ?? []),
+      ...(variant.presetWorld?.controls ?? []).map((control) => ({
+        id: control.id,
+        tick: Math.max(control.requestTick, control.applicationTick)
+      }))
+    ];
+    const unreachable = interventions.find((event) => event.tick > lastTick);
+    if (unreachable)
+      throw new Error(`runtime_recipe_intervention_outside_window:${scenarioId}:${variant.id}:${unreachable.id}`);
+  }
+}
+
 /** Validate declared test purpose separately from Phaser's legal-world fixture checks. */
 export function validateRuntimeRecipeMetadata(recipe) {
   const pairs = new Map();

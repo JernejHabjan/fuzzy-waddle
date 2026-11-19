@@ -1,6 +1,10 @@
 import { join } from "node:path";
 import { readJson } from "../../matrix/skirmish-matrix-io.ts";
-import { validateEvidenceStopAssertions, validateRuntimeRecipeMetadata } from "./skirmish-runtime-recipe-metadata.ts";
+import {
+  validateEvidenceStopAssertions,
+  validateRuntimeRecipeMetadata,
+  validateRuntimeScenarioWindow
+} from "./skirmish-runtime-recipe-metadata.ts";
 import { validProductionCapacityPair } from "./skirmish-runtime-production-capacity-fixture.ts";
 import { validProductionCompositionPair } from "./skirmish-runtime-production-composition-fixture.ts";
 import { validProductionContracts } from "./skirmish-runtime-production-contract-fixture.ts";
@@ -250,6 +254,7 @@ function validateRuntimeFixture(fixture, scenarioId) {
     throw new Error(`malformed_runtime_fixture:${scenarioId}`);
   }
   validateRuntimeRecipeMetadata(recipe);
+  validateRuntimeScenarioWindow(fixture, scenarioId);
   validateEvidenceStopAssertions(fixture);
 }
 
