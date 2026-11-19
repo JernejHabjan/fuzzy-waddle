@@ -62,14 +62,6 @@ export function configureNativePlacementActors(context: NativeActorLayoutContext
   }
   if (id === "H-27" && branch === "uncovered")
     actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(28, 21);
-  if (
-    id === "STRAT-04"
-      ? branch === "real_threat"
-      : ["STRAT-05", "STRAT-12", "STRAT-13", "FIGHT-01", "FIGHT-03"].includes(id)
-  ) {
-    for (let i = 0; i < 12; i++)
-      actors.push(actor(`reinforcement-${i}`, melee(enemy), 1, 4 + (i % 4), 8 + Math.floor(i / 4)));
-  }
   if (["STRAT-07", "RAID-01"].includes(id) && ["defended", "protected"].includes(branch))
     for (let i = 0; i < 8; i++)
       actors.push(actor(`target-defense-${i}`, melee(enemy), 1, 21 + (i % 3), 23 + Math.floor(i / 3)));

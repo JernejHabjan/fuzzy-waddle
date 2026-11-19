@@ -618,6 +618,8 @@
       }
     },
     "STRAT-05": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["reinforced", "blocked_retreat"],
       "latestTick": 2400,
       "branches": ["reinforced", "quiet", "blocked_retreat"],
       "acceptance": {
@@ -683,6 +685,8 @@
       }
     },
     "STRAT-07": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["expansion", "unfinished", "breach"],
       "latestTick": 2400,
       "branches": ["expansion", "unfinished", "breach", "defended"],
       "acceptance": {
@@ -771,6 +775,8 @@
       }
     },
     "STRAT-12": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["denial", "own_threat"],
       "latestTick": 2400,
       "branches": ["denial", "own_threat", "unused"],
       "acceptance": {
@@ -801,6 +807,8 @@
       }
     },
     "STRAT-13": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["equal", "escalated"],
       "latestTick": 2400,
       "branches": ["equal", "escalated", "infeasible"],
       "acceptance": {
@@ -922,6 +930,8 @@
       }
     },
     "FIGHT-03": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["equal", "unequal"],
       "latestTick": 2400,
       "branches": ["unequal", "equal", "infeasible"],
       "acceptance": {
@@ -1405,6 +1415,8 @@
       }
     },
     "C-04": {
+      "evidenceCheckpoints": [1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["answered", "distinct"],
       "latestTick": 3000,
       "branches": ["answered", "repeated", "distinct", "irrelevant"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
