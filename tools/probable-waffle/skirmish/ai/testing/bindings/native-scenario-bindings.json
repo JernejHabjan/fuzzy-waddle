@@ -2743,6 +2743,7 @@
       }
     },
     "SEQ-08": {
+      "continuousSetup": "Carry the source and resumed matches through a normal result, then verify a clean next match. The initial samples only cover the save or transfer boundary.",
       "latestTick": 18000,
       "checkpointTicks": [19, 119, 199, 400, 18000],
       "branches": ["before_apply", "applied_pending", "during_active", "host_transfer"],
