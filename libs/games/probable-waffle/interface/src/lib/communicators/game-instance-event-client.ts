@@ -27,8 +27,8 @@ export abstract class GameInstanceEventClient extends GameInstanceClientContext 
     visibility: ProbableWaffleGameInstanceVisibility,
     type: ProbableWaffleGameInstanceType,
     options?: { localOnly: true }
-  ): Promise<void> {
-    this.gameInstance = new ProbableWaffleGameInstance({
+  ): Promise<ProbableWaffleGameInstance> {
+    const instance = new ProbableWaffleGameInstance({
       gameInstanceMetadataData: {
         name,
         createdBy: this.authService.userId,
@@ -53,14 +53,16 @@ export abstract class GameInstanceEventClient extends GameInstanceClientContext 
       } satisfies ProbableWaffleGameModeData,
       gameStateData: {} as ProbableWaffleGameStateData
     });
+    this.gameInstance = instance;
     this.syncCurrentPlayerNumberFromGameInstance();
     if (!options?.localOnly && this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/probable-waffle/start-game";
-      const body: ProbableWaffleGameInstanceMetadataData = this.gameInstance.gameInstanceMetadata!.data;
+      const body: ProbableWaffleGameInstanceMetadataData = instance.gameInstanceMetadata.data;
       await firstValueFrom(this.httpClient.post<void>(url, body));
     }
 
-    await this.startListeningToGameInstanceEvents();
+    if (this.gameInstance === instance) await this.startListeningToGameInstanceEvents();
+    return instance;
   }
 
   async stopGameInstance(): Promise<void> {

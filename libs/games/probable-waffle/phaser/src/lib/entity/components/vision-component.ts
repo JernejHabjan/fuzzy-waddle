@@ -11,7 +11,7 @@ import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 
 export class VisionComponent {
   private visibleEnemies?: GameObject[];
-  public visibilityByCurrentPlayer: boolean = false;
+  public visibilityByCurrentPlayer = false;
   public visionDefinition: VisionDefinition;
 
   constructor(
@@ -28,6 +28,7 @@ export class VisionComponent {
   }
 
   isActorVisible(actor: GameObject): boolean {
+    if (!actor.active || actor.scene !== this.gameObject.scene) return false;
     const distance = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, actor);
     if (distance === null) {
       return false;

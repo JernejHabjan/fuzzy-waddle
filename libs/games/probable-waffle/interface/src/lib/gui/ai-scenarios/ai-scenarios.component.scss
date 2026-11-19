@@ -1,0 +1,128 @@
+/* A scrollable workspace with a pinned detail pane on wider screens. */
+:host {
+  display: block;
+  height: 100dvh;
+  overflow: auto;
+  background: #141b21;
+  color: #f3eee3;
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+.scenario-page {
+  max-width: 86rem;
+  margin: 0 auto;
+  padding: clamp(1rem, 4vw, 3.5rem);
+}
+
+/* The page heading identifies the catalog and the in-game explanation panel. */
+.page-heading {
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #39434b;
+
+  a { color: #edc788; }
+  h1 { margin: 0.7rem 0 0.35rem; font-size: clamp(1.8rem, 4vw, 3rem); }
+  p { margin: 0; color: #c4cbd0; }
+}
+
+/* Search and group filtering stay adjacent to the results. */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1.25rem 0;
+
+  label { display: grid; gap: 0.25rem; }
+  label:first-child { flex: 1 1 16rem; }
+  input, select {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #55616a;
+    border-radius: 0.4rem;
+    background: #202a32;
+    color: inherit;
+  }
+}
+
+/* Results are grouped on the left, with setup and playable variants on the right. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: clamp(1rem, 3vw, 2.25rem);
+  align-items: start;
+}
+
+.scenario-group {
+  margin-bottom: 1.5rem;
+
+  h2 { font-size: 1.12rem; margin-bottom: 0.45rem; }
+}
+
+/* Scenario rows use the stable case ID as a searchable reference. */
+.scenario-row {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 0.3rem;
+  padding: 0.65rem;
+  border: 1px solid #39434b;
+  border-radius: 0.4rem;
+  background: #202a32;
+  color: inherit;
+  text-align: left;
+
+  &[aria-pressed="true"], &:hover:not(:disabled) { border-color: #edc788; background: #30322f; }
+}
+
+.scenario-id { color: #edc788; font-weight: 700; }
+
+/* Keep a long fixture variant list scrollable without losing the catalog position. */
+.details {
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 3rem);
+  overflow: auto;
+  padding: 1.2rem;
+  border: 1px solid #39434b;
+  border-radius: 0.55rem;
+  background: #202a32;
+
+  h2 { font-size: 1.3rem; }
+  h3 { margin-top: 1rem; font-size: 1rem; color: #edc788; }
+  p { color: #d5dadd; }
+  .error { color: #ffb6a9; }
+}
+
+/* Each row pairs variant conditions with its launch action. */
+.variants {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    padding: 0.7rem 0;
+    border-top: 1px solid #39434b;
+  }
+
+  strong, small { display: block; overflow-wrap: anywhere; }
+  small { color: #c4cbd0; }
+  button {
+    padding: 0.4rem 0.75rem;
+    border: 0;
+    border-radius: 0.35rem;
+    background: #edc788;
+    color: #171b20;
+    font-weight: 700;
+  }
+  button:disabled { background: #4d565e; color: #f3eee3; }
+}
+
+@media (max-width: 52rem) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .details { position: static; max-height: none; grid-row: 1; }
+}

@@ -22,6 +22,7 @@ export interface AiRuntimeBrowserTestHost {
   /** Read-only host-local authority capture, available only under the explicit production diagnostic opt-in. */
   readonly productionCapture?: {
     capture(playerNumber: number, latestTick?: number): AiRuntimeProductionSnapshot;
+    recordBoundary?(playerNumber: number): number;
     captureHuman?(playerNumber: number, latestTick?: number): AiRuntimeProductionSnapshot;
   };
 }

@@ -5,7 +5,7 @@ import { validAiRuntimePresetWorld } from "../presets/validation/validate-ai-run
 export function isAiRuntimeBrowserTestConfig(value: unknown): value is AiRuntimeBrowserTestConfig {
   if (
     !isRecord(value) ||
-    !hasOnlyKeys(value, ["schemaVersion", "enabled", "seed", "startPaused", "presetWorld", "captureProduction", "captureCombat",
+    !hasOnlyKeys(value, ["schemaVersion", "enabled", "seed", "startPaused", "presetWorld", "captureProduction", "captureCombat", "captureTactics",
       "captureMovementOnly"])
   ) {
     return false;
@@ -22,6 +22,8 @@ export function isAiRuntimeBrowserTestConfig(value: unknown): value is AiRuntime
     (value["captureMovementOnly"] === undefined || value["captureMovementOnly"] === true &&
       value["captureProduction"] === true) &&
     (value["captureCombat"] === undefined || value["captureCombat"] === true && value["captureProduction"] === true) &&
+    (value["captureTactics"] === undefined ||
+      (value["captureTactics"] === true && value["captureProduction"] === true && value["captureMovementOnly"] !== true)) &&
     (value["presetWorld"] === undefined || validAiRuntimePresetWorld(value["presetWorld"]))
   );
 }

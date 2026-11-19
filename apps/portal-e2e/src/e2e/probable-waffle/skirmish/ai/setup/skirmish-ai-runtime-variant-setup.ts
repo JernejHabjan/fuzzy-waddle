@@ -41,10 +41,17 @@ export async function prepareRuntimeVariant(
     });
   }
   installRuntimeErrorListeners(page, aiErrors);
+  const movementOnly = process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1";
+  const scenarioIds = variant.scenarioIds ?? fixture.scenarioIds;
+  const captureTactics =
+    !movementOnly &&
+    variant.captureCombat !== true &&
+    variant.captureConstruction === true &&
+    scenarioIds.some((id) => fixture.assertions[id]?.requiredNativeScenario !== undefined);
   const captureProduction =
-    process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1" ||
+    movementOnly ||
     variant.captureConstruction === true ||
-    (variant.scenarioIds ?? fixture.scenarioIds).some(
+    scenarioIds.some(
       (id) =>
         ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18", "ECO-05", "ECO-06", "H-16"].includes(id) ||
         id.startsWith("TECH-")
@@ -60,8 +67,9 @@ export async function prepareRuntimeVariant(
         ? { presetWorld: { ...variant.presetWorld, provenance: { sourceRevision, fixtureDigest } } }
         : {}),
       ...(variant.captureCombat === true ? { captureCombat: true } : {}),
+      ...(captureTactics ? { captureTactics: true } : {}),
       ...(captureProduction ? { captureProduction: true } : {}),
-      ...(process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1" ? { captureMovementOnly: true } : {})
+      ...(movementOnly ? { captureMovementOnly: true } : {})
     },
     sameRealm
   );
