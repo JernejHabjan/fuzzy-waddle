@@ -10,6 +10,7 @@ export interface RuntimeVariant {
   readonly deadlineRationale?: string;
   readonly evidenceStop?: { readonly earliestTick: number; readonly stableForTicks: number };
   readonly scenarioIds?: readonly string[];
+  readonly requiresMultiplayer?: boolean;
   readonly seed: number;
   readonly mapLabel?: string;
   readonly aiFaction: "Tivara" | "Skaduwee";
