@@ -24,7 +24,7 @@ export function collectRuntimeInventory(manifest, readFixture) {
         matches.map((row) => row.id)
       );
       const nativeCase = matches.length === 1 ? nativeScenarioBindings.cases[matches[0].id] : undefined;
-      const branch = fixture.assertions[matches[0].id]?.requiredNativeScenario?.branchByVariant[variant.id];
+      const branch = fixture.assertions?.[matches[0].id]?.requiredNativeScenario?.branchByVariant[variant.id];
       const nativeProbe =
         nativeCase?.evidenceCheckpoints &&
         (nativeCase.evidenceCheckpointBranches === undefined || nativeCase.evidenceCheckpointBranches.includes(branch));

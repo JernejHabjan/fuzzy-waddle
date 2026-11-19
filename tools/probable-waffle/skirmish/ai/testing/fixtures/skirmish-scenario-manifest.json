@@ -112,7 +112,7 @@
       "id": "PRO-05",
       "stages": [6, 7],
       "group": "production",
-      "fixture": "native/production/production-replacement-native-gameplay.json",
+      "fixture": "native/production/pro-05-replace-one-lost-producer-runtime.json",
       "authoredFixture": "pure/production/production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },

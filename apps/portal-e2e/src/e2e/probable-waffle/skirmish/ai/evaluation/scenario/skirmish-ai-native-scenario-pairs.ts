@@ -114,8 +114,16 @@ export function evaluateNativeScenarioPairs(
       const assisted = find("terrain"),
         free = find("freestanding");
       if (!assisted || !free) continue;
-      const anchored = nativeCompletedFortificationWallCount(nativeScenarioContext(assisted, definition.latestTick));
-      const widened = nativeCompletedFortificationWallCount(nativeScenarioContext(free, definition.latestTick));
+      const walls = (world: RuntimeVariantResult) => {
+        const variant = fixture.recipe.variants.find((candidate) => candidate.id === world.variantId);
+        const early = nativeEvidenceWindow(id, world, fixture, variant, definition.latestTick);
+        const context = nativeScenarioContext(world, early?.[0] ?? definition.latestTick, early?.[1], {
+          requireResourceCoverage: false
+        });
+        return context.failures.length ? undefined : nativeCompletedFortificationWallCount(context);
+      };
+      const anchored = walls(assisted);
+      const widened = walls(free);
       if (anchored === undefined || widened === undefined || anchored >= widened)
         failures.push("fortification_terrain_anchor_does_not_reduce_native_wall_length");
     }

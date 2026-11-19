@@ -185,6 +185,13 @@ function validateRuntimeFixture(fixture, scenarioId) {
     (assertion.requiredGroundRouteVariantIds !== undefined &&
       (!Array.isArray(assertion.requiredGroundRouteVariantIds) ||
         assertion.requiredGroundRouteVariantIds.some((variantId) => typeof variantId !== "string"))) ||
+    (scenarioId === "DOMAIN-06" &&
+      (!assertion.requiredDefenseActorName ||
+        !assertion.requiredDefenseTargetName ||
+        !Number.isSafeInteger(assertion.maximumTick) ||
+        assertion.maximumTick <= 0 ||
+        !recipe.fixedStepFrames ||
+        recipe.variants.some((variant) => variant.captureConstruction !== true || variant.captureCombat !== true))) ||
     !Array.isArray(assertion.requiredAiFactions) ||
     assertion.requiredAiFactions.length === 0 ||
     assertion.requiredAiFactions.some((faction) => !["Tivara", "Skaduwee"].includes(faction)) ||

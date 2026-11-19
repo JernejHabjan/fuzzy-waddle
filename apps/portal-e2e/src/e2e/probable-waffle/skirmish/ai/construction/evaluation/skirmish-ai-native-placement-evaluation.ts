@@ -16,7 +16,16 @@ export function evaluateNativePlacement(
   const failures: string[] = [],
     placed = nativeCompletedPlacements(context);
   if (id === "PLACE-01" || (id === "PLACE-02" && branch !== "both_exposed")) {
-    failures.push(...evaluateFieldPlacementWorld(context.result, id === "PLACE-01" && branch === "room" ? 2 : 1));
+    const history = context.capture?.frontiers;
+    const through = history?.closedThroughTick ?? 0;
+    failures.push(
+      ...evaluateFieldPlacementWorld(
+        context.result,
+        id === "PLACE-01" && branch === "room" ? 2 : 1,
+        through,
+        through === history?.latestTick ? undefined : (history?.latestTick ?? undefined)
+      )
+    );
     if (branch === "constrained" && nativeInitialFieldSites(context)?.length !== 1)
       failures.push("placement_constrained_world_does_not_have_exactly_one_native_unreserved_field_site");
   }
@@ -121,7 +130,7 @@ export function nativeProtectedTransits(
       [];
     const arrivals = commands.filter(
       (command) =>
-        !runtimeControlTransitFailures(capture, command.id, capture.frontiers?.latestTick ?? 0, "arrive").length
+        !runtimeControlTransitFailures(capture, command.id, capture.frontiers?.closedThroughTick ?? 0, "arrive").length
     );
     if (!commands.length || (allowInterruptedAttempts ? !arrivals.length : arrivals.length !== commands.length))
       failures.push(`placement_protected_physical_transit_incomplete:${role}`);
