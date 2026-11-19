@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { tile } from "../../worlds/native-world-geometry.ts";
 import { nativeScenarioFixture } from "../../registration/native-scenario-registration.ts";
 
-test("PLACE-03 transit probes finish before the AI refreshes their orders", () => {
+test("PLACE-03 has separate opening and post-layout probes on the protected routes", () => {
   const fixture = nativeScenarioFixture("PLACE-03"),
     variants = fixture.recipe.variants;
   assert.equal(variants.length, 8);
@@ -13,13 +14,22 @@ test("PLACE-03 transit probes finish before the AI refreshes their orders", () =
       variant.presetWorld.controls.filter((control) =>
         ["worker-transit", "army-transit"].includes(control.producerFixtureActorId)
       ).length,
-      2
+      6
     );
-    assert.ok(
-      variant.presetWorld.controls
-        .filter((control) => ["worker-transit", "army-transit"].includes(control.producerFixtureActorId))
-        .every((control) => control.requestTick === 1)
-    );
+    const coordinates = (value: { x: number; y: number }) => [value.x, value.y];
+    const routes = variant.presetWorld.protectedRoutes;
+    for (const [role, route] of [
+      ["worker-transit", routes[0]],
+      ["army-transit", routes[1]]
+    ] as const) {
+      const stage = variant.presetWorld.controls.find((control) => control.id === "post-layout-stage-" + role);
+      const cross = variant.presetWorld.controls.find((control) => control.id === "post-layout-cross-" + role);
+      assert.ok(stage?.action.worldPosition && cross?.action.worldPosition);
+      assert.ok(stage.applicationTick > 1 && cross.applicationTick > stage.applicationTick);
+      assert.ok(fixture.recipe.checkpointTicks.some((tick) => tick > cross.applicationTick));
+      assert.deepEqual(coordinates(stage.action.worldPosition), coordinates(route.from));
+      assert.deepEqual(coordinates(cross.action.worldPosition), coordinates(route.to));
+    }
     assert.equal(
       variant.presetWorld.controls.find((control) => control.producerFixtureActorId === "worker-transit")?.action
         .worldPosition.x,
@@ -77,6 +87,19 @@ test("PLACE-01 uses one-tile clearance and early physical transit probes", () =>
     );
     assert.equal(controls.length, 2);
     assert.ok(controls.every((control) => control.requestTick === 1 && control.applicationTick === 1));
+    if (variant.id.endsWith("-constrained")) {
+      const world = variant.presetWorld;
+      const service = routes.find((route) => route.id === "worker-service");
+      const worker = world.actors.find((actor) => actor.fixtureActorId === "worker-transit");
+      const order = controls.find((control) => control.producerFixtureActorId === "worker-transit");
+      assert.ok(service && worker && order);
+      assert.deepEqual({ ...service.from, z: 0 }, worker.position);
+      assert.deepEqual({ ...service.to, z: 0 }, order.action.worldPosition);
+      for (let y = 27; y <= 30; y++)
+        assert.ok(!world.terrainPatches.some((patch) => patch.x === 34 && patch.y === y && patch.blocked));
+      const { x, y } = tile(34, 27);
+      assert.deepEqual(service.to, { x, y });
+    }
   }
 });
 
@@ -183,16 +206,23 @@ test("WALL-02 retains rally routes while transit probes cross the intentional op
       [...expectedRoles].sort(),
       `${variant.id}: controls must match the branch obligation`
     );
-    assert.equal(transits.length, expectedRoles.reduce((count, role) => count + (role === "army-transit" ? 1 : 4), 0));
+    assert.equal(
+      transits.length,
+      expectedRoles.reduce((count, role) => count + (role === "army-transit" ? 1 : 4), 0)
+    );
     assert.ok(transits.every((control) => [768, 800].includes(control.action.worldPosition.y)));
     assert.deepEqual(
       [...new Set(transits.map((control) => control.applicationTick))].sort((left, right) => left - right),
-      expectedRoles.includes("worker-transit") ? [1041, 1398, 1641, 2363] : expectedRoles.includes("army-transit") ? [1041] : []
+      expectedRoles.includes("worker-transit")
+        ? [1041, 1398, 1641, 2363]
+        : expectedRoles.includes("army-transit")
+          ? [1041]
+          : []
     );
     for (const role of expectedRoles) {
       const positions = transits
         .filter((control) => control.producerFixtureActorId === role)
-        .map((control) => control.action.kind === "move" ? control.action.worldPosition.x : null);
+        .map((control) => (control.action.kind === "move" ? control.action.worldPosition.x : null));
       assert.equal(
         new Set(positions).size,
         role === "worker-transit" ? 2 : 1,
@@ -200,13 +230,24 @@ test("WALL-02 retains rally routes while transit probes cross the intentional op
       );
     }
     const hostileControls = variant.presetWorld.controls;
-    assert.equal(hostileControls.some((control) => control.id === "move-contact-group-1" && control.action.kind === "move"),
-      variant.id.includes("-enemy-opening"), `${variant.id}: pressure setup must be branch-scoped`);
-    assert.equal(hostileControls.some((control) => control.id === "attack-contact-group-200" && control.action.kind === "attack"),
-      variant.id.includes("-enemy-opening"), `${variant.id}: pressure setup must be branch-scoped`);
-    assert.equal(hostileControls.some((control) => control.id === "move-hostile-transit-1720" && control.action.kind === "move") &&
-      hostileControls.some((control) => control.id === "attack-hostile-transit-2010" && control.action.kind === "attack"),
-      variant.id.includes("-enemy-opening"), `${variant.id}: staged hostile post-wall attack must be branch-scoped`);
+    assert.equal(
+      hostileControls.some((control) => control.id === "move-contact-group-1" && control.action.kind === "move"),
+      variant.id.includes("-enemy-opening"),
+      `${variant.id}: pressure setup must be branch-scoped`
+    );
+    assert.equal(
+      hostileControls.some((control) => control.id === "attack-contact-group-200" && control.action.kind === "attack"),
+      variant.id.includes("-enemy-opening"),
+      `${variant.id}: pressure setup must be branch-scoped`
+    );
+    assert.equal(
+      hostileControls.some((control) => control.id === "move-hostile-transit-1720" && control.action.kind === "move") &&
+        hostileControls.some(
+          (control) => control.id === "attack-hostile-transit-2010" && control.action.kind === "attack"
+        ),
+      variant.id.includes("-enemy-opening"),
+      `${variant.id}: staged hostile post-wall attack must be branch-scoped`
+    );
     assert.equal(
       hostileControls.filter((control) => control.producerFixtureActorId?.startsWith("opening-pressure-")).length,
       variant.id === "wall-02-skaduwee-enemy-opening" ? 8 : 0,

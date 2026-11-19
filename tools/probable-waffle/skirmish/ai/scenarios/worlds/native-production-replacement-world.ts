@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import type { NativeScenarioWorld } from "../../contracts/scenarios/native-scenario-world.ts";
-import { producer } from "./native-world-geometry.ts";
+import { producer, tile } from "./native-world-geometry.ts";
 
 const capacity = JSON.parse(
   readFileSync(
@@ -14,8 +14,15 @@ export function nativeProductionReplacementWorld(faction: string, branch: string
   const baseline = capacity.recipe.variants.find(
     (variant) => variant.aiFaction === faction && variant.productionCapacityBranch === "already_sufficient"
   ).presetWorld;
+  const world: NativeScenarioWorld = structuredClone(baseline);
+  // Use legal tile centers on the frozen open map for both the lost producer and its control.
+  world.actors = world.actors.map((actor) => {
+    if (actor.fixtureActorId === "producer-1") return { ...actor, position: tile(35, 27) };
+    if (actor.fixtureActorId === "producer-2") return { ...actor, position: tile(40, 24) };
+    return actor;
+  });
   return {
-    ...structuredClone(baseline),
+    ...world,
     fixtureId: "producer-replacement",
     requireFactionRoster: true,
     resourceStarts: [],

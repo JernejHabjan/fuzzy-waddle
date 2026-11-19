@@ -16,6 +16,7 @@ export function nativeDomainWorld(id, faction, branch): NativeScenarioWorld {
     world.actors.push(actor("air-producer", faction === "Tivara" ? "Temple" : "Owlery", 2, 37, 35));
     target.actorName = branch === "no_value" ? `${enemy}WorkerMale` : "WorkMill";
     target.position = tile(18, 30);
+    world.actors.find((a) => a.fixtureActorId === "enemy-worker").position = tile(18, 33);
     world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(23, 30);
     for (let y = 15; y <= 42; y++) world.terrainPatches.push({ x: 24, y, terrain: "grass", blocked: true });
     if (branch === "anti_air")

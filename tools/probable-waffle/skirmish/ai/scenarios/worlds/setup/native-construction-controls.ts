@@ -64,7 +64,8 @@ export function configureNativeConstructionControls(context: NativeWorldSetupCon
     for (const [index, tick] of transitTicks.entries()) {
       if (earlyTransitProbe) {
         // These short, on-route probes must finish before the AI's next order refresh.
-        move("worker-transit", tick, 29, 30);
+        if (id === "PLACE-01" && branch === "constrained") move("worker-transit", tick, 34, 27);
+        else move("worker-transit", tick, 29, 30);
         move("army-transit", tick, 28, branch === "concurrent" ? 24 : 25);
       } else {
         if (wall02OpeningTransit) {
@@ -81,8 +82,32 @@ export function configureNativeConstructionControls(context: NativeWorldSetupCon
         }
       }
     }
-    if (id === "H-27" || ["exposed", "both_exposed"].includes(branch))
-      attack("contact-group", "original-home", id === "H-27" ? 20 : 200);
+    if (id === "WALL-01" && branch !== "no_value") attack("wall-approach-probe", "protected-deposit", 2200);
+    if (id === "PLACE-03") {
+      const crossings = [
+        { role: "worker-transit", route: world.protectedRoutes[0] },
+        { role: "army-transit", route: world.protectedRoutes[1] }
+      ];
+      for (const { role, route } of crossings) {
+        world.controls.push(
+          {
+            id: "post-layout-stage-" + role,
+            producerFixtureActorId: role,
+            requestTick: 2200,
+            applicationTick: 2200,
+            action: { kind: "move", worldPosition: { ...route.from, z: route.from.z ?? 0 } }
+          },
+          {
+            id: "post-layout-cross-" + role,
+            producerFixtureActorId: role,
+            requestTick: 2600,
+            applicationTick: 2600,
+            action: { kind: "move", worldPosition: { ...route.to, z: route.to.z ?? 0 } }
+          }
+        );
+      }
+    }
+    if (id === "H-27") attack("contact-group", "original-home", 20);
     if (id === "WALL-02" && branch === "enemy_opening") {
       // The early contact creates a genuine defense decision. Stage an independent hostile
       // outside the route, then attack after the paid wall or first fortification prefix completes.
@@ -151,17 +176,10 @@ export function configureNativeConstructionControls(context: NativeWorldSetupCon
     world.protectedRoutes[0] = {
       id: "worker-service",
       playerNumber: 2,
-      from: tile(32, 23),
-      to: tile(34, 30),
+      from: tile(34, 30),
+      to: tile(34, 27),
       tileMargin: 0
     };
-    for (const control of world.controls)
-      if (
-        control.producerFixtureActorId === "worker-transit" &&
-        control.action.kind === "move" &&
-        control.action.worldPosition.x === tile(28, 31).x
-      )
-        control.action.worldPosition = tile(34, 30);
   }
   if (
     !id.startsWith("PLACE-") &&

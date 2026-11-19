@@ -129,7 +129,8 @@
       }
     },
     "PLACE-03": {
-      "evidenceCheckpoints": [1200, 1600, 2000, 2400],
+      "checkpointTicks": [20, 200, 400, 800, 1200, 1600, 2000, 2200, 2600, 2800, 3000],
+      "evidenceCheckpoints": [2800],
       "combatCaptureBranches": [],
       "latestTick": 3000,
       "branches": ["layout", "concurrent", "completion", "loss"],
@@ -142,11 +143,11 @@
         ],
         "actions": [
           "Admit competing builds through the ordinary AI path",
-          "Observe each applied construction prefix, completion and one native transit/spawn at every protected route"
+          "Check clearance after each applied build; after completion, cross the authored worker and army routes with real units and observe the producer exit"
         ],
         "measurements": [
           "Exact occupied footprints and required clearance per unit",
-          "Native path traversal, spawn identity and remaining legal site after each prefix"
+          "Native worker and army crossings after the completed layout, plus producer spawn identity"
         ],
         "required": ["Every applied prefix preserves required service, movement, spawn and future construction access"],
         "forbidden": [
@@ -200,7 +201,7 @@
       }
     },
     "WALL-01": {
-      "evidenceCheckpoints": [1600, 2000, 2400],
+      "evidenceCheckpoints": [2400],
       "evidenceCheckpointBranches": ["terrain", "freestanding"],
       "latestTick": 3000,
       "branches": ["terrain", "freestanding", "no_value"],
@@ -213,16 +214,18 @@
         ],
         "actions": [
           "Let AI finish the selected defense graph against the real approach, leaving the reserved opening clear",
-          "Drive ordinary hostile and friendly traversal and occupy planned defender posts"
+          "Order a separate ground approach to the protected asset and record a hit by a tower on the completed line"
         ],
         "measurements": [
-          "Native surface graph, artificial wall length/cost, hostile route detour/exposure and protected assets",
-          "Friendly clearance and reachable occupied firing posts"
+          "Native surface graph, artificial wall length, friendly clearance and actual defensive tower fire"
         ],
         "required": [
           "Terrain-aware defense provides measured restriction/coverage using less artificial wall than a same-purpose freestanding control"
         ],
-        "forbidden": ["Wall node count accepted as defense", "Unoccupied unreachable posts credited as coverage"],
+        "forbidden": [
+          "Wall node count accepted as defense",
+          "An unrelated hit or a shot before completion credited to the defensive line"
+        ],
         "branches": ["Terrain-assisted entrance", "Equivalent freestanding control", "No useful protected assets"],
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
         "executionStatus": "authored_not_executed"

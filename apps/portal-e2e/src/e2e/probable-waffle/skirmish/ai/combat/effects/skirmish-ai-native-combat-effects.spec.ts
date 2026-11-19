@@ -725,6 +725,17 @@ it.describe("native weapon hits against building footprints", () => {
     );
   });
 
+  it("requires a participant from the original engagement to reach the regroup destination", () => {
+    const fight = quietContext(true);
+    const evaluateRegroup = (actorId: string) => {
+      const context = { ...fight, ...retreatFixture(actorId), result: { perturbations: [] } };
+      return evaluateNativeCombat("FIGHT-01", "completed", context as unknown as typeof fight);
+    };
+
+    expect(evaluateRegroup("reserve")).toContain("combat_original_engagement_has_no_physical_regroup");
+    expect(evaluateRegroup("attacker")).toEqual([]);
+  });
+
   it("accepts a physical hit at a building's adjacent footprint edge", () => {
     const facts = hitFacts("FrostForge", 2);
     const context = contextFor(facts, "FrostForge", 1);
@@ -740,7 +751,8 @@ it.describe("native weapon hits against building footprints", () => {
   });
 });
 
-it("matches an accepted retreat move to its native execution after normalizing the effect prefix", () => {
+function retreatFixture(actorId: string) {
+  const effectId = "stage13:retreat:" + actorId + ":500";
   const movement = {
     callerAttributed: true,
     gaps: [],
@@ -750,10 +762,10 @@ it("matches an accepted retreat move to its native execution after normalizing t
     observations: [
       {
         spatial: {
-          source: { actorId: "retreating-unit" },
+          source: { actorId },
           caller: {
             order: {
-              commandContext: { execution: { effectId: "stage13:retreat:retreating-unit:500" } }
+              commandContext: { execution: { effectId } }
             }
           }
         }
@@ -763,14 +775,12 @@ it("matches an accepted retreat move to its native execution after normalizing t
   const frame = {
     tick: 500,
     decision: {
-      missionState: { squads: [{ state: "retreat", actorIds: ["retreating-unit"] }] },
-      acceptedIntents: [
-        { kind: "move", actorIds: ["retreating-unit"], effectId: "effect:stage13:retreat:retreating-unit:500" }
-      ]
+      missionState: { squads: [{ state: "retreat", actorIds: [actorId] }] },
+      acceptedIntents: [{ kind: "move", actorIds: [actorId], effectId: "effect:" + effectId }]
     }
   };
-  const context = {
-    frames: [frame],
+  return {
+    frames: [frame] as const,
     capture: {
       frontiers: {
         intervals: [
@@ -778,7 +788,7 @@ it("matches an accepted retreat move to its native execution after normalizing t
             actors: [
               {
                 identity: {
-                  actorId: "retreating-unit",
+                  actorId,
                   active: true,
                   alive: true,
                   indexed: true,
@@ -791,8 +801,14 @@ it("matches an accepted retreat move to its native execution after normalizing t
       }
     },
     arrived: () => [movement]
-  } as unknown as ReturnType<typeof nativeScenarioContext>;
+  };
+}
 
+it("matches an accepted retreat move to its native execution after normalizing the effect prefix", () => {
+  const fixture = retreatFixture("retreating-unit");
+  const context = fixture as unknown as ReturnType<typeof nativeScenarioContext>;
+  const [frame] = fixture.frames;
+  const movement = context.arrived("retreating-unit", 500)[0];
   expect(nativeRetreats(context, 400)).toEqual([movement]);
   const unrelatedContext = {
     ...context,
