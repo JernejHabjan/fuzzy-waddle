@@ -1778,6 +1778,7 @@
       }
     },
     "H-06": {
+      "combatCaptureBranches": [],
       "latestTick": 2000,
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000],
       "branches": ["withheld", "rejected", "late"],
@@ -1814,6 +1815,7 @@
       ]
     },
     "H-07": {
+      "combatCaptureBranches": ["destroyed"],
       "latestTick": 2400,
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400],
       "branches": ["destroyed", "alive"],
@@ -1847,6 +1849,9 @@
       ]
     },
     "H-10": {
+      "combatCaptureBranches": [],
+      "evidenceCheckpoints": [2000, 2400],
+      "evidenceCheckpointBranches": ["resumed"],
       "latestTick": 3000,
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
       "branches": ["below_capacity", "at_capacity", "over_capacity", "resumed"],
@@ -2033,6 +2038,9 @@
       ]
     },
     "H-11": {
+      "combatCaptureBranches": [],
+      "evidenceCheckpoints": [1600, 2000, 2400, 3000],
+      "evidenceCheckpointBranches": ["one_worker", "bootstrap"],
       "latestTick": 4000,
       "branches": ["one_worker", "bootstrap", "infeasible"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000],
@@ -2072,6 +2080,8 @@
       ]
     },
     "H-12": {
+      "combatCaptureBranches": [],
+      "evidenceCheckpoints": [1600, 2000, 2400],
       "latestTick": 3000,
       "branches": ["scarce", "paid_neighbor", "permuted", "acyclic"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
@@ -2114,6 +2124,7 @@
       ]
     },
     "D-01": {
+      "combatCaptureBranches": [],
       "latestTick": 2000,
       "checkpointTicks": [40, 200, 400, 800, 1200, 1600, 2000],
       "branches": ["easy", "normal", "hard"],
@@ -2403,6 +2414,7 @@
       }
     },
     "DBG-04": {
+      "combatCaptureBranches": [],
       "latestTick": 2400,
       "checkpointTicks": [40, 200, 400, 800, 1200, 1600, 2000, 2400],
       "branches": ["identical", "changed_input", "changed_config", "same_input_divergence", "what_if"],
