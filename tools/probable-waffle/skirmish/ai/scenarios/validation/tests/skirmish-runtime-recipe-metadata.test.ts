@@ -3,10 +3,24 @@ import test from "node:test";
 import {
   describeRuntimeVariant,
   validateEvidenceStopAssertions,
-  validateRuntimeRecipeMetadata
+  validateRuntimeRecipeMetadata,
+  validateRuntimeScenarioWindow
 } from "../skirmish-runtime-recipe-metadata.ts";
 
 const recipe = { mapLabel: "Frozen Open", checkpointTicks: [20, 400] };
+
+test("a shorter selected window cannot skip an authored command application", () => {
+  const fixture = {
+    assertions: { "X-01": { maximumTick: 20 } },
+    recipe: {
+      ...recipe,
+      variants: [{ id: "subject", presetWorld: { controls: [{ id: "move", requestTick: 20, applicationTick: 30 }] } }]
+    }
+  };
+  assert.throws(() => validateRuntimeScenarioWindow(fixture, "X-01"), /runtime_recipe_intervention_outside_window/);
+  fixture.assertions["X-01"].maximumTick = 400;
+  assert.doesNotThrow(() => validateRuntimeScenarioWindow(fixture, "X-01"));
+});
 
 test("focused presets declare a legal starting world and bounded purpose", () => {
   const variant = {
