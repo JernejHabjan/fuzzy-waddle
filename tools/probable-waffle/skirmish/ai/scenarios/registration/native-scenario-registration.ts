@@ -221,6 +221,8 @@ function nativeScenarioVariant(
           ? `wall-02-${faction.toLowerCase()}-shared-match`
             : variantId;
   branches[variantId] = branch;
+  const combatCaptureBranches = nativeScenarioBindings.cases[id].combatCaptureBranches;
+  const captureCombat = combatCaptureBranches === undefined || combatCaptureBranches.includes(branch);
   // An explicit route declaration requires at least one route; empty factory scratch arrays are not declarations.
   if (world.protectedRoutes?.length === 0) delete world.protectedRoutes;
   else if (world.protectedRoutes)
@@ -266,7 +268,7 @@ function nativeScenarioVariant(
     ...(id === "H-32" ? { requiresMultiplayer: branch === "host_replacement" } : {}),
     ...(["D-02", "H-31", "H-32", "DBG-05"].includes(id)
       ? {}
-      : { captureConstruction: true, captureCombat: true }),
+      : { captureConstruction: true, ...(captureCombat ? { captureCombat: true } : {}) }),
     scenarioIds: [id],
     ...(id === "DBG-05" ? { checkpointTicks: [20] } : {}),
     ...(["DBG-01", "DBG-03"].includes(id) ? { captureConstruction: true, checkpointTicks: [599, 800] } : {}),
