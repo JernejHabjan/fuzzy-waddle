@@ -32,6 +32,7 @@ export const AI_BRAIN_SLICE_POLICIES: readonly AiBrainSlicePolicy[] = [
   policy("skirmish", "Stage 9 skirmish reducer"),
   policy("bases", "base reducer"),
   policy("economyProduction", "economy/production reducer"),
+  policy("recovery", "recovery reducer"),
   policy("reservations", "reservation reducer"),
   policy("waitEdges", "dependency reducer"),
   policy("pendingOutcomes", "outcome reconciliation reducer"),
