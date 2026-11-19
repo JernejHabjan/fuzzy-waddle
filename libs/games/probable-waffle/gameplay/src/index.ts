@@ -31,3 +31,4 @@ export * from "./lib/player/ai-controller/debug/project-ai-debug-snapshot";
 export * from "./lib/player/ai-controller/debug/project-ai-strategic-intent-summary";
 export * from "./lib/player/ai-controller/debug/parse-ai-repro-bundle";
 export * from "./lib/player/ai-controller/debug/ai-incident-capture-store";
+export * from "./lib/player/ai-controller/planning/access/ai-access-graph";
