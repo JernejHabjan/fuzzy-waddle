@@ -43,7 +43,45 @@ export function evaluateNativeCombat(
   if (id === "FIGHT-01") {
     const hits = target ? nativeWeaponHits(context, target) : [];
     if (!hits.some((fact) => fact.tick < 400)) failures.push("combat_initial_favorable_fight_missing");
-    if (branch !== "quiet" && !nativeRetreats(context, 400).length)
+    const changeTick = 400;
+    if (branch === "reinforced") {
+      const reserves = new Set(
+        Object.entries(context.roles)
+          .filter(([role]) => role.startsWith("reinforcement-"))
+          .map(([, actorId]) => actorId)
+      );
+      const moved = context.opponent?.facts.some(
+        (fact) =>
+          fact.kind === "preset_control" &&
+          fact.tick === changeTick &&
+          fact.control.phase === "applied" &&
+          fact.control.id.startsWith("move-reinforcement-") &&
+          fact.control.command?.type === "MOVE" &&
+          fact.control.command.actorIds.some((actorId) => reserves.has(actorId))
+      );
+      const seen = context.frames.some(
+        (frame) =>
+          frame.tick > changeTick &&
+          frame.decision.input?.observation?.actors.some(
+            (actor) => actor.visibility === "visible" && reserves.has(actor.actorId)
+          )
+      );
+      if (!moved || !seen) failures.push("combat_real_reinforcement_change_missing");
+    }
+    if (["support_loss", "completed"].includes(branch)) {
+      const role = branch === "support_loss" ? "support-probe" : "contact-group";
+      const removed = context.result.perturbations.some(
+        (event) =>
+          event.id === "loss-" + role &&
+          event.tick === changeTick &&
+          event.affectedActorId === context.role(role) &&
+          event.dispatchedActors > 0
+      );
+      const defeated =
+        branch === "completed" && hits.some((hit) => hit.tick <= changeTick && hit.damage.healthAfter === 0);
+      if (!removed && !defeated) failures.push("combat_bound_support_or_target_loss_missing");
+    }
+    if (branch !== "quiet" && !nativeRetreats(context, changeTick).length)
       failures.push("combat_changed_risk_has_no_physical_regroup");
     // A legally matched lethal weapon hit completes this target; disappearance alone cannot replace continued fighting.
     const defeated = hits.some((fact) => fact.damage.healthAfter === 0 && !fact.damage.target.alive);
