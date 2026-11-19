@@ -14,7 +14,13 @@ export function installAiRuntimeProductionCapture(scene: ProbableWaffleScene): v
   if (!config?.captureProduction) return;
   const capture = config.captureMovementOnly
     ? new AiRuntimeMovementOnlyCapture(scene)
-    : new AiRuntimeProductionCapture(scene, [], config.presetWorld?.protectedRoutes, config.captureCombat === true);
+    : new AiRuntimeProductionCapture(
+        scene,
+        [],
+        config.presetWorld?.protectedRoutes,
+        config.captureCombat === true,
+        config.captureCombat === true || config.captureTactics === true
+      );
   const handle = {
     capture: (playerNumber: number, latestTick?: number) => capture.capture(playerNumber, latestTick),
     ...("recordBoundary" in capture
