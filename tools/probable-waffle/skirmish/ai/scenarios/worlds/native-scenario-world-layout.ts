@@ -83,9 +83,9 @@ export function nativeScenarioActors(id: string, own: string, enemy: string, bra
   const combatRoster = configureNativeCombatActors(context);
   if (combatRoster) return combatRoster;
   configureNativeObjectiveActors(context);
-  if (id === "SCOUT-01") {
+  if (["SCOUT-01", "SCOUT-03", "SCOUT-04"].includes(id)) {
     // Keep the scout, native base prerequisites and both scouting approaches. The extra combat probes
-    // and duplicate enemy producers are inherited from the broad setup and do not exercise first contact.
+    // and duplicate enemy producers belong to the broader battle setups.
     const extraRoles = new Set(["ranged-probe", "support-probe", "front-target-a", "front-target-b", "noise-scout"]);
     return actors.filter((entry) => !extraRoles.has(entry.fixtureActorId));
   }

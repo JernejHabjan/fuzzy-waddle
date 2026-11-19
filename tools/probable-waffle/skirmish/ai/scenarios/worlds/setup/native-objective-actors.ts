@@ -4,6 +4,16 @@ import type { NativeActorLayoutContext } from "../../../contracts/scenarios/nati
 export function configureNativeObjectiveActors(context: NativeActorLayoutContext): void {
   const { id, own, enemy, branch, actors, tile, actor, melee, ranged } = context;
 
+  const counterforceWave =
+    (id === "STRAT-04" && branch === "real_threat") ||
+    (["STRAT-05", "FIGHT-01"].includes(id) && ["reinforced", "blocked_retreat"].includes(branch));
+  const nearFrontThreat =
+    (id === "STRAT-12" && branch === "own_threat") ||
+    (["STRAT-13", "FIGHT-03"].includes(id) && ["escalated", "unequal"].includes(branch));
+  const waveSize = counterforceWave ? 12 : nearFrontThreat ? 3 : 0;
+  for (let i = 0; i < waveSize; i++)
+    actors.push(actor("reinforcement-" + i, melee(enemy), 1, 4 + (i % 4), 8 + Math.floor(i / 4)));
+
   if (["STRAT-13", "FIGHT-03"].includes(id)) {
     if (id === "FIGHT-03") {
       // This case measures only its two authored fronts; unrelated economy targets would consume the bounded raid slot.

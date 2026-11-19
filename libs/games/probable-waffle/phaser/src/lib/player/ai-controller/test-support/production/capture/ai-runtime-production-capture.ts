@@ -78,7 +78,8 @@ export class AiRuntimeProductionCapture {
     private readonly scene: ProbableWaffleScene,
     intervals: readonly AiRuntimeResourceServiceInterval[] = [],
     protectedRoutes: readonly AiRuntimeProtectedRoute[] = [],
-    captureCombat = false
+    captureCombat = false,
+    captureTactics = captureCombat
   ) {
     const ticks = getSceneService(scene, SimulationTickService);
     const bus = getSceneService(scene, CommandBusService);
@@ -87,7 +88,7 @@ export class AiRuntimeProductionCapture {
     const playerChanged = scene.communicator.playerChanged;
     if (!ticks || !bus || !index || !tech || !playerChanged) throw new Error("production_capture_authority_missing");
     this.startedTick = ticks.currentTick;
-    this.proof = new AiRuntimeProductionProofCapture(scene, this.identify, () => this.nextSequence - 1, captureCombat);
+    this.proof = new AiRuntimeProductionProofCapture(scene, this.identify, () => this.nextSequence - 1, captureTactics);
     this.resourceIntervalDeclaration = structuredClone({
       boundary: { tick: this.startedTick, captureSequence: 0 },
       overflow: intervals.length > 256,
@@ -139,7 +140,7 @@ export class AiRuntimeProductionCapture {
         (fact, item) => this.append(fact, item)
       );
       this.subscriptions.add(installAiRuntimeDecisionCapture(scene, this.unspentClaims,
-        (player) => this.boundary(player), (fact) => this.append(fact), this.resourceCoverage.lose, captureCombat));
+        (player) => this.boundary(player), (fact) => this.append(fact), this.resourceCoverage.lose, captureTactics));
       scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
       scene.events.on(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
       this.subscriptions.add(
