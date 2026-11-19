@@ -47,7 +47,7 @@ test("absence, final-composition, temporal, terminal and lifecycle assertions re
     { minimumMilitaryTypeCount: 2 },
     { minimumRepeatedMilitaryTypeCount: 3 },
     { requireAiVictory: true },
-    { requireProducerReplacementAfterLoss: true }
+    { requireMissionContinuation: true }
   ]) {
     expect(isEvidenceStopSafe({ ...positive, ...addition })).toBe(false);
     expect(

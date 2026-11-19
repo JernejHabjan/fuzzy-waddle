@@ -1,7 +1,7 @@
+import { readRuntimeFixture } from "../../setup/skirmish-ai-read-runtime-fixture";
 import { expect, type Page, test } from "@playwright/test";
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { writeFileSync } from "node:fs";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/canonical-ai-serialization";
 import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
@@ -40,14 +40,9 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
   test(pursuitCases[mode], async ({ page }, testInfo) => {
     const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
     const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-    const fixture: RuntimeFixture = JSON.parse(
-      readFileSync(
-        join(
-          root,
-          "tools/probable-waffle/skirmish/ai/testing/fixtures/native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
-        ),
-        "utf8"
-      )
+    const fixture: RuntimeFixture = readRuntimeFixture(
+      root,
+      "native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
     );
     const selected = fixture.recipe.variants.find((variant) => variant.id === "fight-01-tivara-quiet");
     if (!selected?.presetWorld) throw new Error("pursuit_fixture_missing");

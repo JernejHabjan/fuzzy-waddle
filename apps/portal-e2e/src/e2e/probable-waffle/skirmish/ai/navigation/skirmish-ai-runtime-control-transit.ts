@@ -10,7 +10,8 @@ export function runtimeControlTransitFailures(
   capture: AiRuntimeProductionSnapshot,
   controlId: string,
   latestTick: number,
-  expected: "arrive" | "blocked"
+  expected: "arrive" | "blocked",
+  expectedStart?: { readonly x: number; readonly y: number }
 ): string[] {
   const controls = capture.facts.filter(
     (fact) => fact.kind === "preset_control" && fact.control.id === controlId && fact.control.phase === "applied"
@@ -68,6 +69,8 @@ export function runtimeControlTransitFailures(
       start.sequence > request.sequence &&
       start.tick >= control.tick &&
       start.tick <= latestTick &&
+      (!expectedStart ||
+        (start.spatial.actualTile?.x === expectedStart.x && start.spatial.actualTile?.y === expectedStart.y)) &&
       start.spatial.caller?.order?.commandContext?.execution.commandId === command.execution?.commandId
     );
   });

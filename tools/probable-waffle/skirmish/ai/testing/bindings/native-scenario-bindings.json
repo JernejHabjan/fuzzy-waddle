@@ -1,7 +1,64 @@
 {
   "schemaVersion": 1,
   "cases": {
+    "PRO-05": {
+      "latestTick": 2600,
+      "branches": ["loss", "served"],
+      "checkpointTicks": [20, 199, 200, 400, 800, 1200, 1600, 2000, 2400, 2600],
+      "evidenceCheckpoints": [1200, 1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["loss"],
+      "combatCaptureBranches": [],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "Replace one lost producer that is still needed while leaving the other ready producer intact.",
+        "setup": ["Use a matched pair of fulfilled two-producer worlds with real workers and food service"],
+        "actions": ["Lose one bound producer at tick 200 in the subject while the other remains ready"],
+        "measurements": [
+          "Observe dated capacity demand, exact native construction and payment, ready replacement and the surviving original producer"
+        ],
+        "required": [
+          "One paid replacement after native loss and a bounded stabilization window",
+          "No additional producer in the served control"
+        ],
+        "forbidden": ["Capacity inferred from selecting construction or from repeated aggregate counts"],
+        "branches": ["Both supported factions", "Single native loss or still served"],
+        "checkpointPolicy": "The pure planner test owns the one-to-three demand transition, repeated callbacks, and 100-decision stress window.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "RAID-02": {
+      "evidenceCheckpoints": [1600, 2000],
+      "evidenceCheckpointBranches": ["reinforced"],
+      "latestTick": 2400,
+      "branches": ["reinforced", "quiet"],
+      "checkpointTicks": [20, 200, 400, 600, 799, 800, 1000, 1200, 1600, 2000, 2400],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "A native raid withdraws when its target is reinforced, preserving part of the original raiding party.",
+        "setup": [
+          "Stage a stable home economy and a reachable enemy economic objective with an initially clear approach"
+        ],
+        "actions": [
+          "Allow the AI to launch the raid; move the staged enemy defenders to its target at tick 800 in the reinforced branch"
+        ],
+        "measurements": [
+          "Selected and applied raid orders, physical attack, observed reinforcement, subsequent orders and survival of original raiders"
+        ],
+        "required": [
+          "An original raider reaches the safe fallback through an AI movement order",
+          "A matched quiet branch demonstrates an uncontested raid"
+        ],
+        "forbidden": [
+          "Unrelated home-defense commands, selected-but-unapplied orders, or late attacks by the withdrawn raiders standing in for withdrawal"
+        ],
+        "branches": ["Both AI factions", "Opposing defenders advance or stay out of contact"],
+        "checkpointPolicy": "Seal the preparation, intervention and response on the native fixed-step timeline.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
     "PLACE-01": {
+      "evidenceCheckpoints": [800, 1200, 1600, 2000],
+      "combatCaptureBranches": [],
       "latestTick": 2400,
       "branches": ["room", "constrained"],
       "acceptance": {
@@ -37,6 +94,9 @@
       }
     },
     "PLACE-02": {
+      "evidenceCheckpoints": [1200, 1600, 2000],
+      "evidenceCheckpointBranches": ["safe", "exposed"],
+      "combatCaptureBranches": [],
       "latestTick": 2400,
       "branches": ["safe", "exposed", "both_exposed"],
       "acceptance": {
@@ -69,6 +129,9 @@
       }
     },
     "PLACE-03": {
+      "checkpointTicks": [20, 200, 400, 800, 1200, 1600, 2000, 2200, 2600, 2800, 3000],
+      "evidenceCheckpoints": [2800],
+      "combatCaptureBranches": [],
       "latestTick": 3000,
       "branches": ["layout", "concurrent", "completion", "loss"],
       "acceptance": {
@@ -80,11 +143,11 @@
         ],
         "actions": [
           "Admit competing builds through the ordinary AI path",
-          "Observe each applied construction prefix, completion and one native transit/spawn at every protected route"
+          "Check clearance after each applied build; after completion, cross the authored worker and army routes with real units and observe the producer exit"
         ],
         "measurements": [
           "Exact occupied footprints and required clearance per unit",
-          "Native path traversal, spawn identity and remaining legal site after each prefix"
+          "Native worker and army crossings after the completed layout, plus producer spawn identity"
         ],
         "required": ["Every applied prefix preserves required service, movement, spawn and future construction access"],
         "forbidden": [
@@ -138,6 +201,8 @@
       }
     },
     "WALL-01": {
+      "evidenceCheckpoints": [2400],
+      "evidenceCheckpointBranches": ["terrain", "freestanding"],
       "latestTick": 3000,
       "branches": ["terrain", "freestanding", "no_value"],
       "acceptance": {
@@ -145,20 +210,22 @@
         "requiredOutcome": "Useful connected defense exploits terrain, covers assets and reduces required artificial wall length",
         "setup": [
           "Bind actual cliff/water edges, one important hostile ground approach and protected assets",
-          "Use a faction with legal wall/stair definitions and affordable measured defensive demand"
+          "Use the same base, force and resource start in both positive branches; widen only the terrain anchors in the control"
         ],
         "actions": [
-          "Let AI construct a connected defensive prefix against the real approach",
-          "Drive ordinary hostile and friendly traversal and occupy planned defender posts"
+          "Let AI finish the selected defense graph against the real approach, leaving the reserved opening clear",
+          "Order a separate ground approach to the protected asset and record a hit by a tower on the completed line"
         ],
         "measurements": [
-          "Native surface graph, artificial wall length/cost, hostile route detour/exposure and protected assets",
-          "Friendly clearance and reachable occupied firing posts"
+          "Native surface graph, artificial wall length, friendly clearance and actual defensive tower fire"
         ],
         "required": [
           "Terrain-aware defense provides measured restriction/coverage using less artificial wall than a same-purpose freestanding control"
         ],
-        "forbidden": ["Wall node count accepted as defense", "Unoccupied unreachable posts credited as coverage"],
+        "forbidden": [
+          "Wall node count accepted as defense",
+          "An unrelated hit or a shot before completion credited to the defensive line"
+        ],
         "branches": ["Terrain-assisted entrance", "Equivalent freestanding control", "No useful protected assets"],
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
         "executionStatus": "authored_not_executed"
@@ -430,6 +497,9 @@
       }
     },
     "SCOUT-03": {
+      "evidenceCheckpoints": [600, 1000, 1600],
+      "evidenceCheckpointBranches": ["escape"],
+      "combatCaptureBranches": [],
       "latestTick": 2000,
       "branches": ["escape", "trapped"],
       "acceptance": {
@@ -461,6 +531,7 @@
       }
     },
     "SCOUT-04": {
+      "evidenceCheckpoints": [800, 1200, 2000],
       "latestTick": 2400,
       "branches": ["producer", "expansion", "approach"],
       "acceptance": {
@@ -559,6 +630,8 @@
       }
     },
     "STRAT-05": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["reinforced", "blocked_retreat"],
       "latestTick": 2400,
       "branches": ["reinforced", "quiet", "blocked_retreat"],
       "acceptance": {
@@ -624,6 +697,8 @@
       }
     },
     "STRAT-07": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["expansion", "unfinished", "breach"],
       "latestTick": 2400,
       "branches": ["expansion", "unfinished", "breach", "defended"],
       "acceptance": {
@@ -712,6 +787,8 @@
       }
     },
     "STRAT-12": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["denial", "own_threat"],
       "latestTick": 2400,
       "branches": ["denial", "own_threat", "unused"],
       "acceptance": {
@@ -742,6 +819,8 @@
       }
     },
     "STRAT-13": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["equal", "escalated"],
       "latestTick": 2400,
       "branches": ["equal", "escalated", "infeasible"],
       "acceptance": {
@@ -807,6 +886,8 @@
       }
     },
     "FIGHT-01": {
+      "evidenceCheckpoints": [600, 1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["reinforced", "support_loss", "completed"],
       "latestTick": 2400,
       "branches": ["reinforced", "support_loss", "completed", "quiet"],
       "acceptance": {
@@ -823,7 +904,10 @@
         "measurements": [
           "Effective native weapons, health/losses, contact tick, last useful purpose and actual escape movement"
         ],
-        "required": ["Changed risk or completed purpose causes bounded reassessment and useful retreat/regroup"],
+        "required": [
+          "Reinforcement or completed purpose causes a useful retreat or regroup by a participant in the original fight",
+          "If the assault remains viable after support is lost, an original surviving attacker can prove useful continuation"
+        ],
         "forbidden": ["Fighting to total destruction to retain old goal", "Retreat label without physical withdrawal"],
         "branches": ["Enemy reinforcement", "Support lost", "Objective completed", "No-change favorable control"],
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
@@ -861,6 +945,8 @@
       }
     },
     "FIGHT-03": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["equal", "unequal"],
       "latestTick": 2400,
       "branches": ["unequal", "equal", "infeasible"],
       "acceptance": {
@@ -1033,6 +1119,7 @@
       }
     },
     "STRAT-08": {
+      "continuousSetup": "Start with a clear finishing opportunity and observe normal victory and its physical outcome.",
       "latestTick": 18000,
       "branches": ["exposed", "defended"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
@@ -1165,6 +1252,8 @@
       ]
     },
     "DOMAIN-05": {
+      "evidenceCheckpoints": [1200, 2000, 2400],
+      "evidenceCheckpointBranches": ["backline"],
       "latestTick": 3000,
       "branches": ["backline", "anti_air", "no_value"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
@@ -1341,6 +1430,8 @@
       }
     },
     "C-04": {
+      "evidenceCheckpoints": [1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["answered", "distinct"],
       "latestTick": 3000,
       "branches": ["answered", "repeated", "distinct", "irrelevant"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
@@ -1501,6 +1592,8 @@
       }
     },
     "H-03": {
+      "evidenceCheckpoints": [1200, 1600, 2000, 2400, 3000],
+      "combatCaptureBranches": [],
       "latestTick": 4000,
       "branches": ["training", "crop", "travel", "stalled"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000],
@@ -1569,6 +1662,7 @@
       }
     },
     "H-19": {
+      "evidenceCheckpoints": [1200, 1600, 2000],
       "latestTick": 2400,
       "branches": ["pending", "late", "error"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400],
@@ -1597,6 +1691,8 @@
       }
     },
     "H-24": {
+      "evidenceCheckpoints": [1200, 1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["information", "raid", "denial"],
       "latestTick": 3000,
       "branches": ["information", "raid", "denial", "unsafe"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
@@ -1657,6 +1753,8 @@
       }
     },
     "H-26": {
+      "evidenceCheckpoints": [1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["grouping", "safe_alternate", "threat_clears"],
       "latestTick": 3000,
       "branches": ["grouping", "safe_alternate", "no_safe_route", "threat_clears"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
@@ -1686,6 +1784,7 @@
       }
     },
     "H-06": {
+      "combatCaptureBranches": [],
       "latestTick": 2000,
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000],
       "branches": ["withheld", "rejected", "late"],
@@ -1722,6 +1821,7 @@
       ]
     },
     "H-07": {
+      "combatCaptureBranches": ["destroyed"],
       "latestTick": 2400,
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400],
       "branches": ["destroyed", "alive"],
@@ -1755,6 +1855,9 @@
       ]
     },
     "H-10": {
+      "combatCaptureBranches": [],
+      "evidenceCheckpoints": [2000, 2400],
+      "evidenceCheckpointBranches": ["resumed"],
       "latestTick": 3000,
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
       "branches": ["below_capacity", "at_capacity", "over_capacity", "resumed"],
@@ -1941,6 +2044,9 @@
       ]
     },
     "H-11": {
+      "combatCaptureBranches": [],
+      "evidenceCheckpoints": [1600, 2000, 2400, 3000],
+      "evidenceCheckpointBranches": ["one_worker", "bootstrap"],
       "latestTick": 4000,
       "branches": ["one_worker", "bootstrap", "infeasible"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000],
@@ -1980,6 +2086,8 @@
       ]
     },
     "H-12": {
+      "combatCaptureBranches": [],
+      "evidenceCheckpoints": [1600, 2000, 2400],
       "latestTick": 3000,
       "branches": ["scarce", "paid_neighbor", "permuted", "acyclic"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
@@ -2022,6 +2130,7 @@
       ]
     },
     "D-01": {
+      "combatCaptureBranches": [],
       "latestTick": 2000,
       "checkpointTicks": [40, 200, 400, 800, 1200, 1600, 2000],
       "branches": ["easy", "normal", "hard"],
@@ -2102,6 +2211,7 @@
       }
     },
     "D-04": {
+      "continuousSetup": "Observe multiple linked phases on Easy from legal opening through useful production, countering and recovery.",
       "latestTick": 18000,
       "checkpointTicks": [40, 400, 1200, 2400, 2600, 3000, 3200, 4000, 5000, 6000, 12000, 18000],
       "branches": ["opening_counter_retreat_recovery"],
@@ -2190,6 +2300,7 @@
       }
     },
     "SEQ-03": {
+      "continuousSetup": "Retain the same economy across demand, collection congestion, outage, recovery and useful expansion.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["partial_pack", "congested", "efficient"],
@@ -2220,6 +2331,7 @@
       }
     },
     "SEQ-04": {
+      "continuousSetup": "Retain the same queue and command identities across supply and producer loss, rebuild and useful production.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["immediate_paid", "cancel_race"],
@@ -2252,6 +2364,7 @@
       }
     },
     "SEQ-06": {
+      "continuousSetup": "Retain the finished defensive front across approach, breach, repair and a mobile counterattack.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["wall", "stair", "value_lost", "ground_air"],
@@ -2281,6 +2394,7 @@
       }
     },
     "SEQ-07": {
+      "continuousSetup": "Retain the same force and knowledge across confirmed adaptation, failed assault and renewed pressure.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["confirmed", "stale", "alternate"],
@@ -2306,6 +2420,7 @@
       }
     },
     "DBG-04": {
+      "combatCaptureBranches": [],
       "latestTick": 2400,
       "checkpointTicks": [40, 200, 400, 800, 1200, 1600, 2000, 2400],
       "branches": ["identical", "changed_input", "changed_config", "same_input_divergence", "what_if"],
@@ -2634,6 +2749,7 @@
       }
     },
     "SEQ-08": {
+      "continuousSetup": "Carry the source and resumed matches through a normal result, then verify a clean next match. The initial samples only cover the save or transfer boundary.",
       "latestTick": 18000,
       "checkpointTicks": [19, 119, 199, 400, 18000],
       "branches": ["before_apply", "applied_pending", "during_active", "host_transfer"],

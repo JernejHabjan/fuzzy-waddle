@@ -217,15 +217,33 @@ function informationFailures(branch: string, context: ReturnType<typeof nativeSc
       seen.set(key, { tick: entry.observedTick, confidence: entry.confidencePermille });
     }
   }
-  if (
-    ["answered", "distinct"].includes(branch) &&
-    (!nativeScoutTrips(context).length ||
-      !context.frames.some((frame) =>
-        frame.decision.missionState?.knowledge.questions.some((question) => question.state === "answered")
-      ) ||
-      !nativeWeaponHits(context, target).length)
-  )
-    failures.push("classic_relevant_scout_answer_has_no_changed_native_decision");
+  if (["answered", "distinct"].includes(branch)) {
+    const discovery = context.frames.find((frame) =>
+      frame.decision.input?.observation?.actors.some(
+        (actor) => actor.actorId === target && actor.visibility === "visible"
+      )
+    );
+    const hits = target ? nativeWeaponHits(context, target) : [];
+    const usedAnswer =
+      discovery &&
+      nativeScoutTrips(context).some((trip) => {
+        if (discovery.tick < trip.movement.startedTick || discovery.tick > trip.arrivalTick + 40) return false;
+        const selected = context.frames.find(({ tick }) => tick === trip.selectedTick)?.decision.missionState;
+        const squadId = trip.intent.planId?.replace(/^plan:/, "");
+        const questionId = selected?.squads.find((squad) => squad.squadId === squadId)?.objectiveId;
+        if (!selected?.knowledge.questions.some((q) => q.questionId === questionId && q.state === "open")) return false;
+        return context.frames.some(
+          (frame) =>
+            frame.tick >= trip.movement.startedTick &&
+            frame.tick <= trip.arrivalTick + 40 &&
+            frame.decision.missionState?.knowledge.questions.some(
+              (q) => q.questionId === questionId && q.state === "answered"
+            ) &&
+            hits.some((hit) => hit.tick >= Math.max(discovery.tick, frame.tick))
+        );
+      });
+    if (!usedAnswer) failures.push("classic_relevant_scout_answer_has_no_changed_native_decision");
+  }
   if (
     branch === "repeated" &&
     context.frames.filter((frame) =>

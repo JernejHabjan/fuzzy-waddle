@@ -2,9 +2,14 @@ import { nativeScenarioBinding } from "./skirmish-ai-native-binding";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
 import { nativeScenarioContext } from "../../contracts/skirmish-ai-native-scenario-context";
-import { nativeCompletedPlacements } from "../../construction/evaluation/skirmish-ai-native-construction-evidence";
+import { nativeCompletedFortification } from "../../fortification/skirmish-ai-native-completed-fortification";
 import { evaluateDifficultyFairnessPairs } from "../../difficulty/skirmish-ai-native-difficulty-fairness";
 import { nativeEvidenceWindow } from "./skirmish-ai-native-proof-window";
+import {
+  nativeCompletedPlacements,
+  nativeInitialFieldSites
+} from "../../construction/evaluation/skirmish-ai-native-construction-evidence";
+import { visibleGroundThreatCovers } from "../../construction/evaluation/skirmish-ai-native-placement-evaluation";
 
 /** Full-case coverage and counterfactual comparisons; a successful individual diagnostic world remains partial. */
 export function evaluateNativeScenarioPairs(
@@ -110,19 +115,74 @@ export function evaluateNativeScenarioPairs(
       );
       if (!changed) failures.push("strategy_elapsed_time_control_has_no_state_driven_phase_difference");
     }
+    if (id === "PLACE-02") {
+      const safe = find("safe");
+      const exposed = find("exposed");
+      if (safe && exposed && !fieldPlacementChangedUnderThreat(fixture, safe, exposed, definition.latestTick))
+        failures.push("placement_outer_weapon_did_not_change_the_paid_field_site");
+    }
     if (id === "WALL-01") {
       const assisted = find("terrain"),
         free = find("freestanding");
       if (!assisted || !free) continue;
-      const walls = (world: RuntimeVariantResult) =>
-        nativeCompletedPlacements(nativeScenarioContext(world, definition.latestTick)).filter(
-          (node) => node.value.site.canonicalObjectName === "Wall"
-        ).length;
-      if (!walls(assisted) || walls(assisted) >= walls(free))
+      const walls = (world: RuntimeVariantResult) => {
+        const variant = fixture.recipe.variants.find((candidate) => candidate.id === world.variantId);
+        const early = nativeEvidenceWindow(id, world, fixture, variant, definition.latestTick);
+        const context = nativeScenarioContext(world, early?.[0] ?? definition.latestTick, early?.[1], {
+          requireResourceCoverage: false
+        });
+        return context.failures.length ? undefined : nativeCompletedFortification(context)?.walls;
+      };
+      const anchored = walls(assisted);
+      const widened = walls(free);
+      if (anchored === undefined || widened === undefined || anchored >= widened)
         failures.push("fortification_terrain_anchor_does_not_reduce_native_wall_length");
     }
   }
   return [...new Set(failures)];
+}
+
+/** The safe world's chosen footprint must still be on open terrain in the exposed decision but in weapon range. */
+function fieldPlacementChangedUnderThreat(
+  fixture: RuntimeFixture,
+  safe: RuntimeVariantResult,
+  exposed: RuntimeVariantResult,
+  ceiling: number
+): boolean {
+  const firstField = (result: RuntimeVariantResult) => {
+    const variant = fixture.recipe.variants.find((entry) => entry.id === result.variantId);
+    const early = nativeEvidenceWindow("PLACE-02", result, fixture, variant, ceiling);
+    const context = nativeScenarioContext(result, early?.[0] ?? ceiling, early?.[1], {
+      requireResourceCoverage: false
+    });
+    if (context.failures.length) return undefined;
+    return {
+      context,
+      field: nativeCompletedPlacements(context).find(({ value }) => value.site.canonicalObjectName === "Field")
+    };
+  };
+  const normal = firstField(safe)?.field;
+  const guardedProof = firstField(exposed);
+  const guarded = guardedProof?.field;
+  const threat = exposed.presetCreatedActorIds["outer-threat"];
+  if (
+    !normal ||
+    !guardedProof ||
+    !guarded ||
+    !threat ||
+    !normal.value.footprint?.length ||
+    !guarded.value.footprint?.length
+  )
+    return false;
+  const frame = guarded.selected;
+  const blockedByThreat = (tile: { readonly x: number; readonly y: number }) =>
+    visibleGroundThreatCovers(frame, { ...tile, z: normal.value.command.tileVec3.z }, threat);
+  const outer = normal.value.command.tileVec3;
+  return (
+    nativeInitialFieldSites(guardedProof.context)?.some(({ x, y }) => x === outer.x && y === outer.y) === true &&
+    normal.value.footprint.some(blockedByThreat) &&
+    !guarded.value.footprint.some(blockedByThreat)
+  );
 }
 
 /** Compare complete permitted inputs and exact selected intents until genuine permitted contact first differs. */
