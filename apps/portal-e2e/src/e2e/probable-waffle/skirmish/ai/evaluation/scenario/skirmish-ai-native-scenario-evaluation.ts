@@ -1,3 +1,4 @@
+import { evaluateNativeProducerReplacement } from "../../production/evaluation/skirmish-ai-native-producer-replacement";
 import { evaluateNativeBundles } from "./skirmish-ai-native-bundle-evaluation";
 import { evaluateNativeScarceRecovery } from "../../recovery/skirmish-ai-native-scarce-recovery-evaluation";
 import { evaluateNativeFault } from "../../recovery/skirmish-ai-native-fault-evaluation";
@@ -237,7 +238,8 @@ export function evaluateNativeScenarioVariant(
   if (context.failures.length) return context.failures;
   if (id.startsWith("SCOUT-") || id === "H-22") return evaluateNativeScouting(id, branch, context);
   const failures = nativeScoutingFairness(context);
-  if (id === "H-05") failures.push(...evaluateNativeOptionalRelease(branch, context));
+  if (id === "PRO-05") failures.push(...evaluateNativeProducerReplacement(branch, context));
+  else if (id === "H-05") failures.push(...evaluateNativeOptionalRelease(branch, context));
   else if (id === "H-08") failures.push(...evaluateNativeLateAuthority(branch, context));
   else if (id === "H-09") failures.push(...evaluateNativeRetention(branch, context));
   else if (id === "H-23") failures.push(...evaluateNativeIslandEstablishment(branch, context));

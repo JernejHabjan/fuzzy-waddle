@@ -7,6 +7,7 @@ import { control } from "./native-domain-worlds.ts";
 export function nativeRaidWithdrawalWorld(faction: string, branch: string): NativeScenarioWorld {
   const world = nativeScenarioWorld("RAID-02", faction, branch);
   const enemy = faction === "Tivara" ? "Skaduwee" : "Tivara";
+  world.initialOrders = [{ workerFixtureActorId: "worker-0", sourceFixtureActorId: "own-source", kind: "gather" }];
   const inheritedRoles = new Set(["own-deposit", "own-source", "ready-house", "ready-producer", "ready-granary"]);
   world.actors = world.actors.filter(
     (entry) => inheritedRoles.has(entry.fixtureActorId) || /^worker-[0-3]$/.test(entry.fixtureActorId)

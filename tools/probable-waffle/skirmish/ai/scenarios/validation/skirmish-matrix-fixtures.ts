@@ -12,6 +12,7 @@ import { validEconomyContracts, validResourceRecoveryContract } from "./skirmish
 import { readNativeRecipeDraft } from "../registration/native-recipe-drafts.ts";
 import { validExpansionPressureRecipe } from "./skirmish-runtime-expansion-pressure-fixture.ts";
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.ts";
+import { validateRuntimePresetRoles } from "./skirmish-runtime-preset-roles.ts";
 import { readNativeScenarioFixture } from "../registration/read-native-scenario-fixture.ts";
 
 export function validateManifest(value, fixtureDirectory) {
@@ -256,6 +257,10 @@ function validateRuntimeFixture(fixture, scenarioId) {
   validateRuntimeRecipeMetadata(recipe);
   validateRuntimeScenarioWindow(fixture, scenarioId);
   validateEvidenceStopAssertions(fixture);
+  for (const variant of recipe.variants) {
+    validateRuntimePresetRoles(variant.presetWorld, variant.id);
+    validateRuntimePresetRoles(variant.nextMatchPresetWorld, variant.id + ":next-match");
+  }
 }
 
 export function safeReference(value) {

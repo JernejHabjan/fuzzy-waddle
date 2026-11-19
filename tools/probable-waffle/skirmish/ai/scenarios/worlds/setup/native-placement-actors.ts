@@ -28,7 +28,7 @@ export function configureNativePlacementActors(context: NativeActorLayoutContext
   if (id === "STRAT-05" && branch === "blocked_retreat")
     actors.find((entry) => entry.fixtureActorId === "front-target-b").position = tile(20, 20);
   if (wall) {
-    if (id === "WALL-01" && branch === "terrain")
+    if (id === "WALL-01")
       actors.push(
         actor("protected-deposit", "WorkMill", 2, 36, 26),
         actor("worker-transit", `${own}WorkerMale`, 2, 28, 31),
@@ -47,15 +47,14 @@ export function configureNativePlacementActors(context: NativeActorLayoutContext
     if (branch === "air")
       actors.push(actor("air-threat", enemy === "Skaduwee" ? "SkaduweeOwl" : "TivaraAlchemist", 1, 23, 23));
     if (id === "WALL-05" && branch === "shore") actors.push(actor("shore-transit", `${own}WorkerMale`, 2, 26, 26));
-    if (id === "WALL-02" && branch === "enemy_opening")
-      actors.push(actor("hostile-transit", melee(enemy), 1, 5, 20));
+    if (id === "WALL-02" && branch === "enemy_opening") actors.push(actor("hostile-transit", melee(enemy), 1, 5, 20));
     if (id === "WALL-02" && branch === "enemy_opening" && own === "Skaduwee")
       for (let index = 0; index < 4; index++)
         actors.push(actor(`opening-pressure-${index}`, melee(enemy), 1, 18 + (index % 2), 18 + Math.floor(index / 2)));
     if (branch === "multiple_bases")
       actors.push(actor("second-home", own === "Tivara" ? "Sandhold" : "FrostForge", 2, 38, 36));
   }
-  if (id === "WALL-01" && branch === "terrain") {
+  if (id === "WALL-01") {
     // WALL-01 isolates the optional fortification plan. Start with its essential housing
     // buffer met so the manager is not correctly held behind unmet supply demand.
     const housing = own === "Tivara" ? "Olival" : "Emberstone";

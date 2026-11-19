@@ -58,7 +58,6 @@ export interface RuntimeAssertion {
   readonly requiredGroundRouteVariantIds?: readonly string[];
   readonly requireRaidDefenseRecovery?: boolean;
   readonly requiredPresetFixtureId?: string;
-  readonly requireProducerReplacementAfterLoss?: boolean;
   readonly requiredSupplyPrebuild?: {
     readonly minimumBuffer: number;
     readonly latestTick: number;

@@ -2,7 +2,7 @@ import { nativeScenarioBinding } from "./skirmish-ai-native-binding";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
 import { nativeScenarioContext } from "../../contracts/skirmish-ai-native-scenario-context";
-import { nativeCompletedPlacements } from "../../construction/evaluation/skirmish-ai-native-construction-evidence";
+import { nativeCompletedFortificationWallCount } from "../../fortification/skirmish-ai-native-completed-fortification";
 import { evaluateDifficultyFairnessPairs } from "../../difficulty/skirmish-ai-native-difficulty-fairness";
 import { nativeEvidenceWindow } from "./skirmish-ai-native-proof-window";
 
@@ -114,11 +114,9 @@ export function evaluateNativeScenarioPairs(
       const assisted = find("terrain"),
         free = find("freestanding");
       if (!assisted || !free) continue;
-      const walls = (world: RuntimeVariantResult) =>
-        nativeCompletedPlacements(nativeScenarioContext(world, definition.latestTick)).filter(
-          (node) => node.value.site.canonicalObjectName === "Wall"
-        ).length;
-      if (!walls(assisted) || walls(assisted) >= walls(free))
+      const anchored = nativeCompletedFortificationWallCount(nativeScenarioContext(assisted, definition.latestTick));
+      const widened = nativeCompletedFortificationWallCount(nativeScenarioContext(free, definition.latestTick));
+      if (anchored === undefined || widened === undefined || anchored >= widened)
         failures.push("fortification_terrain_anchor_does_not_reduce_native_wall_length");
     }
   }
