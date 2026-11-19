@@ -40,11 +40,14 @@ export function nativeScenarioContext(
   terminalHorizon?: number,
   options: { readonly requireResourceCoverage?: boolean } = {}
 ) {
-  const capture = result.productionCapture,
-    opponent = result.opponentCapture;
+  const capture = sealCapturedFacts(result.productionCapture, latestTick);
+  const opponent = sealCapturedFacts(result.opponentCapture, latestTick);
+  const otherOpponents = result.otherOpponentCaptures?.map((other) => sealCapturedFacts(other, latestTick) ?? other);
   const failures = [
-    ...runtimeClosedHistoryFailures(capture, latestTick, terminalHorizon),
-    ...runtimeClosedHistoryFailures(opponent, latestTick, terminalHorizon).map((failure) => `opponent:${failure}`),
+    ...runtimeClosedHistoryFailures(result.productionCapture, latestTick, terminalHorizon),
+    ...runtimeClosedHistoryFailures(result.opponentCapture, latestTick, terminalHorizon).map(
+      (failure) => `opponent:${failure}`
+    ),
     ...(result.otherOpponentCaptures ?? []).flatMap((other) => [
       ...runtimeClosedHistoryFailures(other, latestTick, terminalHorizon),
       ...(JSON.stringify(other.setup) !== JSON.stringify(capture?.setup) ||
@@ -109,10 +112,8 @@ export function nativeScenarioContext(
   const facts = [
     ...(capture?.facts ?? []),
     ...(opponent?.facts ?? []),
-    ...(result.otherOpponentCaptures ?? []).flatMap((other) => other.facts)
-  ]
-    .filter((fact) => fact.tick <= latestTick)
-    .sort((a, b) => a.sequence - b.sequence);
+    ...(otherOpponents ?? []).flatMap((other) => other.facts)
+  ].sort((a, b) => a.sequence - b.sequence);
   const arrived = (actorId?: string, afterTick = 0) =>
     movements.movements.filter(
       (movement) =>
@@ -149,5 +150,28 @@ export function nativeScenarioContext(
     const commanded = selectedActorIds(frame);
     if (commanded.length !== new Set(commanded).size) failures.push("native_actor_commanded_twice_in_decision");
   }
-  return { result, capture, opponent, frames, facts, roles, role, arrived, damageTo, failures };
+  const sealedResult: RuntimeVariantResult = {
+    ...result,
+    productionCapture: capture,
+    opponentCapture: opponent,
+    otherOpponentCaptures: otherOpponents,
+    checkpoints: result.checkpoints?.filter((checkpoint) => checkpoint.tick <= latestTick) ?? [],
+    perturbations: result.perturbations?.filter((event) => event.tick <= latestTick) ?? []
+  };
+  return { result: sealedResult, capture, opponent, frames, facts, roles, role, arrived, damageTo, failures };
+}
+
+/** Advancing one frame seals the requested tick and may also emit events belonging to the next tick. */
+function sealCapturedFacts(
+  capture: RuntimeVariantResult["productionCapture"],
+  throughTick: number
+): RuntimeVariantResult["productionCapture"] {
+  if (!capture) return undefined;
+  return {
+    ...capture,
+    facts: capture.facts.filter((fact) => fact.tick <= throughTick),
+    snapshots: capture.snapshots?.filter((snapshot) => snapshot.tick <= throughTick) ?? [],
+    recipientResourceFacts: capture.recipientResourceFacts?.filter((fact) => fact.tick <= throughTick),
+    movementQueries: capture.movementQueries?.filter((query) => query.tick <= throughTick)
+  };
 }
