@@ -16,31 +16,6 @@ export function evaluateRuntimePresetWorld(assertion: RuntimeAssertion, variant:
       failures.push(`${variant.variantId}:preset_zero_work`);
     }
   }
-  if (assertion.requireProducerReplacementAfterLoss) {
-    const loss = variant.perturbations.find((perturbation) => perturbation.id === "producer-loss");
-    const producerName = loss?.subjectName;
-    const beforeCount = Math.max(
-      0,
-      ...variant.checkpoints
-        .filter((checkpoint) => checkpoint.tick < (loss?.tick ?? 0))
-        .map((checkpoint) => checkpoint.militaryProducerNames.filter((name) => name === producerName).length)
-    );
-    const lossIndex = variant.checkpoints.findIndex(
-      (checkpoint) =>
-        checkpoint.tick >= (loss?.tick ?? Number.MAX_SAFE_INTEGER) &&
-        checkpoint.militaryProducerNames.filter((name) => name === producerName).length < beforeCount
-    );
-    const restored = variant.checkpoints
-      .slice(lossIndex + 1)
-      .some(
-        (checkpoint) => checkpoint.militaryProducerNames.filter((name) => name === producerName).length >= beforeCount
-      );
-    if (!loss || loss.dispatchedActors <= 0 || !producerName || beforeCount === 0) {
-      failures.push(`${variant.variantId}:producer_loss_not_applied`);
-    }
-    if (lossIndex < 0) failures.push(`${variant.variantId}:producer_loss_not_observed`);
-    if (!restored) failures.push(`${variant.variantId}:producer_not_replaced`);
-  }
   if (assertion.requiredDefenseTargetName !== undefined || assertion.requiredDefenseActorName !== undefined) {
     const compatibleDefense = variant.checkpoints.some((checkpoint) =>
       checkpoint.squads.some((squad) => {

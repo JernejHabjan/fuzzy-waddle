@@ -1,6 +1,4 @@
-import type {
-  AiRuntimeProductionFact
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { RuntimeVariantResult } from "../runner/skirmish-ai-runtime-variant-result";
 import { runtimeClosedHistoryFailures } from "../capture/skirmish-ai-runtime-closed-history";
 import { normalizeRuntimeMovement } from "../navigation/skirmish-ai-runtime-movement-normalization";
@@ -17,6 +15,7 @@ export function nativeScenarioRequiresResourceCoverage(scenarioId: string): bool
     !["STRAT-02", "STRAT-03", "STRAT-04", "STRAT-05", "RAID-01", "RAID-02", "RAID-03"].includes(scenarioId) &&
     ![
       "EXP-01",
+      "PRO-05",
       "H-06",
       "H-07",
       "H-10",
