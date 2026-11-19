@@ -21,6 +21,10 @@ export * from "./lib/player/ai-controller/contracts/diagnostics/ai-repro-bundle"
 export * from "./lib/player/ai-controller/contracts/validation/validate-ai-contracts";
 export * from "./lib/player/ai-controller/planning/coordination/ai-manager-proposal";
 export * from "./lib/player/ai-controller/planning/coordination/ai-decision-planner";
+export * from "./lib/player/ai-controller/planning/production/macro/ai-macro-manager";
+export * from "./lib/player/ai-controller/planning/access/ai-access-graph";
+export * from "./lib/player/ai-controller/profiles/ai-profile-defaults";
+export * from "./lib/player/ai-controller/profiles/ai-opening-archetypes";
 export * from "./lib/player/ai-controller/brain/state/create-ai-brain-state";
 export * from "./lib/player/ai-controller/brain/persistence/canonical-ai-serialization";
 export * from "./lib/player/ai-controller/brain/persistence/migrate-ai-brain-state";
@@ -31,4 +35,3 @@ export * from "./lib/player/ai-controller/debug/project-ai-debug-snapshot";
 export * from "./lib/player/ai-controller/debug/project-ai-strategic-intent-summary";
 export * from "./lib/player/ai-controller/debug/parse-ai-repro-bundle";
 export * from "./lib/player/ai-controller/debug/ai-incident-capture-store";
-export * from "./lib/player/ai-controller/planning/access/ai-access-graph";
