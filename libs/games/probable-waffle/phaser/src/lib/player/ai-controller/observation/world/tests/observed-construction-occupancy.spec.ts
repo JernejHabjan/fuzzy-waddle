@@ -8,8 +8,8 @@ import { ActorTranslateComponent } from "../../../../../entity/components/moveme
 import { ColliderComponent } from "../../../../../entity/components/movement/collider-component";
 import { observedConstructionOccupancy, observedStaticConstructionOccupancy } from "../observed-construction-occupancy";
 
-jest.mock("../../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
-jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
+jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 
 it("uses all current fair bodies without consulting hidden or last-seen live actors", () => {
   const owned = createAiTestOwnedActor("own"),

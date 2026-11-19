@@ -7,8 +7,8 @@ import { getGameObjectCurrentTile } from "../../../../../data/game-object-helper
 import { observeAiScoutSearchPoints } from "../ai-scout-coverage";
 import { buildAiScoutSearchPoints } from "../ai-scout-search-points";
 
-jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
+jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
 
 const cells: AiAccessCell[] = Array.from({ length: 16 }, (_, x) => ({
   x,
