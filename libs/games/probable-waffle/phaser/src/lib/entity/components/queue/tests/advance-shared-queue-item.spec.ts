@@ -14,7 +14,7 @@ import type { ProductionComponent } from "../../production/production-component"
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture(remainingTime = 100) {
   const ticks = new Subject<number>();

@@ -18,9 +18,9 @@ import { dispatchAiBrainResult } from "../../commands/dispatch-ai-brain-result";
 import { dispatchAiIntents } from "../../commands/ai-intent-dispatcher";
 import { PlayerAiController } from "../../player-ai-controller";
 
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({ isSnapshotApplyInProgress: jest.fn() }));
-jest.mock("../commands/ai-intent-dispatcher", () => ({ dispatchAiIntents: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({ isSnapshotApplyInProgress: jest.fn() }));
+jest.mock("../../commands/ai-intent-dispatcher", () => ({ dispatchAiIntents: jest.fn() }));
 
 /** Actual-shaped consumed inputs; these synthetic authorities do not prove a live decision or path. */
 function fixture() {

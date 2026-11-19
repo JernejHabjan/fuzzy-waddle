@@ -6,9 +6,9 @@ import { OwnerComponent } from "../../owner-component";
 import { ConstructionSiteComponent } from "../construction-site-component";
 import { BuilderComponent } from "../builder-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn(), getGameObjectLogicalTransform: jest.fn() }));
-jest.mock("../../../library/distance-helper", () => ({ DistanceHelper: {
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ onObjectReady: jest.fn(), getGameObjectLogicalTransform: jest.fn() }));
+jest.mock("../../../../library/distance-helper", () => ({ DistanceHelper: {
   distance3D: () => 1, batchGetDistancesBetweenGameObjects: jest.fn()
 } }));
 

@@ -11,7 +11,7 @@ import { ResourceServiceObservation } from "../resource-service-observation";
 import type { ResourceServiceEvent } from "../resource-service-event";
 import { observeResourceCredit } from "../observe-resource-credit";
 
-jest.mock("../../../data/scene-data", () => ({
+jest.mock("../../../../data/scene-data", () => ({
   getCommunicator: jest.fn(),
   getPlayer: jest.fn(),
   isSnapshotApplyInProgress: jest.fn()

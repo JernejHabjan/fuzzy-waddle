@@ -7,8 +7,8 @@ import { PawnOrderObservation } from "../../../../prefabs/ai-agents/orders/pawn-
 import { productionCaptureItem } from "../../../../player/ai-controller/test-support/production/fixtures/ai-runtime-production-capture-fixtures";
 import { observeProductionRallyAction } from "../observe-production-rally-action";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
 
 describe("native selected rally action scope (unrun until final gate)", () => {
   const product = {} as Phaser.GameObjects.GameObject;

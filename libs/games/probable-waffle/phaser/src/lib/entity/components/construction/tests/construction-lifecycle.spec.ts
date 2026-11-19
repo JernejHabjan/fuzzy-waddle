@@ -15,18 +15,18 @@ import { HealthComponent } from "../../combat/components/health-component";
 import { ActorIndexSystem } from "../../../../world/services/ActorIndexSystem";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({ isSnapshotApplyInProgress: () => false }));
-jest.mock("../../../data/actor-data", () => ({ upgradeFromConstructingToFullActorData: jest.fn() }));
-jest.mock("../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({ isSnapshotApplyInProgress: () => false }));
+jest.mock("../../../../data/actor-data", () => ({ upgradeFromConstructingToFullActorData: jest.fn() }));
+jest.mock("../../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
+jest.mock("../../../../data/game-object-helper", () => ({
   onObjectReady: jest.fn(),
   getGameObjectVisibility: () => undefined
 }));
-jest.mock("../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("./construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: class {} }));
-jest.mock("./construction-payment", () => ({
+jest.mock("../../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: class {} }));
+jest.mock("../construction-payment", () => ({
   startConstructionPayment: jest.fn(),
   refundConstructionPayment: jest.fn()
 }));

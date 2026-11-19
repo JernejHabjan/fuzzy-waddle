@@ -8,9 +8,9 @@ import { MovementQueryObservation } from "../../../../entity/systems/movement-qu
 import { PawnAiBlackboard } from "../../controller/pawn-ai-blackboard";
 import { PawnAgentTending } from "../pawn-agent-tending";
 
-jest.mock("../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ getGameObjectTileInNavigableRadius: jest.fn() }));
-jest.mock("../../../entity/systems/movement-query-observation", () => ({
+jest.mock("../../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ getGameObjectTileInNavigableRadius: jest.fn() }));
+jest.mock("../../../../entity/systems/movement-query-observation", () => ({
   MovementQueryObservation: { capture: jest.fn() }
 }));
 

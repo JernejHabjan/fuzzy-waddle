@@ -9,10 +9,10 @@ import { ColliderComponent } from "../../../../../entity/components/movement/col
 import { getSceneComponent, getSceneService } from "../../../../../world/services/scene-component-helpers";
 import { permittedAiObservationTopology, projectAiObservationMap } from "../ai-observation-map";
 
-jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
-jest.mock("../../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
-jest.mock("../../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
+jest.mock("../../../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({
   getSceneComponent: jest.fn(),
   getSceneService: jest.fn()
 }));
