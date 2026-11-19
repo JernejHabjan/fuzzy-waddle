@@ -23,6 +23,12 @@ export function nativeEvidenceCheckpoints(
     variant.evidenceStop
   )
     return [];
+  const branch = fixture.assertions[id]?.requiredNativeScenario?.branchByVariant[variant.id];
+  if (
+    "evidenceCheckpointBranches" in binding &&
+    !binding.evidenceCheckpointBranches.some((candidate) => candidate === branch)
+  )
+    return [];
   return binding.evidenceCheckpoints;
 }
 

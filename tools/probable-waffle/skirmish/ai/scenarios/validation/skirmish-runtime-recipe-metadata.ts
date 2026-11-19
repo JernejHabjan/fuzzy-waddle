@@ -33,6 +33,17 @@ export function selectedRuntimeCheckpoints(fixture, variant, scenarioIds: readon
   return [...new Set(checkpoints)].filter((tick) => tick <= ceiling).sort((left, right) => left - right);
 }
 
+export function runtimeVariantInterventions(variant): { readonly id: string; readonly tick: number }[] {
+  return [
+    ...(variant.perturbations ?? []),
+    ...(variant.presetWorld?.events ?? []),
+    ...(variant.presetWorld?.controls ?? []).map((control) => ({
+      id: control.id,
+      tick: Math.max(control.requestTick, control.applicationTick)
+    }))
+  ];
+}
+
 /** A shortened observation window must still reach every authored intervention in the selected branch. */
 export function validateRuntimeScenarioWindow(fixture, scenarioId: string): void {
   const variants = fixture.recipe.variants.filter(
@@ -42,15 +53,7 @@ export function validateRuntimeScenarioWindow(fixture, scenarioId: string): void
   for (const variant of variants) {
     const lastTick = selectedRuntimeCheckpoints(fixture, variant, [scenarioId]).at(-1);
     if (lastTick === undefined) throw new Error(`runtime_recipe_window_empty:${scenarioId}:${variant.id}`);
-    const interventions = [
-      ...(variant.perturbations ?? []),
-      ...(variant.presetWorld?.events ?? []),
-      ...(variant.presetWorld?.controls ?? []).map((control) => ({
-        id: control.id,
-        tick: Math.max(control.requestTick, control.applicationTick)
-      }))
-    ];
-    const unreachable = interventions.find((event) => event.tick > lastTick);
+    const unreachable = runtimeVariantInterventions(variant).find((event) => event.tick > lastTick);
     if (unreachable)
       throw new Error(`runtime_recipe_intervention_outside_window:${scenarioId}:${variant.id}:${unreachable.id}`);
   }

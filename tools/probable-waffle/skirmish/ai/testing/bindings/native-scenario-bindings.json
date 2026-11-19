@@ -2,6 +2,8 @@
   "schemaVersion": 1,
   "cases": {
     "RAID-02": {
+      "evidenceCheckpoints": [1600, 2000],
+      "evidenceCheckpointBranches": ["reinforced"],
       "latestTick": 2400,
       "branches": ["reinforced", "quiet"],
       "checkpointTicks": [20, 200, 400, 600, 799, 800, 1000, 1200, 1600, 2000, 2400],
@@ -458,6 +460,9 @@
       }
     },
     "SCOUT-03": {
+      "evidenceCheckpoints": [600, 1000, 1600],
+      "evidenceCheckpointBranches": ["escape"],
+      "combatCaptureBranches": [],
       "latestTick": 2000,
       "branches": ["escape", "trapped"],
       "acceptance": {
@@ -489,6 +494,7 @@
       }
     },
     "SCOUT-04": {
+      "evidenceCheckpoints": [800, 1200, 2000],
       "latestTick": 2400,
       "branches": ["producer", "expansion", "approach"],
       "acceptance": {
@@ -835,6 +841,8 @@
       }
     },
     "FIGHT-01": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["reinforced", "support_loss", "completed"],
       "latestTick": 2400,
       "branches": ["reinforced", "support_loss", "completed", "quiet"],
       "acceptance": {
@@ -1194,6 +1202,8 @@
       ]
     },
     "DOMAIN-05": {
+      "evidenceCheckpoints": [1200, 2000, 2400],
+      "evidenceCheckpointBranches": ["backline"],
       "latestTick": 3000,
       "branches": ["backline", "anti_air", "no_value"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],

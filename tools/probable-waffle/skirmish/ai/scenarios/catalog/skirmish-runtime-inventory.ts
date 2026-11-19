@@ -23,7 +23,11 @@ export function collectRuntimeInventory(manifest, readFixture) {
         variant,
         matches.map((row) => row.id)
       );
-      const nativeProbe = matches.length === 1 && nativeScenarioBindings.cases[matches[0].id]?.evidenceCheckpoints;
+      const nativeCase = matches.length === 1 ? nativeScenarioBindings.cases[matches[0].id] : undefined;
+      const branch = fixture.assertions[matches[0].id]?.requiredNativeScenario?.branchByVariant[variant.id];
+      const nativeProbe =
+        nativeCase?.evidenceCheckpoints &&
+        (nativeCase.evidenceCheckpointBranches === undefined || nativeCase.evidenceCheckpointBranches.includes(branch));
       return [{ variant, checkpoints, maximumTick: Math.max(0, ...checkpoints), nativeProbe: !!nativeProbe }];
     });
     const focused = variants.filter(({ variant }) => variant.executionKind?.startsWith("focused_"));

@@ -61,8 +61,11 @@ export function evaluateNativeRaidWithdrawal(
     return !!actorId && raiders.has(actorId);
   });
   const arrival = withdrawal?.observations.find((entry) => entry.spatial.phase === "arrived");
-  if (!arrival) failures.push("raid_withdrawal_no_original_raider_reached_safety");
-  else if (
+  if (!arrival) return [...failures, "raid_withdrawal_no_original_raider_reached_safety"];
+  // Leave room for the planner to reconsider twice after reaching its fallback.
+  if ((context.capture?.frontiers?.closedThroughTick ?? 0) < arrival.tick + 400)
+    failures.push("raid_withdrawal_post_arrival_observation_incomplete");
+  if (
     context.frames.some(
       (frame) =>
         frame.tick > arrival.tick &&
