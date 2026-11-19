@@ -56,6 +56,17 @@ test("SCOUT-02 opens with visible contact outside the probe's attack radius", ()
   }
 });
 
+test("scouting captures combat history only where it proves the hidden-health mutation", () => {
+  for (const id of ["SCOUT-01", "SCOUT-02"]) {
+    const fixture = nativeScenarioFixture(id);
+    const binding = fixture.assertions[id].requiredNativeScenario;
+    for (const variant of fixture.recipe.variants) {
+      assert.equal(variant.captureConstruction, true);
+      assert.equal(variant.captureCombat, binding.branchByVariant[variant.id] === "hidden_health" ? true : undefined);
+    }
+  }
+});
+
 test("SCOUT-02 hidden branches withdraw beyond the AI army while preserving an independent position mutation", () => {
   const fixture = nativeScenarioFixture("SCOUT-02");
   for (const variant of fixture.recipe.variants.filter(

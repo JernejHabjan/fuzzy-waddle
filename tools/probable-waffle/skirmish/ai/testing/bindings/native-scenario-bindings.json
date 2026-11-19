@@ -361,6 +361,7 @@
     "SCOUT-01": {
       "latestTick": 2000,
       "branches": ["hidden_a", "hidden_b"],
+      "combatCaptureBranches": [],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
         "requiredOutcome": "Assign reachable information objectives; discover legally rather than target hidden IDs",
@@ -394,6 +395,7 @@
     "SCOUT-02": {
       "latestTick": 2400,
       "branches": ["withdrawn", "visible", "hidden_position", "hidden_health", "hidden_queue"],
+      "combatCaptureBranches": ["hidden_health"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
         "requiredOutcome": "Increase relevant scouting; reduce stale certainty; no current hidden HP/location/queue leakage",

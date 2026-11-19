@@ -51,7 +51,6 @@
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
         "captureConstruction": true,
-        "captureCombat": true,
         "scenarioIds": ["SCOUT-01"],
         "presetWorld": {
           "fixtureId": "scout-01-tivara-hidden-a",
@@ -353,7 +352,6 @@
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
         "captureConstruction": true,
-        "captureCombat": true,
         "scenarioIds": ["SCOUT-01"],
         "presetWorld": {
           "fixtureId": "scout-01-tivara-hidden-b",
@@ -655,7 +653,6 @@
         "humanFaction": "Tivara",
         "difficulty": "Normal",
         "captureConstruction": true,
-        "captureCombat": true,
         "scenarioIds": ["SCOUT-01"],
         "presetWorld": {
           "fixtureId": "scout-01-skaduwee-hidden-a",
@@ -957,7 +954,6 @@
         "humanFaction": "Tivara",
         "difficulty": "Normal",
         "captureConstruction": true,
-        "captureCombat": true,
         "scenarioIds": ["SCOUT-01"],
         "presetWorld": {
           "fixtureId": "scout-01-skaduwee-hidden-b",
