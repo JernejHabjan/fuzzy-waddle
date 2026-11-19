@@ -4,8 +4,8 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { GathererComponent } from "../gatherer-component";
 import { ResourceSourceComponent } from "../resource-source-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
 
 /** Real source assignment and cargo state, with no pathfinding or credited income claim. */
 function fixture() {

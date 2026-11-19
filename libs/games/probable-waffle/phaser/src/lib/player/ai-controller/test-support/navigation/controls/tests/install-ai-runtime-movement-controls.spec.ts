@@ -15,10 +15,10 @@ import type { AiRuntimePresetControl } from "../../../presets/controls/ai-runtim
 import { AI_RUNTIME_PRESET_CONTROL_EVENT, type AiRuntimePresetControlEvent } from "../../../presets/controls/ai-runtime-preset-control-event";
 import { installAiRuntimePresetControls } from "../../../presets/controls/install-ai-runtime-preset-controls";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../../../world/tilemap/iso-helper", () => ({ IsoHelper: { isometricWorldToTileXY: jest.fn() } }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../../world/tilemap/iso-helper", () => ({ IsoHelper: { isometricWorldToTileXY: jest.fn() } }));
 
 /** Isolated command seam: assertions cover authority/identity and teardown, not physical movement acceptance. */
 function setup(action: AiRuntimePresetControl["action"], active = true, targetOwner = 2, applicationTick = 1) {

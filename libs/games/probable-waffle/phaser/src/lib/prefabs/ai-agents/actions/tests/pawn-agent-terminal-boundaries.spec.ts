@@ -13,9 +13,9 @@ import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 import { AttackComponent } from "../../../../entity/components/combat/components/attack-component";
 import { AnimationActorComponent } from "../../../../entity/components/animation/animation-actor-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function stampedOrder(commandId: string) {
   return new OrderData(OrderType.Move, {

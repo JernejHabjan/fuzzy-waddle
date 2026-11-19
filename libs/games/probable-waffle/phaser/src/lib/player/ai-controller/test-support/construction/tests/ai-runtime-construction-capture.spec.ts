@@ -8,13 +8,13 @@ import {
 import { CONSTRUCTION_AUTHORITY_EVENT } from "../../../../../entity/components/construction/construction-authority-event";
 import { productionCaptureFixture } from "../../production/fixtures/ai-runtime-production-capture-fixtures";
 
-jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../data/scene-data", () => ({
+jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../data/scene-data", () => ({
   getPlayer: jest.fn(),
   getCommunicator: jest.fn(),
   isSnapshotApplyInProgress: jest.fn()
 }));
-jest.mock("../../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({
   getSceneService: jest.fn(),
   getSceneSystem: jest.fn()
 }));

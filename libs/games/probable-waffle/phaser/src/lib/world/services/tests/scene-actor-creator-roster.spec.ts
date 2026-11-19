@@ -5,14 +5,14 @@ import type GameProbableWaffleScene from "../../scenes/GameProbableWaffleScene";
 import EditorOwner from "../../scenes/editor-components/EditorOwner";
 import { setFullActorDataFromName } from "../../../data/actor-data";
 
-jest.mock("../../data/actor-data", () => ({ setFullActorDataFromName: jest.fn() }));
-jest.mock("../../data/load-game", () => ({
+jest.mock("../../../data/actor-data", () => ({ setFullActorDataFromName: jest.fn() }));
+jest.mock("../../../data/load-game", () => ({
   LoadGame: class {
     load() {}
   }
 }));
-jest.mock("./multiplayer/actor-id-authority.service.ts", () => ({ ActorIdAuthorityService: class {} }));
-jest.mock("../../data/actor-component", () => ({ getActorComponent: () => undefined }));
+jest.mock("../multiplayer/actor-id-authority.service.ts", () => ({ ActorIdAuthorityService: class {} }));
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: () => undefined }));
 
 function fixture(owner?: EditorOwner["owner_id"], playerNumbers = [1, 2]) {
   const events = new Phaser.Events.EventEmitter();

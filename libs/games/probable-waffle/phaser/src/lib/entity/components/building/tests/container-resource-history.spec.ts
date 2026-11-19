@@ -8,14 +8,14 @@ import { getGameObjectVisibility, isSceneActive, isWaterUnit } from "../../../..
 import { NavigationService } from "../../../../world/services/navigation.service";
 import { ContainerComponent } from "../container-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({
   getGameObjectVisibility: jest.fn(() => undefined),
   isSceneActive: jest.fn(() => true),
   isWaterUnit: jest.fn(() => false)
 }));
-jest.mock("../../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
+jest.mock("../../../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
 
 describe("container resource history boundary (authored; final gate pending)", () => {
   beforeEach(() => {

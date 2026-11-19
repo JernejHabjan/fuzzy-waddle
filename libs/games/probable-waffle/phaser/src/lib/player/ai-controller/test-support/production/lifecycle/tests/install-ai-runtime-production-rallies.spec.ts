@@ -13,10 +13,10 @@ import type { ProbableWaffleScene } from "../../../../../../core/probable-waffle
 import type { AiRuntimePresetWorld } from "../../../presets/setup/ai-runtime-preset-world";
 import { installAiRuntimeProductionRallies } from "../install-ai-runtime-production-rallies";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: () => ({ x: 1, y: 2 }) }));
-jest.mock("../../../../../data/tech-tree/canonical-actor-name", () => ({
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: () => ({ x: 1, y: 2 }) }));
+jest.mock("../../../../../../data/tech-tree/canonical-actor-name", () => ({
   getCanonicalActorNameCached: (name: string) => name
 }));
 

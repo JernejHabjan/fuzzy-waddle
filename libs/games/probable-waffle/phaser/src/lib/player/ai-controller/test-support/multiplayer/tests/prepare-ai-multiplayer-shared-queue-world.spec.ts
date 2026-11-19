@@ -14,10 +14,10 @@ import { ActorIndexSystem } from "../../../../../world/services/ActorIndexSystem
 import { getSceneService } from "../../../../../world/services/scene-component-helpers";
 import { prepareAiMultiplayerSharedQueueWorld } from "../prepare-ai-multiplayer-shared-queue-world";
 
-jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../data/scene-data", () => ({ getPlayer: jest.fn(), emitResource: jest.fn() }));
-jest.mock("../../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
-jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../data/scene-data", () => ({ getPlayer: jest.fn(), emitResource: jest.fn() }));
+jest.mock("../../../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture() {
   const scene = { scene: { key: "MapAiMultiplayer" } } as unknown as ProbableWaffleScene;

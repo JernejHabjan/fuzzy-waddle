@@ -1,8 +1,8 @@
 import { productionCaptureFixture } from "../../fixtures/ai-runtime-production-capture-fixtures";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../data/scene-data", () => ({ getPlayer: jest.fn(), isSnapshotApplyInProgress: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/scene-data", () => ({ getPlayer: jest.fn(), isSnapshotApplyInProgress: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({
   getSceneService: jest.fn(),
   getSceneSystem: jest.fn()
 }));

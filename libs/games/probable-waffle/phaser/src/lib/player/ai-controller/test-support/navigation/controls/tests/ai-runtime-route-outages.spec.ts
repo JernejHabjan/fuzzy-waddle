@@ -8,9 +8,9 @@ import { getSceneService } from "../../../../../../world/services/scene-componen
 import { installAiRuntimeRouteOutages, validAiRuntimeRouteOutages } from "../ai-runtime-route-outages";
 import { recordAiRuntimePresetEvent } from "../../../browser/ai-runtime-browser-test-config";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: () => ({ id: "original-mover" }) }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../browser/ai-runtime-browser-test-config", () => ({ recordAiRuntimePresetEvent: jest.fn() }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: () => ({ id: "original-mover" }) }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../browser/ai-runtime-browser-test-config", () => ({ recordAiRuntimePresetEvent: jest.fn() }));
 
 it("rejects missing roles, duplicate IDs and moving/unbounded outage deadlines", () => {
   const fault = { id: "finite-route-outage", fromTick: 400, throughTick: 800, fixtureActorIds: ["mover"] };

@@ -15,14 +15,14 @@ import {
 import { productionCaptureItem } from "../../../../player/ai-controller/test-support/production/fixtures/ai-runtime-production-capture-fixtures";
 import { spawnProductionActor } from "../production-spawner";
 
-jest.mock("../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({
   getGameObjectBounds: jest.fn(),
   getGameObjectLogicalTransform: jest.fn()
 }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
 
 describe("native production spawn choice", () => {
   afterEach(() => jest.restoreAllMocks());

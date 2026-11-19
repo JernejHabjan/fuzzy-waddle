@@ -27,9 +27,9 @@ import type { GameCommandDispatchReceipt } from "../../../../../../world/service
 import type { AiRuntimePresetWorld } from "../ai-runtime-preset-world";
 import { applyAiRuntimePresetQueues } from "../apply-ai-runtime-preset-queues";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../data/scene-data", () => ({ getPlayer: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/scene-data", () => ({ getPlayer: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function setup(payment = PaymentType.PayImmediately) {
   const outcomes = new Subject<GameCommandOutcome>();

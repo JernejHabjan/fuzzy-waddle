@@ -18,13 +18,13 @@ import { DistanceHelper } from "../../../../../../library/distance-helper";
 import { RepresentableComponent } from "../../../../../../entity/components/representable-component";
 import { HealthComponent } from "../../../../../../entity/components/combat/components/health-component";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../data/game-object-helper", () => ({
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/game-object-helper", () => ({
   getGameObjectCurrentTile: jest.fn(),
   getGameObjectLogicalTransform: jest.fn()
 }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("./capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
 
 /** Synthetic binding lifetimes only. Native weapon selection is independently exercised by the existing capture controls. */
 function fixture(armed = false) {

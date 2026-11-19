@@ -7,9 +7,9 @@ import { productionCaptureFixture } from "../../../production/fixtures/ai-runtim
 import { unspentClaimFixture } from "../../../authority/claims/ai-runtime-unspent-claim-fixtures";
 import { pendingCommandOutcome } from "../../../authority/claims/ai-runtime-pending-command-fixtures";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../data/scene-data", () => ({ getPlayer: jest.fn(), isSnapshotApplyInProgress: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/scene-data", () => ({ getPlayer: jest.fn(), isSnapshotApplyInProgress: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({
   getSceneService: jest.fn(),
   getSceneSystem: jest.fn()
 }));
