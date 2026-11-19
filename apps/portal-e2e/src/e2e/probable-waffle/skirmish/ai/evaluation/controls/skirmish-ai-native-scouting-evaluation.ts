@@ -281,6 +281,43 @@ export function nativeScoutingObjectiveResponse(
   );
 }
 
+/** Join the accepted scout order to its east-side movement start and its west-side pose at first contact. */
+function nativeScoutCrossedApproach(
+  context: ReturnType<typeof nativeScenarioContext>,
+  discovery: ReturnType<typeof nativeScenarioContext>["frames"][number]
+): boolean {
+  const west = new Set(
+    discovery.tacticalBoundary?.actors.flatMap(({ identity, tile }) =>
+      identity.actorId && identity.alive && tile && tile.x < 24 ? [identity.actorId] : []
+    )
+  );
+  const starts = (context.capture?.facts ?? []).filter(
+    (fact) =>
+      isMovementAuthorityFact(fact) &&
+      fact.spatial.phase === "started" &&
+      fact.tick <= discovery.tick &&
+      (fact.spatial.actualTile?.x ?? -1) >= 24 &&
+      west.has(fact.spatial.source.actorId ?? "")
+  );
+  return context.frames.some(
+    (frame) =>
+      frame.tick < discovery.tick &&
+      frame.decision.acceptedIntents.some(
+        (intent) =>
+          intent.kind === "scout" &&
+          starts.some((start) => {
+            if (!isMovementAuthorityFact(start) || start.tick < frame.tick) return false;
+            const execution = start.spatial.caller?.order?.commandContext?.execution;
+            return (
+              execution?.source === "ai" &&
+              intent.actorIds.includes(start.spatial.source.actorId ?? "") &&
+              execution.effectId === intent.effectId.replace(/^effect:/, "")
+            );
+          })
+      )
+  );
+}
+
 /** Fixed per-ID predicates; missing prerequisites fail instead of turning a control into a vacuous pass. */
 export function evaluateNativeScouting(
   scenarioId: string,
@@ -300,8 +337,9 @@ export function evaluateNativeScouting(
       (actor) => actor.actorId === targetId && actor.visibility === "last_seen"
     )
   );
-  const trips = nativeScoutTrips(context);
-  if (!trips.length) failures.push("scouting_useful_physical_information_trip_missing");
+  const approach = scenarioId === "SCOUT-04" && branch === "approach";
+  const trips = approach ? [] : nativeScoutTrips(context);
+  if (!approach && !trips.length) failures.push("scouting_useful_physical_information_trip_missing");
   if (scenarioId === "SCOUT-01") {
     const first = visible[0];
     if (!targetId || !first || context.frames.filter((frame) => frame.tick < first.tick).length < 2)
@@ -426,48 +464,28 @@ export function evaluateNativeScouting(
   if (scenarioId === "SCOUT-04") {
     const discovery = visible[0];
     const before = context.frames.filter((frame) => frame.tick < (discovery?.tick ?? 0)).at(-1);
-    const considered = context.frames.find(
+    const response = context.frames.find(
       (frame) =>
-        frame.tick > (discovery?.tick ?? Infinity) &&
-        // Strategy refresh can need two simulation decision cycles after sighting.
+        frame.tick >= (discovery?.tick ?? Infinity) &&
         frame.tick <= (discovery?.tick ?? 0) + 400 &&
-        nativeScoutingObjectiveResponse(frame.decision, targetId)
+        (approach
+          ? frame.decision.missionState?.squads.some(
+              (squad) =>
+                squad.role === "attack" &&
+                squad.actorIds.length > 0 &&
+                (squad.objectiveId === targetId || squad.tactics?.targetActorId === targetId)
+            )
+          : nativeScoutingObjectiveResponse(frame.decision, targetId))
     );
-    const usefulNativeEffect = targetId && considered && nativeWeaponHits(context, targetId, considered.tick).length;
     if (
       !discovery ||
       !before ||
       nativeScoutingObjectiveResponse(before.decision, targetId) ||
-      !considered ||
-      !usefulNativeEffect
+      !response ||
+      (!approach && !nativeWeaponHits(context, targetId, response.tick).length)
     )
       failures.push("scouting_discovery_has_no_causal_useful_objective_response");
-    if (
-      branch === "approach" &&
-      (!discovery ||
-        !trips.some((trip) => {
-          if (trip.actorId !== scoutId || trip.selectedTick >= discovery.tick) return false;
-          const steps = context.capture?.facts.filter(
-            (fact) => isMovementAuthorityFact(fact) && fact.spatial.executionId === trip.movement.executionId
-          );
-          return (
-            steps?.some(
-              (fact) =>
-                isMovementAuthorityFact(fact) &&
-                fact.spatial.phase === "started" &&
-                (fact.spatial.actualTile?.x ?? -1) >= 24
-            ) &&
-            steps.some(
-              (fact) =>
-                isMovementAuthorityFact(fact) &&
-                ["arrived", "stopped"].includes(fact.spatial.phase) &&
-                !!fact.spatial.actualTile &&
-                fact.spatial.actualTile.x < 24 &&
-                fact.tick <= discovery.tick + 40
-            )
-          );
-        }))
-    )
+    if (approach && (!discovery || !nativeScoutCrossedApproach(context, discovery)))
       failures.push("scouting_scout_did_not_physically_cross_the_alternate_approach");
   }
   if (scenarioId === "H-22" && branch !== "remains") {

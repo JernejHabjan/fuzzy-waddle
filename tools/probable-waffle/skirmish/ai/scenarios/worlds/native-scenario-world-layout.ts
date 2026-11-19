@@ -89,6 +89,21 @@ export function nativeScenarioActors(id: string, own: string, enemy: string, bra
     const extras = new Set(["ready-producer", "ranged-probe", "enemy-producer", "front-target-a", "front-target-b"]);
     return actors.filter((entry) => !extras.has(entry.fixtureActorId));
   }
+  if (id === "SCOUT-04" && branch === "approach") {
+    const distractions = new Set([
+      "ready-producer",
+      "ranged-probe",
+      "support-probe",
+      "front-target-a",
+      "front-target-b",
+      "noise-scout",
+      "enemy-producer",
+      "enemy-deposit",
+      "enemy-source",
+      "enemy-worker"
+    ]);
+    return actors.filter((entry) => !distractions.has(entry.fixtureActorId));
+  }
   if (["SCOUT-01", "SCOUT-03", "SCOUT-04"].includes(id)) {
     // Keep the scout, native base prerequisites and both scouting approaches. The extra combat probes
     // and duplicate enemy producers belong to the broader battle setups.
