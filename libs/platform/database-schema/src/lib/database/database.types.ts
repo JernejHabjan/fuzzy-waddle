@@ -1029,6 +1029,8 @@ export type Database = {
           id: string
           locale: string | null
           moderation_note: string | null
+          /** Versioned personal Probable Waffle preferences; never match-authoritative rules. */
+          probable_waffle_preferences: Json | null
           timezone: string | null
           updated_at: string
           username: string | null
@@ -1046,6 +1048,8 @@ export type Database = {
           id: string
           locale?: string | null
           moderation_note?: string | null
+          /** Versioned personal Probable Waffle preferences; never match-authoritative rules. */
+          probable_waffle_preferences?: Json | null
           timezone?: string | null
           updated_at?: string
           username?: string | null
@@ -1063,6 +1067,8 @@ export type Database = {
           id?: string
           locale?: string | null
           moderation_note?: string | null
+          /** Versioned personal Probable Waffle preferences; never match-authoritative rules. */
+          probable_waffle_preferences?: Json | null
           timezone?: string | null
           updated_at?: string
           username?: string | null

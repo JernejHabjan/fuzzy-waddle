@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { filter, firstValueFrom } from "rxjs";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import {
@@ -11,17 +11,20 @@ import {
   type ProbableWaffleGameModeData,
   type ProbableWaffleGameStateData,
   ProbableWaffleListeners,
-  ProbableWafflePlayerType
+  ProbableWafflePlayerType,
+  ProbableWaffleTerrainVisibility
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";
+import { OptionsService } from "../gui/options/options.service";
 import { InGameChatComponent } from "../gui/in-game-chat/in-game-chat.component";
 import { GameInstanceClientContext } from "./game-instance-client-context";
 /** Owns communicator subscriptions, modal event routing and autosave lifetime for one instance. */
 @Injectable()
 export abstract class GameInstanceEventClient extends GameInstanceClientContext {
+  private readonly optionsService = inject(OptionsService);
   async createGameInstance(
     name: string,
     visibility: ProbableWaffleGameInstanceVisibility,
@@ -49,7 +52,8 @@ export abstract class GameInstanceEventClient extends GameInstanceClientContext 
           allBuildingsMustBeEliminated: true
         },
         mapTuning: { unitCap: 100 } satisfies MapTuning,
-        difficultyModifiers: {} satisfies DifficultyModifiers
+        difficultyModifiers: {} satisfies DifficultyModifiers,
+        terrainVisibility: ProbableWaffleTerrainVisibility.MapExplored
       } satisfies ProbableWaffleGameModeData,
       gameStateData: {} as ProbableWaffleGameStateData
     });
@@ -135,8 +139,9 @@ export abstract class GameInstanceEventClient extends GameInstanceClientContext 
             case "campaign-restore-failed":
               this.toastService.showWarning(
                 "Save recovery required",
-                `${payload.data?.issues?.join(" ") ??
-                  "The save could not be restored safely."} Try an earlier autosave or restart the mission.`
+                `${
+                  payload.data?.issues?.join(" ") ?? "The save could not be restored safely."
+                } Try an earlier autosave or restart the mission.`
               );
               break;
             case "load-game":
@@ -210,7 +215,7 @@ export abstract class GameInstanceEventClient extends GameInstanceClientContext 
         // Emit to Phaser scene to show notification
         this.probableWaffleCommunicatorService.allScenes.emit({
           name: "chat-message-received",
-          data: msg.chatMessage
+          data: this.optionsService.presentChatMessage(msg.chatMessage)
         });
       }
     });
@@ -300,12 +305,14 @@ export abstract class GameInstanceEventClient extends GameInstanceClientContext 
   }
 
   protected async startListeningToGameInstanceEvents() {
-    const instance = this.gameInstance, instanceId = this.currentGameInstanceId;
+    const instance = this.gameInstance,
+      instanceId = this.currentGameInstanceId;
     if (!instanceId)
       throw new Error("Game instance not found in startListeningToGameInstanceEvents in GameInstanceClientService");
     await this.stopListeningToGameInstanceEvents();
     if (this.gameInstance !== instance) return;
-    const generation = ++this.eventBindingGeneration, server = this.shouldUseServerTransportForCurrentGame();
+    const generation = ++this.eventBindingGeneration,
+      server = this.shouldUseServerTransportForCurrentGame();
     this.communicatorInstanceId = instanceId;
     this.communicatorUsesServer = server;
     const communicators = await this.sceneCommunicatorClientService.createCommunicators(instanceId, server);
@@ -324,7 +331,8 @@ export abstract class GameInstanceEventClient extends GameInstanceClientContext 
 
   protected async stopListeningToGameInstanceEvents() {
     ++this.eventBindingGeneration;
-    const instanceId = this.communicatorInstanceId, server = this.communicatorUsesServer;
+    const instanceId = this.communicatorInstanceId,
+      server = this.communicatorUsesServer;
     const subscriptions = this.communicatorSubscriptions.splice(0);
     subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.communicatorInstanceId = undefined;
@@ -332,9 +340,7 @@ export abstract class GameInstanceEventClient extends GameInstanceClientContext 
     this.stopAutosaveTimer();
     this.lastCheckpointAutosave = undefined;
     if (!instanceId) return;
-    await this.sceneCommunicatorClientService.destroyCommunicators(
-      instanceId, subscriptions, server
-    );
+    await this.sceneCommunicatorClientService.destroyCommunicators(instanceId, subscriptions, server);
   }
 
   /** Documents the start autosave timer member and its declared contract at this boundary. */
@@ -368,5 +374,4 @@ export abstract class GameInstanceEventClient extends GameInstanceClientContext 
       data: { kind: "autosave", checkpointId }
     });
   }
-
 }

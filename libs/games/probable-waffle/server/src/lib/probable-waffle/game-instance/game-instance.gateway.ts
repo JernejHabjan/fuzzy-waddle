@@ -243,8 +243,15 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     switch (newPayload.communicator) {
       case "message":
         const messagePayload = newPayload.payload as ProbableWaffleCommunicatorMessageEvent;
-        const sanitizedMessage = this.probableWaffleChatService.cleanMessage(messagePayload.chatMessage.text);
-        messagePayload.chatMessage.text = sanitizedMessage;
+        const originalMessage = messagePayload.chatMessage.text;
+        const sanitizedMessage = this.probableWaffleChatService.cleanMessage(originalMessage);
+        const outboundPayload = {
+          ...newPayload,
+          payload: {
+            ...messagePayload,
+            chatMessage: { ...messagePayload.chatMessage, text: originalMessage, filteredText: sanitizedMessage }
+          }
+        } satisfies ProbableWaffleCommunicatorEventUnion;
 
         // Persist the message to the database
         try {
@@ -256,7 +263,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
         // https://socket.io/docs/v3/emit-cheatsheet/
         socket
           .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${messagePayload.gameInstanceId}`)
-          .emit(ProbableWaffleGatewayEvent.ProbableWaffleMessage, newPayload);
+          .emit(ProbableWaffleGatewayEvent.ProbableWaffleMessage, outboundPayload);
         break;
       default:
         throw new Error("Ashes of the Ancients - Message broadcast - unknown communicator");

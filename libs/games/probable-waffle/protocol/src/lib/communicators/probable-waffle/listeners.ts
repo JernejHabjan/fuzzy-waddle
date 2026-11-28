@@ -14,7 +14,11 @@ import {
   ProbableWafflePlayerType
 } from "../../game-instance/probable-waffle/player";
 import { type ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
-import { ProbableWaffleGameMode, type ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
+import {
+  ProbableWaffleGameMode,
+  type ProbableWaffleGameModeData,
+  resolveProbableWaffleTerrainVisibility
+} from "../../game-instance/probable-waffle/game-mode";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 import { GameSetupHelpers } from "../../probable-waffle/game-setup.helpers";
 import type { ActorDefinition } from "../../game-instance/probable-waffle/game-state";
@@ -65,6 +69,11 @@ export class ProbableWaffleListeners {
         break;
       case "map":
         gameInstance.gameMode!.data.map = payload.data.map;
+        break;
+      case "terrainVisibility":
+        gameInstance.gameMode!.data.terrainVisibility = resolveProbableWaffleTerrainVisibility(
+          payload.data.terrainVisibility
+        );
         break;
       case "tieConditions.maximumTimeLimitInMinutes":
         gameInstance.gameMode!.data.tieConditions.maximumTimeLimitInMinutes =

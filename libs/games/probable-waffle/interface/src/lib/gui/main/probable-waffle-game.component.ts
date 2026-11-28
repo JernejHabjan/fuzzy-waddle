@@ -59,7 +59,8 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   private refreshSubscription?: Subscription;
   private runtimeTestGame?: Game;
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.optionsService.init();
     this.setData();
 
     this.refreshSubscription = this.gameInstanceClientService.gameInstanceToGameComponentCommunicator.subscribe(

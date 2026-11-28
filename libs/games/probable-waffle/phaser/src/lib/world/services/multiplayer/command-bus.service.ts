@@ -81,6 +81,11 @@ export class CommandBusService {
 
   readonly commandBatch$ = this._commandBatch$.asObservable();
 
+  /** Latest local command-relay round trip, or null when unavailable. */
+  get roundTripTimeMs$() {
+    return this.transport.roundTripTimeMs$.asObservable();
+  }
+
   private readonly _commandOutcome$ = new Subject<GameCommandOutcome>();
 
   readonly commandOutcome$ = this._commandOutcome$.asObservable();
@@ -161,7 +166,10 @@ export class CommandBusService {
     // A local spectator can host the simulation while having no player input authority.
     if (this.scene.isSpectator) {
       const player = this.scene.players.find((candidate) => candidate.playerNumber === command.playerNumber);
-      if (!this.scene.isHost || player?.playerController.data.playerDefinition?.playerType !== ProbableWafflePlayerType.AI) {
+      if (
+        !this.scene.isHost ||
+        player?.playerController.data.playerDefinition?.playerType !== ProbableWafflePlayerType.AI
+      ) {
         return { status: "rejected", reason: "invalid_owner" };
       }
     }
@@ -251,7 +259,14 @@ export class CommandBusService {
     const unsent = [...this.transport.pendingOutbound.values()].flat();
     this.transport.pendingOutbound.clear();
     for (const command of unsent)
-      this.authority.reportOutcome(command, "cancelled", "cancelled", command.actorIds, [], "authority_epoch_discarded_unsent");
+      this.authority.reportOutcome(
+        command,
+        "cancelled",
+        "cancelled",
+        command.actorIds,
+        [],
+        "authority_epoch_discarded_unsent"
+      );
   }
   /** Detached unsent input for the local save owner; never part of a peer-independent simulation digest. */
   getPendingCommandBatches(): ProbableWaffleReplayCommandBatch[] {
@@ -259,7 +274,8 @@ export class CommandBusService {
     if (this.destroyed || owner === null) return [];
     if ([...this.transport.pendingOutbound.values()].reduce((sum, commands) => sum + commands.length, 0) > 2048)
       throw new Error("save_pending_command_capacity_exceeded");
-    return [...this.transport.pendingOutbound].sort(([left], [right]) => left - right)
+    return [...this.transport.pendingOutbound]
+      .sort(([left], [right]) => left - right)
       .map(([tick, commands]) => ({ tick, playerNumber: owner, commands: structuredClone(commands) }));
   }
   advanceAuthorityEpoch(nextEpoch: number): void {

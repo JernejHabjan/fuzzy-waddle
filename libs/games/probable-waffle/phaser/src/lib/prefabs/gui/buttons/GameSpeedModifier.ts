@@ -48,7 +48,7 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
     // text_2
     const text_2 = scene.add.text(0, -1, "", {});
     text_2.setOrigin(0.5, 0.5);
-    text_2.text = "10x";
+    text_2.text = "0.75x";
     text_2.setStyle({ color: "#000000ff", fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
     multiplier_10x.add(text_2);
 
@@ -92,7 +92,7 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
     // text
     const text = scene.add.text(0, -1, "", {});
     text.setOrigin(0.5, 0.5);
-    text.text = "3x";
+    text.text = "1.5x";
     text.setStyle({ color: "#000000ff", fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
     multiplier_3x.add(text);
 
@@ -233,11 +233,11 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
     });
 
     this.multiplier_3x.on("action", () => {
-      this.setGameSpeed(3);
+      this.setGameSpeed(1.5);
     });
 
     this.multiplier_10x.on("action", () => {
-      this.setGameSpeed(10);
+      this.setGameSpeed(0.75);
     });
 
     this.multiplier_100x.on("action", () => {

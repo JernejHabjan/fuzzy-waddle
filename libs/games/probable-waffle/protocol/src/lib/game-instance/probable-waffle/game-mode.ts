@@ -9,6 +9,24 @@ import type {
   WinConditions
 } from "../../probable-waffle/probable-waffle-game-mode-lobby";
 
+/** Host-selected terrain visibility rule shared by every participant. */
+export enum ProbableWaffleTerrainVisibility {
+  Default = "default",
+  HideTerrain = "hide-terrain",
+  MapExplored = "map-explored",
+  AlwaysVisible = "always-visible"
+}
+
+/** Resolves legacy/default lobby input to the current authored map policy before launch or persistence. */
+export function resolveProbableWaffleTerrainVisibility(
+  visibility: ProbableWaffleTerrainVisibility | undefined
+): Exclude<ProbableWaffleTerrainVisibility, ProbableWaffleTerrainVisibility.Default> {
+  return visibility === ProbableWaffleTerrainVisibility.HideTerrain ||
+    visibility === ProbableWaffleTerrainVisibility.AlwaysVisible
+    ? visibility
+    : ProbableWaffleTerrainVisibility.MapExplored;
+}
+
 export interface ProbableWaffleGameModeData extends BaseData {
   map?: ProbableWaffleMapEnum;
   mapTuning: MapTuning;
@@ -16,6 +34,8 @@ export interface ProbableWaffleGameModeData extends BaseData {
   tieConditions: TieConditions;
   winConditions: WinConditions;
   loseConditions: LoseConditions;
+  /** Resolved match rule; legacy/default data maps to the current pre-explored behavior. */
+  terrainVisibility?: ProbableWaffleTerrainVisibility;
 }
 
 export class ProbableWaffleGameMode extends BaseGameMode<ProbableWaffleGameModeData> {

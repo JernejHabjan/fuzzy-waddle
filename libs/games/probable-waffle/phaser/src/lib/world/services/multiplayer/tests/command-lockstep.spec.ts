@@ -64,6 +64,27 @@ describe("command relay ownership after extraction", () => {
     f.transport.destroy();
     f.scene.events.emit("shutdown");
   });
+  it("measures only the local relay echo and completes the latency stream on shutdown", () => {
+    const f = setup();
+    const now = jest.spyOn(Date, "now").mockReturnValue(1500);
+    const samples: Array<number | null> = [];
+    let completed = false;
+    f.transport.roundTripTimeMs$.subscribe({
+      next: (value) => samples.push(value),
+      complete: () => (completed = true)
+    });
+    const batch = f.sent[0];
+    if (!batch?.transportMeta) throw new Error("Missing transport metadata");
+    const echo = { ...batch, transportMeta: { ...batch.transportMeta, clientSentAtWallTimeMs: 1400 } };
+    f.incoming.next({ ...echo, playerNumber: 3 });
+    expect(samples).toEqual([null]);
+    f.incoming.next(echo);
+    expect(samples).toEqual([null, 100]);
+    f.transport.destroy();
+    expect(completed).toBe(true);
+    f.scene.events.emit("shutdown");
+    now.mockRestore();
+  });
   it("keeps snapshot reseeding above the already sent frontier and disposes receive/stall ownership", () => {
     const f = setup();
     f.transport.lastSentExecutionTick = 7;
@@ -79,9 +100,23 @@ describe("command relay ownership after extraction", () => {
 
 it("preserves an unsent original identity after snapshot correction without bypassing server echo", () => {
   const f = setup();
-  const command: GameCommand = { type: "CONCEDE", playerNumber: 2, actorIds: [], reason: "unsent", tick: 3,
-    execution: { schemaVersion: 1, commandId: "2:0:4:authority-test", commitmentKey: "pending", source: "ai",
-      authorityEpoch: 0, sequence: 4, effectId: "effect:pending", intentId: "intent:pending" } };
+  const command: GameCommand = {
+    type: "CONCEDE",
+    playerNumber: 2,
+    actorIds: [],
+    reason: "unsent",
+    tick: 3,
+    execution: {
+      schemaVersion: 1,
+      commandId: "2:0:4:authority-test",
+      commitmentKey: "pending",
+      source: "ai",
+      authorityEpoch: 0,
+      sequence: 4,
+      effectId: "effect:pending",
+      intentId: "intent:pending"
+    }
+  };
   f.transport.pendingOutbound.set(3, [command]);
   f.transport.resetAfterSnapshot(2);
   const retained = [...f.transport.pendingOutbound.values()].flat();

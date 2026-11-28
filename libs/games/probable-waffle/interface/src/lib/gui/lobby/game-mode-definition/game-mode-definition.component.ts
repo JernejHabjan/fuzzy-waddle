@@ -1,7 +1,8 @@
 import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import {
   type ProbableWaffleDataChangeEventProperty,
-  type ProbableWaffleGameModeData
+  type ProbableWaffleGameModeData,
+  ProbableWaffleTerrainVisibility
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
@@ -16,6 +17,7 @@ import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.se
   imports: [FormsModule]
 })
 export class GameModeDefinitionComponent {
+  protected readonly terrainVisibility = ProbableWaffleTerrainVisibility;
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly authService = inject(AuthService);
   protected async onValueChange(

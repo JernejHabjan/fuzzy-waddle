@@ -1,5 +1,5 @@
 import { resolveLocalPlayerNumber } from "./command-address-validation";
-import { Subscription } from "rxjs";
+import { BehaviorSubject, Subscription } from "rxjs";
 import {
   type GameCommand,
   type GameCommandAuthorityState,
@@ -25,6 +25,8 @@ import { resetCommandLockstep } from "./reset-command-lockstep";
 /** Owns relay buffering, echo-gated application and snapshot heartbeat recovery. */
 export class CommandLockstep {
   private destroyed = false;
+  /** Latest local command-relay round trip, or null when unavailable. */
+  readonly roundTripTimeMs$ = new BehaviorSubject<number | null>(null);
   readonly diagnostics = new CommandRelayDiagnostics(this);
   /** The bus supplies application, replay recording and authority restore; this owner controls relay timing only. */
   constructor(
@@ -176,6 +178,9 @@ export class CommandLockstep {
           Math.max(this.lastReceivedTickByPlayer.get(event.playerNumber) ?? -1, event.tick)
         );
         if (event.playerNumber === this.localPlayerNumber) {
+          if (event.transportMeta?.clientSentAtWallTimeMs !== undefined) {
+            this.roundTripTimeMs$.next(Math.max(0, Date.now() - event.transportMeta.clientSentAtWallTimeMs));
+          }
           this.diagnostics.recordLocalTickStage(
             event.tick,
             event.rejectionReason ? `echo-empty(${event.rejectionReason})` : `echo(${event.commands.length})`
@@ -442,6 +447,7 @@ export class CommandLockstep {
   destroy(): void {
     if (this.destroyed) return;
     this.destroyed = true;
+    this.roundTripTimeMs$.complete();
     this.diagnostics.clearPendingStallLog();
     this.pendingOutbound.clear();
     this.buffer.clear();

@@ -9,6 +9,8 @@ import {
 export interface ChatMessage {
   id?: number;
   text: string;
+  /** Server-filtered alternative; original text remains available when a player disables filtering. */
+  filteredText?: string;
   userId: UserId;
   fullName: string;
   senderRole?: AppUserRole | null;

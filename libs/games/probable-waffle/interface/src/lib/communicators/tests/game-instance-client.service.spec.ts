@@ -20,7 +20,8 @@ import {
   ProbableWaffleAiDifficulty,
   ProbableWafflePlayerType,
   ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility
+  ProbableWaffleGameInstanceVisibility,
+  ProbableWaffleTerrainVisibility
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("GameInstanceClientService", () => {
@@ -50,8 +51,13 @@ describe("GameInstanceClientService", () => {
     const server = TestBed.inject(ServerHealthService);
     const availability = jest.spyOn(server, "serverAvailable", "get").mockReturnValue(true);
     try {
-      await service.createGameInstance("AI preview", ProbableWaffleGameInstanceVisibility.Private,
-        ProbableWaffleGameInstanceType.InstantGame, { localOnly: true });
+      await service.createGameInstance(
+        "AI preview",
+        ProbableWaffleGameInstanceVisibility.Private,
+        ProbableWaffleGameInstanceType.InstantGame,
+        { localOnly: true }
+      );
+      expect(service.gameInstance?.gameMode?.data.terrainVisibility).toBe(ProbableWaffleTerrainVisibility.MapExplored);
       const ai = await service.addAiPlayer(undefined, { difficulty: ProbableWaffleAiDifficulty.Easy });
       expect(ai.difficulty).toBe(ProbableWaffleAiDifficulty.Easy);
       TestBed.inject(HttpTestingController).expectNone((request) => request.url.endsWith("/start-game"));

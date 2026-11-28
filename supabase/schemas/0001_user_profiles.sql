@@ -38,6 +38,8 @@ create table public.user_profiles
   app_role       public.app_user_role not null default 'user',
   banned_until   timestamp with time zone null,
   moderation_note text null,
+  -- Versioned personal Probable Waffle preferences; match rules never belong in this document.
+  probable_waffle_preferences jsonb null,
   created_at     timestamp with time zone not null default now(),
   updated_at     timestamp with time zone not null default now(),
   constraint user_profiles_display_name_not_blank check (length(btrim(display_name)) > 0),

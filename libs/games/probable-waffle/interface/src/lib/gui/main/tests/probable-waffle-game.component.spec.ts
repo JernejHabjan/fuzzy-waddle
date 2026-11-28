@@ -10,6 +10,8 @@ import { achievementServiceStub } from "../../../services/achievement/achievemen
 import { GameSaveService } from "../../../services/game-save/game-save.service";
 import { GameSaveServiceStub } from "../../../services/game-save/game-save.service.stub";
 import type Phaser from "phaser";
+import { OptionsService } from "../../options/options.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { By } from "@angular/platform-browser";
 import { provideRouter } from "@angular/router";
 import { AI_RUNTIME_BROWSER_TEST_CONFIG_KEY } from "../ai-runtime-browser-test-host";
@@ -26,6 +28,7 @@ jest.mock("@fuzzy-waddle/probable-waffle-phaser/world/const/game-config", () => 
 describe("ProbableWaffleGameComponent", () => {
   let component: ProbableWaffleGameComponent;
   let fixture: ComponentFixture<ProbableWaffleGameComponent>;
+  const optionsService = { init: jest.fn().mockResolvedValue(undefined) };
 
   beforeEach(async () => {
     window.sessionStorage.removeItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY);
@@ -36,7 +39,9 @@ describe("ProbableWaffleGameComponent", () => {
         provideRouter([]),
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
         { provide: AchievementService, useValue: achievementServiceStub },
-        { provide: GameSaveService, useValue: new GameSaveServiceStub() }
+        { provide: GameSaveService, useValue: new GameSaveServiceStub() },
+        { provide: OptionsService, useValue: optionsService },
+        { provide: AuthService, useValue: { userId: null } }
       ],
       imports: [ProbableWaffleGameComponent]
     })
@@ -53,22 +58,36 @@ describe("ProbableWaffleGameComponent", () => {
     fixture = TestBed.createComponent(ProbableWaffleGameComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it("should create", () => {
     expect(component).toBeTruthy();
+    expect(optionsService.init).toHaveBeenCalled();
   });
 
   it("binds interactive playback to the local match without changing its routing identity", async () => {
     fixture.destroy();
-    await gameInstanceClientServiceStub.createGameInstance("C-05", ProbableWaffleGameInstanceVisibility.Private,
-      ProbableWaffleGameInstanceType.InstantGame);
+    await gameInstanceClientServiceStub.createGameInstance(
+      "C-05",
+      ProbableWaffleGameInstanceVisibility.Private,
+      ProbableWaffleGameInstanceType.InstantGame
+    );
     const instance = gameInstanceClientServiceStub.gameInstance!;
     const id = instance.gameInstanceMetadata.data.gameInstanceId;
-    activeAiScenarios.set(instance, { title: "C-05 · bait", config: {
-      schemaVersion: 1, enabled: true, startPaused: true, seed: 759940
-    } });
+    activeAiScenarios.set(instance, {
+      title: "C-05 · bait",
+      config: {
+        schemaVersion: 1,
+        enabled: true,
+        startPaused: true,
+        seed: 759940
+      }
+    });
     fixture = TestBed.createComponent(ProbableWaffleGameComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const container = fixture.debugElement.query(By.directive(GameContainerTestingComponent))
       .componentInstance as GameContainerTestingComponent;
@@ -93,6 +112,8 @@ describe("ProbableWaffleGameComponent", () => {
     );
     fixture = TestBed.createComponent(ProbableWaffleGameComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const container = fixture.debugElement.query(By.directive(GameContainerTestingComponent))
       .componentInstance as GameContainerTestingComponent;
@@ -127,9 +148,13 @@ describe("ProbableWaffleGameComponent", () => {
     metadata.startOptions.loadFromSave = true;
     metadata.rndSeed = 12345;
     metadata.gameInstanceId = "actual-saved-session";
-    window.sessionStorage.setItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY,
-      JSON.stringify({ schemaVersion: 1, enabled: true, seed: 759008, startPaused: true }));
+    window.sessionStorage.setItem(
+      AI_RUNTIME_BROWSER_TEST_CONFIG_KEY,
+      JSON.stringify({ schemaVersion: 1, enabled: true, seed: 759008, startPaused: true })
+    );
     fixture = TestBed.createComponent(ProbableWaffleGameComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const container = fixture.debugElement.query(By.directive(GameContainerTestingComponent))
       .componentInstance as GameContainerTestingComponent;
@@ -153,6 +178,8 @@ describe("ProbableWaffleGameComponent", () => {
     const originalId = gameInstanceClientServiceStub.gameInstance!.gameInstanceMetadata.data.gameInstanceId;
     window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-browser-test", "1");
     fixture = TestBed.createComponent(ProbableWaffleGameComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const container = fixture.debugElement.query(By.directive(GameContainerTestingComponent))
       .componentInstance as GameContainerTestingComponent;

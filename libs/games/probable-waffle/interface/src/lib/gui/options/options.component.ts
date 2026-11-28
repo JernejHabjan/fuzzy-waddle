@@ -1,6 +1,7 @@
-import { ChangeDetectorRef, Component, inject, type OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, type OnInit } from "@angular/core";
 
 import { FormsModule } from "@angular/forms";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
 import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -15,7 +16,7 @@ import { isTauri, TauriService } from "@fuzzy-waddle/platform-game-host/angular/
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],
   imports: [FormsModule, RouterLink, HomeNavComponent, CenterWrapperComponent, FaIconComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: AngularHost.contentFlexFullHeight
 })
 export class OptionsComponent implements OnInit {
@@ -23,16 +24,21 @@ export class OptionsComponent implements OnInit {
   fromGame: boolean = false;
   dialogRef?: NgbModalRef;
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly optionsService = inject(OptionsService);
   protected readonly tauriService = inject(TauriService);
   protected readonly isTauri = isTauri();
   protected readonly isFullscreen = this.tauriService.windowIsFullscreen;
 
   async ngOnInit() {
-    this.optionsService.init();
+    this.optionsService.settingsChanged
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.cdr.markForCheck());
+    await this.optionsService.init();
+    this.cdr.markForCheck();
   }
 
-  protected saveToLocalStorage(type: "volume" | "game") {
+  protected saveChanges(type: "volume" | "game") {
     this.optionsService.saveChanges(type);
     this.cdr.detectChanges();
   }

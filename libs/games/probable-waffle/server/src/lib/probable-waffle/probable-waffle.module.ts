@@ -23,6 +23,9 @@ import { GameSaveServerService } from "./game-save/game-save.service";
 import { CampaignController } from "./campaign/campaign.controller";
 import { CampaignServerService } from "./campaign/campaign.service";
 import { ProbableWaffleGameChatAccessService } from "./chat/probable-waffle-game-chat-access.service";
+import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
+import { PlayerPreferencesController } from "./player-preferences/player-preferences.controller";
+import { PlayerPreferencesService } from "./player-preferences/player-preferences.service";
 
 @Module({
   imports: [AuthModule, ChatModule, GameSessionModule],
@@ -42,9 +45,18 @@ import { ProbableWaffleGameChatAccessService } from "./chat/probable-waffle-game
     PlayerDisconnectTrackerService,
     GameSaveServerService,
     CampaignServerService,
-    ProbableWaffleGameChatAccessService
+    ProbableWaffleGameChatAccessService,
+    PlayerPreferencesService,
+    SupabaseProviderService
   ],
   exports: [GameInstanceService],
-  controllers: [GameInstanceController, RoomController, MatchmakingController, GameSaveController, CampaignController]
+  controllers: [
+    GameInstanceController,
+    RoomController,
+    MatchmakingController,
+    GameSaveController,
+    CampaignController,
+    PlayerPreferencesController
+  ]
 })
 export class ProbableWaffleModule {}

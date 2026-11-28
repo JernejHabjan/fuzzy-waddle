@@ -3,6 +3,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { OptionsComponent } from "./options.component";
 import { ActivatedRoute } from "@angular/router";
 import { FormsModule } from "@angular/forms";
+import { provideHttpClient } from "@angular/common/http";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { BehaviorSubject } from "rxjs";
+import { OptionsService } from "./options.service";
+import { GameSettings } from "@fuzzy-waddle/probable-waffle-phaser/core/gameSettings";
 
 describe("OptionsComponent", () => {
   let component: OptionsComponent;
@@ -10,13 +15,45 @@ describe("OptionsComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [{ provide: ActivatedRoute, useValue: {} }],
+      providers: [
+        { provide: ActivatedRoute, useValue: {} },
+        provideHttpClient(),
+        {
+          provide: AuthService,
+          useValue: {
+            sessionChanges: new BehaviorSubject(null),
+            ensureAuthReady: () => Promise.resolve(null),
+            isAuthenticated: false
+          }
+        }
+      ],
       imports: [OptionsComponent, FormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(OptionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it("renders the approved preference controls", () => {
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.querySelector("#automaticallySaveReplays")).not.toBeNull();
+    expect(element.querySelector("#profanityFilter")).not.toBeNull();
+    expect(element.querySelector("#defaultCameraDistance")).not.toBeNull();
+    expect(element.querySelector("#defaultSinglePlayerSpeed")).not.toBeNull();
+    expect(element.textContent).toContain("Show actions per minute");
+  });
+
+  it("refreshes the OnPush view when synchronized preferences arrive", async () => {
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
+    const settings = new GameSettings();
+    settings.defaultCameraDistance = 2;
+    TestBed.inject(OptionsService).applyGameSettings(settings);
+    await fixture.whenStable();
+    const select = fixture.nativeElement.querySelector("#defaultCameraDistance") as HTMLSelectElement;
+    expect(select.selectedOptions[0]?.textContent?.trim()).toBe("Near");
   });
 
   it("should create", () => {
