@@ -1,0 +1,1465 @@
+{
+  "id": "f171ed53-0bda-5e76-b22b-40a47fe20ba4",
+  "sceneType": "SCENE",
+  "settings": {
+    "compilerInsertSpaces": true,
+    "compilerTabSize": 2,
+    "snapEnabled": true,
+    "snapHeight": 8,
+    "exportClass": true,
+    "autoImport": true,
+    "superClassName": "GameProbableWaffleScene",
+    "preloadPackFiles": [],
+    "createMethodName": "editorCreate",
+    "sceneKey": "MapAiBridgeCrossing",
+    "compilerOutputLanguage": "TYPE_SCRIPT",
+    "borderWidth": 1280,
+    "borderHeight": 720
+  },
+  "displayList": [
+    {
+      "type": "TilemapLayer",
+      "id": "0b0f1622-9420-5d13-8bde-97508a5831f8",
+      "label": "tilemap_level_1",
+      "tilemapId": "af31ddd3-1b16-5f05-9bfa-e5942e894bdd",
+      "layerName": "TileMap_level_1",
+      "tilesets": [
+        "tiles",
+        "tiles_2"
+      ]
+    },
+    {
+      "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+      "id": "b39877da-9818-5e24-8ff7-eba2015efe04",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "spawn",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "1",
+      "x": 96,
+      "y": 608
+    },
+    {
+      "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+      "id": "36cc65b1-8227-5b19-ac27-2d0b7cd83acd",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "spawn_1",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "2",
+      "x": 1248,
+      "y": 800
+    },
+    {
+      "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
+      "id": "b7db7062-0e91-59a2-bb7a-8d10ee6fd3e3",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "christmasTree",
+      "x": -288,
+      "y": 1200
+    },
+    {
+      "prefabId": "7dc9d47e-dfca-4b74-9bcc-d46afa393c41",
+      "id": "04e0a3db-2670-5164-b106-e15feac8ec15",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "christmasTree_1",
+      "x": -128,
+      "y": 1184
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+      "id": "c421cd58-9585-54ab-9c99-96cbc88e171b",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_11",
+      "x": 160,
+      "y": 1328
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+      "id": "683b6d05-c155-5a5a-bbbb-8f079c042e3e",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass_7",
+      "x": -144,
+      "y": 832
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
+      "id": "d269eed3-9292-5eff-aec3-876493d5644a",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushDownwardsSmall",
+      "x": -832,
+      "y": 464
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f24",
+      "id": "c68a5b7f-27e1-5cec-8faf-211c48243d15",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushDownwardsLarge",
+      "x": -576,
+      "y": 400
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-840e-856ffe433f36",
+      "id": "1534c3f3-1e88-5409-8c5f-dbecca244b4c",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bridgeStone",
+      "x": -64,
+      "y": 864
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+      "id": "a99a3f95-265a-5baa-8039-9a98d7a8b2d4",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStone",
+      "x": 0,
+      "y": 32
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f21",
+      "id": "ad879623-e107-5113-8561-9623728a6884",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStone1",
+      "x": 64,
+      "y": 32
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f21",
+      "id": "bd3e210e-a658-5367-a865-1fa4c1379f7d",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStone_1",
+      "x": -32,
+      "y": 48
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+      "id": "88cf56dd-59c5-5e37-a87a-0825cf7480e4",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStone_2",
+      "x": 32,
+      "y": 48
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+      "id": "56489a1c-cc37-5052-9acf-5407cd5ac296",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStone_3",
+      "x": 0,
+      "y": 64
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f29",
+      "id": "b2c4c548-64d6-50f9-8897-a8b8edfac4ae",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStoneTopRightBottomRight",
+      "x": -64,
+      "y": 64
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f21",
+      "id": "6c2cb761-69bf-50b5-9beb-8545848b1995",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStone_4",
+      "x": -32,
+      "y": 80
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-851ffe433f31",
+      "id": "dcace924-b31d-5f3c-8526-80f6242c24c6",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "treeTrunk",
+      "x": -672,
+      "y": 528
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-8561fe432f32",
+      "id": "47b15e5b-b0e1-5ffa-8538-5a2e5d2d72f4",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "rampStoneTopRight",
+      "x": -64,
+      "y": 80
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+      "id": "f04fd23a-edef-552e-9146-8a1d24ae97b8",
+      "unlock": [
+        "x",
+        "y",
+        "z"
+      ],
+      "label": "blockStone_5",
+      "z": 32,
+      "x": 32,
+      "y": -16
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+      "id": "882b330f-732f-558f-8fa4-f2388a4644b7",
+      "unlock": [
+        "x",
+        "y",
+        "z"
+      ],
+      "label": "blockStone_6",
+      "z": 32,
+      "x": 64,
+      "y": 0
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f34",
+      "id": "d73f4761-8bfe-5bc7-b4c3-e5d156773e22",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "rockPiles5",
+      "x": 64,
+      "y": 160
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+      "id": "2785f05e-f8a2-5a4e-8162-543a64f8590c",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStone_7",
+      "x": 128,
+      "y": 160
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+      "id": "6baacd42-e46e-56c3-81d3-f24ec46a3287",
+      "unlock": [
+        "x",
+        "y",
+        "z"
+      ],
+      "label": "blockStone_8",
+      "z": 32,
+      "x": 128,
+      "y": 128
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+      "id": "51cb1073-98f7-58bb-8a7a-91b5d21919eb",
+      "unlock": [
+        "x",
+        "y",
+        "z"
+      ],
+      "label": "blockStone_9",
+      "z": 64,
+      "x": 128,
+      "y": 96
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+      "id": "f209e977-9e28-5868-8fed-118ec37d9f2b",
+      "unlock": [
+        "x",
+        "y",
+        "z"
+      ],
+      "label": "blockStone_10",
+      "z": 92,
+      "x": 128,
+      "y": 64
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f22",
+      "id": "99848376-6b9c-5513-a0d9-942db6fd43f2",
+      "unlock": [
+        "x",
+        "y",
+        "z"
+      ],
+      "label": "blockStone_11",
+      "z": 128,
+      "x": 128,
+      "y": 32
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f31",
+      "id": "c7ba927b-6ec7-53c7-a4a5-7e494b32d5b3",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "rockPiles2",
+      "x": 160,
+      "y": 176
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f32",
+      "id": "e0fb0d21-c50f-53c6-80bc-97b39ffb0676",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "rockPiles3",
+      "x": 96,
+      "y": 176
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f31",
+      "id": "8a0d370e-c634-5eb9-90aa-4b7aa8db95e2",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "rockPiles",
+      "x": 128,
+      "y": 192
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
+      "id": "b75e02c9-37af-5416-9ccf-b4e31d412779",
+      "unlock": [
+        "x",
+        "y",
+        "z"
+      ],
+      "label": "tree4",
+      "z": 160,
+      "x": 128,
+      "y": 0
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+      "id": "e42a9939-2722-52ed-b402-409b3978b9b8",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree7",
+      "x": -736,
+      "y": 400
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+      "id": "66425401-fc7f-588c-b27f-093652dbe500",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree6",
+      "x": -672,
+      "y": 400
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+      "id": "0801b338-72f6-5938-9060-2237c1e5253a",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_1",
+      "x": -608,
+      "y": 448
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
+      "id": "8ba435cd-f305-5f2a-9f78-51294decf7f3",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_2",
+      "x": -832,
+      "y": 864
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f36",
+      "id": "489d89d2-3a60-58f9-8e62-ff5a1eebc46b",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree1",
+      "x": -1152,
+      "y": 800
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
+      "id": "c8892ab9-ec16-5249-91a5-fa89d55b46ea",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_3",
+      "x": -448,
+      "y": 960
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-851ffe433f31",
+      "id": "37af500e-7581-598e-a97e-8c27a94be5c0",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "treeTrunk_1",
+      "x": -784,
+      "y": 880
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+      "id": "2b296068-976b-518a-a025-5ea33ada090e",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_4",
+      "x": 448,
+      "y": 1328
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+      "id": "bb06894a-32c9-5100-bad2-162e3e1c1f4b",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_5",
+      "x": 40,
+      "y": 1432
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
+      "id": "108372b3-ddfc-5cbb-bd81-dbb82c421c76",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushDry",
+      "x": 768,
+      "y": 1040
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
+      "id": "06e9c560-c617-5605-b285-85015576303a",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushDry_1",
+      "x": -1056,
+      "y": 944
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
+      "id": "25397929-cd66-57be-a0e3-72220c5720b4",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushDry_2",
+      "x": 416,
+      "y": 800
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
+      "id": "3f9dc544-6f1a-51f9-8a53-de8dcb458f6b",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushDry_3",
+      "x": -224,
+      "y": 160
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f28",
+      "id": "ed1d6be9-35ed-508a-a486-e9b139df7524",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushUpwardsSmall",
+      "x": -128,
+      "y": 80
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
+      "id": "fa5ddcb8-d08b-5144-b0e5-207ed3468309",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushDownwardsSmall_1",
+      "x": 224,
+      "y": 1312
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f28",
+      "id": "0c8df755-1d27-5c3b-900e-99d49ecf1c10",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushUpwardsSmall_1",
+      "x": 32,
+      "y": 1440
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f26",
+      "id": "71014e48-404c-56cf-a67c-cbb011dff405",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushDry_4",
+      "x": -1024,
+      "y": 768
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+      "id": "dfaa671d-04a2-534a-ad93-91926df199b7",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree",
+      "x": -704,
+      "y": 480
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe433f21",
+      "id": "03f8cddc-c3df-54a7-9957-34fd035eecd7",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStone_12",
+      "x": 384,
+      "y": 976
+    },
+    {
+      "prefabId": "ec58b20e-e03e-4bd4-140e-856ffe433f25",
+      "id": "83e57e0a-52c9-5c41-ab3b-42fb373bca93",
+      "unlock": [
+        "x",
+        "y",
+        "z"
+      ],
+      "label": "blockStoneWater1",
+      "z": 16,
+      "x": 416,
+      "y": 928
+    },
+    {
+      "prefabId": "ec58b20e-e03e-4bd4-140e-856ffe433f55",
+      "id": "52d901e3-967e-505f-a430-e8365848f2ca",
+      "unlock": [
+        "x",
+        "y",
+        "z"
+      ],
+      "label": "blockStoneWater4",
+      "z": 32,
+      "x": 384,
+      "y": 944
+    },
+    {
+      "prefabId": "ec58b20e-e03e-4bd4-140e-256ffe433f25",
+      "id": "188c4a0b-6717-5842-811a-5981bcf70989",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStoneWater3",
+      "x": 448,
+      "y": 976
+    },
+    {
+      "prefabId": "ec58b20e-e03e-4bd4-140e-856ffe433f55",
+      "id": "983abe4b-5e87-5446-8d32-eb63b13b1cf7",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStoneWater",
+      "x": 416,
+      "y": 992
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-140e-856ffe432f34",
+      "id": "add282a5-be90-5d75-8332-2cde68e3feff",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "rockPiles_1",
+      "x": 352,
+      "y": 992
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+      "id": "e6d570c7-825c-5398-9402-5c30b7422521",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_6",
+      "x": 384,
+      "y": 1328
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+      "id": "0c53f05a-b34e-5b6c-82cb-6dc146fe327d",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_7",
+      "x": 320,
+      "y": 1392
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+      "id": "96f4af25-32e0-5663-963d-036cfaa34692",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_8",
+      "x": 512,
+      "y": 1328
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+      "id": "a3ec3fe8-55ad-59e2-8e10-df244ced0b1e",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_9",
+      "x": 384,
+      "y": 1376
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+      "id": "e8384dc5-cedf-5f49-8aac-e0b1394dd7da",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_10",
+      "x": 192,
+      "y": 1456
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+      "id": "554472ca-47da-5832-a380-ee6562e8422f",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_13",
+      "x": 128,
+      "y": 1520
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f30",
+      "id": "b75f1041-2c58-5aa8-97d8-b35d6b928a82",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree5",
+      "x": -800,
+      "y": 464
+    },
+    {
+      "prefabId": "c0d76b4e-4215-46c7-a7f6-4e52c672fdb1",
+      "id": "e7d3e6dc-2d89-579f-b346-a59dbeb4b50b",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree10",
+      "x": 320,
+      "y": 672
+    },
+    {
+      "prefabId": "e5ae5fa0-6dc1-48d5-b040-80ec53ee9f1b",
+      "id": "4b6ca7c8-435a-5ce3-abcb-4bbb679873a9",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree9",
+      "x": 352,
+      "y": 512
+    },
+    {
+      "prefabId": "f09568ca-4e05-4ddd-ba4f-3ad6c515d28b",
+      "id": "52fea7cb-a69b-5c57-9847-f164ef37fdac",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_14",
+      "x": -256,
+      "y": 176
+    },
+    {
+      "prefabId": "33eba8e6-5b92-4639-8c95-37073f210ca1",
+      "id": "ae4e52b9-c5db-5ecb-89d2-b341da299b25",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceTop",
+      "x": -192,
+      "y": 1184
+    },
+    {
+      "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
+      "id": "8041557c-3999-5d43-84dc-f122a03c9314",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceTopRight",
+      "x": -160,
+      "y": 1200
+    },
+    {
+      "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
+      "id": "bf44c0e6-527d-5eee-84a1-4fa1e557ad11",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceTopRight_1",
+      "x": -128,
+      "y": 1216
+    },
+    {
+      "prefabId": "07a06dc2-39c9-4f4e-9261-1b3deca5b736",
+      "id": "29f261b1-a9a2-5151-b101-342181cb07e0",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceTopRight_2",
+      "x": -96,
+      "y": 1232
+    },
+    {
+      "prefabId": "cf4bb2c8-b20d-4059-9341-baeda0d31ff1",
+      "id": "786e4d49-9926-56a3-89ce-ff1d4a24ced7",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceTopLeft",
+      "x": -224,
+      "y": 1200
+    },
+    {
+      "prefabId": "cf4bb2c8-b20d-4059-9341-baeda0d31ff1",
+      "id": "6b541109-909f-57a1-826a-5e68d2f017d6",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceTopLeft_1",
+      "x": -256,
+      "y": 1216
+    },
+    {
+      "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
+      "id": "932a6ed4-2cb8-52a6-b040-8c9264a63267",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceBottomLeft",
+      "x": -256,
+      "y": 1280
+    },
+    {
+      "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
+      "id": "34fdc751-b3bf-5d2e-9196-7989934f9f4c",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceBottomLeft_1",
+      "x": -224,
+      "y": 1296
+    },
+    {
+      "prefabId": "b54ec6db-1d18-41c0-8422-7f289c712117",
+      "id": "49439d73-8669-5244-8795-b6ebb4191b6c",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceBottomLeft_2",
+      "x": -192,
+      "y": 1312
+    },
+    {
+      "prefabId": "04f48db1-8066-42b0-b025-0c7bb324add0",
+      "id": "c58c0e35-6e80-57f6-98b6-395885735a3c",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceBottomRight",
+      "x": -96,
+      "y": 1296
+    },
+    {
+      "prefabId": "04f48db1-8066-42b0-b025-0c7bb324add0",
+      "id": "a3be4296-aec8-5f6b-b861-28d513cb08e1",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceBottomRight_1",
+      "x": -128,
+      "y": 1312
+    },
+    {
+      "prefabId": "c5a01cf8-4a85-4704-834d-9cb28cf1048d",
+      "id": "11fae91a-a1b2-559f-b747-4ddb39005636",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceBottom",
+      "x": -160,
+      "y": 1328
+    },
+    {
+      "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+      "id": "ed96416d-112b-5d22-a986-f5f84d7e8120",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "stonePile",
+      "x": 736,
+      "y": 1200
+    },
+    {
+      "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+      "id": "766a30fb-3513-5446-bb43-cd31b89bbaf6",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "stonePile_1",
+      "x": -544,
+      "y": 304
+    },
+    {
+      "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+      "id": "d2cbc9b8-149d-5d7c-a757-812166d47717",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "stonePile_2",
+      "x": -576,
+      "y": 320
+    },
+    {
+      "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+      "id": "b07ab013-8d8a-5dc0-b5ea-b9241534c445",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "stonePile_3",
+      "x": -544,
+      "y": 336
+    },
+    {
+      "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+      "id": "50556da4-1f52-5d17-82d2-4a4e540d8495",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "stonePile_4",
+      "x": 736,
+      "y": 1168
+    },
+    {
+      "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+      "id": "3ff3ff21-cc71-5d6c-a3d7-23a5267b3d44",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "stonePile_5",
+      "x": 704,
+      "y": 1184
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "49df2492-fddd-5fac-88fc-a023905a7dc5",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals",
+      "x": -224,
+      "y": 224
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "9df45acf-0cb4-50b1-b840-ab876b32fcce",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_1",
+      "x": -192,
+      "y": 208
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "079418db-4fa9-5aa7-b698-9b064b0ed058",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_2",
+      "x": -192,
+      "y": 240
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "c219dda4-370b-596e-8b06-e59db5939d51",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_3",
+      "x": -160,
+      "y": 224
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "1da8ac2a-2aa0-5c5a-a48c-85e756670677",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_4",
+      "x": -256,
+      "y": 240
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "d8ddbc92-dcf3-5862-9369-06f68d3d7b5b",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_5",
+      "x": -224,
+      "y": 256
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b1515",
+      "id": "b98bf5fa-9c37-552f-b140-284e6ce8c8c0",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass_5",
+      "x": -400,
+      "y": 800
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b25d5",
+      "id": "8c85de3e-d086-57c4-af40-b1bd38aaad8e",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass7",
+      "x": -352,
+      "y": 816
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b25d5",
+      "id": "930699db-239e-54bd-a0a2-e4cdf1ba5586",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass",
+      "x": -320,
+      "y": 832
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b25d5",
+      "id": "d497b48e-8850-5021-8ff6-649ed7dae8de",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass_1",
+      "x": -224,
+      "y": 848
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+      "id": "9fa869b6-f1ad-50c1-a06e-0ac76e9aa425",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass1",
+      "x": -288,
+      "y": 784
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+      "id": "88c11bdf-5a8c-5402-8ecc-e85062f1093a",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass_2",
+      "x": -320,
+      "y": 768
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+      "id": "be60db6b-92a8-5b71-9ff2-bc6cbba30087",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass_3",
+      "x": -176,
+      "y": 816
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d7",
+      "id": "80b40a13-c38c-511e-afae-4369aa668695",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass2",
+      "x": -240,
+      "y": 800
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+      "id": "0d1de7ac-1a28-5b50-9ce3-c80ba4e8e068",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass_4",
+      "x": -208,
+      "y": 800
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f47b15d5",
+      "id": "5333fc92-aba6-5e22-ab11-2013806e3ebd",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass6",
+      "x": -288,
+      "y": 848
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37115d5",
+      "id": "bc0d1acf-827b-520f-8f59-d47a7850da9c",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass4",
+      "x": -256,
+      "y": 864
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b1515",
+      "id": "e970a401-4676-5a55-abc1-51cd67acd86c",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass3",
+      "x": -352,
+      "y": 752
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
+      "id": "856bc129-29d5-5db9-ac01-1705773ee722",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass_8",
+      "x": 32,
+      "y": 896
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d6",
+      "id": "566025be-cbb7-5fb6-a669-a1fe4a7e655d",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass0",
+      "x": 64,
+      "y": 912
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15c5",
+      "id": "d926e768-b9bd-5f08-9b70-3c6e70a3f0dc",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass5",
+      "x": -32,
+      "y": 928
+    },
+    {
+      "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b1515",
+      "id": "e253cdf1-0e18-59a1-84e6-f874e071eff0",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tallGrass_6",
+      "x": 0,
+      "y": 880
+    },
+    {
+      "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+      "id": "ef88828e-b450-5979-baaf-442b10f4d511",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "reeds1",
+      "x": -352,
+      "y": 800
+    },
+    {
+      "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+      "id": "bcfb1145-7e6a-5e22-80ad-3c94957d558b",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "reeds",
+      "x": -288,
+      "y": 832
+    },
+    {
+      "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+      "id": "ed4ecc98-ec8c-5fbc-8a47-d4d4b48c1b3c",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "reeds_1",
+      "x": -256,
+      "y": 784
+    },
+    {
+      "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+      "id": "29f67b3a-931a-58d7-873a-bfa05dd5ec3a",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "reeds_2",
+      "x": -160,
+      "y": 800
+    },
+    {
+      "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+      "id": "4b081dbc-b09d-57d1-b276-fa501dab9a76",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "reeds_3",
+      "x": 64,
+      "y": 896
+    },
+    {
+      "prefabId": "6e5bd402-88c1-4bae-88da-ab5b35271f0c",
+      "id": "30846098-40ee-5d83-add4-beee6f2f42ac",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "reeds_4",
+      "x": -224,
+      "y": 832
+    },
+    {
+      "prefabId": "fdf8e2c2-f0e4-45f6-98b5-25a0be5ecb93",
+      "id": "8de69edc-7882-53a2-b9b6-81ff75dca0c6",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceRight_2",
+      "x": -48,
+      "y": 1264
+    },
+    {
+      "prefabId": "d3b57804-cd8e-45fa-95de-8558ed83120b",
+      "id": "bc78ca2f-5cda-5a9f-bf2b-82d1ac983e1c",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "fenceLeft_1",
+      "x": -296,
+      "y": 1248
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+      "id": "1f706861-cbd6-5946-b4bf-47f078bfb910",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_12",
+      "x": 1024,
+      "y": 720
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f47",
+      "id": "aca9f701-9242-5f83-8350-6f9a7cb4c192",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_15",
+      "x": 1088,
+      "y": 688
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856efe433f36",
+      "id": "b4f1d74e-5e7b-5adb-8b22-63afde39f396",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_16",
+      "x": 1184,
+      "y": 672
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f36",
+      "id": "27e4a18b-e4dc-53b1-8523-3fe8c9f189ed",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_17",
+      "x": 960,
+      "y": 720
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "6d1e71fd-88fb-5c29-8642-f80cdc0540fd",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_6",
+      "x": 928,
+      "y": 1120
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "3c56df00-4093-5ae4-945d-83522d504d14",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_7",
+      "x": 896,
+      "y": 1136
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "22e70f9f-fa49-5909-976b-c278eaed8511",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_8",
+      "x": 864,
+      "y": 1120
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "a3218b4b-0b5f-54fb-9a25-1cbb5209220a",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_9",
+      "x": 896,
+      "y": 1104
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "cedf515a-b4e6-5450-aa93-51a0520ce85d",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_10",
+      "x": 832,
+      "y": 1104
+    },
+    {
+      "prefabId": "fe335e95-a540-43e1-9865-32bb3234755c",
+      "id": "2d203695-0dec-5d50-913a-5a2bca869fcb",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "undeadLandDeadTreeAnim3",
+      "x": 181,
+      "y": 803
+    },
+    {
+      "prefabId": "1756283b-d1b1-4672-8dcc-4b2c89fcf7c7",
+      "id": "01608597-77bd-50a0-a77d-72ed5126065e",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "undeadLandDeadTreeAnim2",
+      "x": 319,
+      "y": 808
+    },
+    {
+      "prefabId": "df5200a0-dc56-4e18-833c-f6030f96d011",
+      "id": "e28f7311-37ba-55a1-bc9f-19c364564402",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "undeadLandDeadTreeAnim1",
+      "x": 224,
+      "y": 912
+    },
+    {
+      "type": "Zone",
+      "id": "21160827-b24b-5f17-b5b2-b497b1d5ca11",
+      "label": "opponent_producer_a",
+      "x": -224,
+      "y": 672,
+      "width": 1,
+      "height": 1
+    },
+    {
+      "type": "Zone",
+      "id": "3749dbbb-9994-5337-81b4-911cd4c1c277",
+      "label": "opponent_producer_b",
+      "x": -160,
+      "y": 464,
+      "width": 1,
+      "height": 1
+    }
+  ],
+  "plainObjects": [
+    {
+      "id": "af31ddd3-1b16-5f05-9bfa-e5942e894bdd",
+      "type": "Tilemap",
+      "label": "tilemap",
+      "scope": "PUBLIC",
+      "key": "tiles_ai_bridge_crossing",
+      "tilesets": [
+        {
+          "name": "tiles",
+          "imageKey": "tiles_1"
+        },
+        {
+          "name": "tiles_2",
+          "imageKey": "tiles_2"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "Phaser Editor - Scene Editor",
+    "url": "https://phaser.io/editor",
+    "contentType": "phasereditor2d.core.scene.SceneContentType",
+    "version": 5
+  }
+}
