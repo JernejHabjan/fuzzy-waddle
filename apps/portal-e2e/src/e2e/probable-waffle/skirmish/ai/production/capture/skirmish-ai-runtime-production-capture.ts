@@ -18,7 +18,7 @@ export async function recordRuntimeProductionBoundary(page: Page, playerNumber: 
       .__fuzzyWaddleAiRuntimeBrowserTest;
     const capture = host?.productionCapture;
     if (!capture) throw new Error("runtime_production_capture_unavailable");
-    return capture.capture(owner).frontiers?.closedThroughTick ?? -1;
+    return capture.recordBoundary?.(owner) ?? -1;
   }, playerNumber);
 }
 

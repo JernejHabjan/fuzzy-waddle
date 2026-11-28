@@ -64,18 +64,21 @@ describe("installAiRuntimeProductionCapture", () => {
     installAiRuntimeProductionCapture(scene);
     expect(AiRuntimeProductionCapture).not.toHaveBeenCalled();
     jest.mocked(readAiRuntimeBrowserTestConfig).mockReturnValue({ ...config, captureProduction: true });
-    const capture = jest.fn(), captureHumanQueueBoundary = jest.fn();
-    jest.mocked(AiRuntimeProductionCapture).mockImplementation(() => ({ capture, captureHumanQueueBoundary }) as never);
+    const capture = jest.fn(), captureHumanQueueBoundary = jest.fn(), recordBoundary = jest.fn(() => 19);
+    jest.mocked(AiRuntimeProductionCapture).mockImplementation(() => ({ capture, captureHumanQueueBoundary, recordBoundary }) as never);
     installAiRuntimeProductionCapture(scene);
     installAiRuntimeProductionCapture(scene);
     expect(AiRuntimeProductionCapture).toHaveBeenCalledTimes(1);
-    expect(AiRuntimeProductionCapture).toHaveBeenCalledWith(scene, [], undefined, false);
+    expect(AiRuntimeProductionCapture).toHaveBeenCalledWith(scene, [], undefined, false, false);
     window.__fuzzyWaddleAiRuntimeBrowserTest?.productionCapture?.capture(2);
     expect(capture).toHaveBeenCalledWith(2, undefined);
     window.__fuzzyWaddleAiRuntimeBrowserTest?.productionCapture?.capture(2, 400);
     expect(capture).toHaveBeenLastCalledWith(2, 400);
     window.__fuzzyWaddleAiRuntimeBrowserTest?.productionCapture?.captureHuman?.(1, 400);
     expect(captureHumanQueueBoundary).toHaveBeenCalledWith(1, 400);
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTest?.productionCapture?.recordBoundary?.(2)).toBe(19);
+    expect(recordBoundary).toHaveBeenCalledWith(2);
+    expect(capture).toHaveBeenCalledTimes(2);
     events.emit(Phaser.Scenes.Events.DESTROY);
     expect(window.__fuzzyWaddleAiRuntimeBrowserTest?.productionCapture).toBeUndefined();
   });
@@ -103,15 +106,18 @@ describe("installAiRuntimeProductionCapture", () => {
     expect(window.__fuzzyWaddleAiRuntimeBrowserTest).toBe(replacement);
   });
 
-  it("forwards native combat opt-in only to the existing capture", () => {
+  it.each([[true, false], [false, true]])("opts into decision evidence with combat=%s tactics=%s", (combat, tactics) => {
     const game = {} as Phaser.Game;
     const scene = { game, events: new Phaser.Events.EventEmitter() } as unknown as ProbableWaffleScene;
     const config = { schemaVersion: 1 as const, enabled: true as const, seed: 1, startPaused: true as const,
-      captureProduction: true as const, captureCombat: true as const };
+      captureProduction: true as const,
+      ...(combat ? { captureCombat: true as const } : {}),
+      ...(tactics ? { captureTactics: true as const } : {})
+    };
     window.__fuzzyWaddleAiRuntimeBrowserTest = { schemaVersion: 1, config, game, initialStateByPlayer: {} };
     jest.mocked(readAiRuntimeBrowserTestConfig).mockReturnValue(config);
     jest.mocked(AiRuntimeProductionCapture).mockImplementation(() => ({ capture: jest.fn() }) as never);
     installAiRuntimeProductionCapture(scene);
-    expect(AiRuntimeProductionCapture).toHaveBeenCalledWith(scene, [], undefined, true);
+    expect(AiRuntimeProductionCapture).toHaveBeenCalledWith(scene, [], undefined, combat, true);
   });
 });

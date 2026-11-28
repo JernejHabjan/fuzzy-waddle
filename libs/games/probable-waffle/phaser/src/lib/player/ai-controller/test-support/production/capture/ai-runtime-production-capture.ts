@@ -78,7 +78,8 @@ export class AiRuntimeProductionCapture {
     private readonly scene: ProbableWaffleScene,
     intervals: readonly AiRuntimeResourceServiceInterval[] = [],
     protectedRoutes: readonly AiRuntimeProtectedRoute[] = [],
-    captureCombat = false
+    captureCombat = false,
+    captureTactics = captureCombat
   ) {
     const ticks = getSceneService(scene, SimulationTickService);
     const bus = getSceneService(scene, CommandBusService);
@@ -87,7 +88,7 @@ export class AiRuntimeProductionCapture {
     const playerChanged = scene.communicator.playerChanged;
     if (!ticks || !bus || !index || !tech || !playerChanged) throw new Error("production_capture_authority_missing");
     this.startedTick = ticks.currentTick;
-    this.proof = new AiRuntimeProductionProofCapture(scene, this.identify, () => this.nextSequence - 1, captureCombat);
+    this.proof = new AiRuntimeProductionProofCapture(scene, this.identify, () => this.nextSequence - 1, captureTactics);
     this.resourceIntervalDeclaration = structuredClone({
       boundary: { tick: this.startedTick, captureSequence: 0 },
       overflow: intervals.length > 256,
@@ -139,7 +140,7 @@ export class AiRuntimeProductionCapture {
         (fact, item) => this.append(fact, item)
       );
       this.subscriptions.add(installAiRuntimeDecisionCapture(scene, this.unspentClaims,
-        (player) => this.boundary(player), (fact) => this.append(fact), this.resourceCoverage.lose, captureCombat));
+        (player) => this.boundary(player), (fact) => this.append(fact), this.resourceCoverage.lose, captureTactics));
       scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
       scene.events.on(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
       this.subscriptions.add(
@@ -231,17 +232,29 @@ export class AiRuntimeProductionCapture {
     return this.captureBoundary(playerNumber, false);
   }
 
-  private captureBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionSnapshot {
+  /** Record the same settled sample without materializing the chronological report. */
+  recordBoundary(playerNumber: number): number {
+    return this.captureBoundary(playerNumber, true, false);
+  }
+
+  private captureBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionSnapshot;
+  private captureBoundary(playerNumber: number, requireDecision: boolean, includeHistory: false): number;
+  private captureBoundary(
+    playerNumber: number,
+    requireDecision: boolean,
+    includeHistory = true
+  ): AiRuntimeProductionSnapshot | number {
     if (this.disposed) throw new Error("production_capture_disposed");
     try {
-      return this.readBoundary(playerNumber, requireDecision);
+      const gaps = this.recordSettledSnapshot(playerNumber, requireDecision);
+      return includeHistory ? this.readHistory(playerNumber, gaps) : this.proof.closedThroughTick(playerNumber);
     } catch (error) {
       this.resourceCoverage.lose("boundary_read_failed");
       throw error;
     }
   }
 
-  private readBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionSnapshot {
+  private recordSettledSnapshot(playerNumber: number, requireDecision: boolean): readonly string[] {
     let phaseStartedAt = performance.now();
     traceProductionCapturePhase("recipient-reconcile", "start");
     this.recipientResources.reconcile();
@@ -251,10 +264,7 @@ export class AiRuntimeProductionCapture {
     traceProductionCapturePhase("snapshot-read", "start");
     const { snapshot, pending } = captureAiRuntimeProductionSnapshot(this.scene, playerNumber, requireDecision, {
       startedTick: this.startedTick,
-      afterSequence: this.facts.reduce(
-        (sequence, fact) => (fact.playerNumber === playerNumber ? fact.sequence : sequence),
-        0
-      ),
+      afterSequence: this.facts.findLast((fact) => fact.playerNumber === playerNumber)?.sequence ?? 0,
       resources: this.resources(playerNumber),
       resourceCoverage: this.resourceCoverage.read(),
       pendingCommands: this.pendingCommands,
@@ -272,7 +282,11 @@ export class AiRuntimeProductionCapture {
     }
     this.snapshots.set(playerNumber, snapshots);
     traceProductionCapturePhase("snapshot-clone", "complete", performance.now() - phaseStartedAt);
-    phaseStartedAt = performance.now();
+    return pending.gaps;
+  }
+
+  private readHistory(playerNumber: number, pendingGaps: readonly string[]): AiRuntimeProductionSnapshot {
+    let phaseStartedAt = performance.now();
     traceProductionCapturePhase("proof-read", "start");
     const proof = this.proof.read(playerNumber);
     traceProductionCapturePhase("proof-read", "complete", performance.now() - phaseStartedAt);
@@ -309,10 +323,10 @@ export class AiRuntimeProductionCapture {
         "capture_local_identity_restore",
         "initial_paid_item_provenance",
         "decision_snapshot_cadence",
-        ...pending.gaps
+        ...pendingGaps
       ],
       facts,
-      snapshots,
+      snapshots: this.snapshots.get(playerNumber) ?? [],
       recipientResourceFacts
     } satisfies AiRuntimeProductionSnapshot);
     traceProductionCapturePhase("final-clone", "complete", performance.now() - phaseStartedAt, facts.length);

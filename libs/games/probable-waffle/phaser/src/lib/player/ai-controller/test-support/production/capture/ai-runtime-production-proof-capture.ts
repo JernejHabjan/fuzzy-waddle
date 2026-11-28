@@ -33,7 +33,7 @@ export class AiRuntimeProductionProofCapture {
     private readonly identify: (actorId: string, item: UnifiedQueueItem) => string,
     private readonly afterSequence: () => number,
     /** Explicit combat fixtures also need initial passive assets and unarmed carriers in lifetime proof. */
-    private readonly captureCombat = false
+    private readonly trackPassiveActors = false
   ) {}
 
   arm(playerNumber: number, latestTick: number): void {
@@ -84,7 +84,7 @@ export class AiRuntimeProductionProofCapture {
     }
     const ids = this.tracked.get(playerNumber) ?? new Set<string>();
     for (const actor of getSceneService(this.scene, ActorIndexSystem)?.getOwnedActors(playerNumber) ?? []) {
-      if (this.captureCombat && getActorComponent(actor, HealthComponent) ||
+      if (this.trackPassiveActors && getActorComponent(actor, HealthComponent) ||
           getActorComponent(actor, QueueComponent) || getActorComponent(actor, AttackComponent) ||
           getActorComponent(actor, ResourceDrainComponent)) {
         const id = getActorComponent(actor, IdComponent)?.id;
@@ -153,6 +153,10 @@ export class AiRuntimeProductionProofCapture {
     }
     ids.add(id);
     this.tracked.set(playerNumber, ids);
+  }
+
+  closedThroughTick(playerNumber: number): number {
+    return this.frontiers.get(playerNumber)?.closedThroughTick ?? -1;
   }
 
   read(playerNumber: number) {
