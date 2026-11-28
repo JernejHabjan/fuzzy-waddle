@@ -1,0 +1,170 @@
+{
+  "id": "a1000000-0000-4000-8000-000000000001",
+  "sceneType": "SCENE",
+  "settings": {
+    "compilerInsertSpaces": true,
+    "compilerTabSize": 2,
+    "snapEnabled": true,
+    "snapWidth": 32,
+    "exportClass": true,
+    "autoImport": true,
+    "superClassName": "GameProbableWaffleScene",
+    "preloadPackFiles": [],
+    "createMethodName": "editorCreate",
+    "sceneKey": "MapAiOpenEconomy",
+    "compilerOutputLanguage": "TYPE_SCRIPT",
+    "borderWidth": 1280,
+    "borderHeight": 720
+  },
+  "displayList": [
+    {
+      "type": "TilemapLayer",
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "label": "tilemap_level_1",
+      "tilemapId": "a1000000-0000-4000-8000-000000000003",
+      "layerName": "TileMap_level_1",
+      "tilesets": [
+        "tiles"
+      ]
+    },
+    {
+      "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+      "id": "a1000000-0000-4000-8000-000000000004",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "spawn_1",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "1",
+      "x": -848,
+      "y": 576
+    },
+    {
+      "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+      "id": "a1000000-0000-4000-8000-000000000005",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "spawn_2",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "2",
+      "x": 464,
+      "y": 848
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+      "id": "a1000000-0000-4000-8000-000000000006",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_west_1",
+      "x": -672,
+      "y": 640
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+      "id": "a1000000-0000-4000-8000-000000000007",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_west_2",
+      "x": -960,
+      "y": 736
+    },
+    {
+      "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+      "id": "a1000000-0000-4000-8000-000000000008",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "stone_west",
+      "x": -688,
+      "y": 784
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "a1000000-0000-4000-8000-000000000009",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_west",
+      "x": -992,
+      "y": 608
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+      "id": "a1000000-0000-4000-8000-000000000010",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_east_1",
+      "x": 288,
+      "y": 752
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+      "id": "a1000000-0000-4000-8000-000000000011",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree_east_2",
+      "x": 608,
+      "y": 928
+    },
+    {
+      "prefabId": "e208af37-5101-4cbf-adca-93d59373fc09",
+      "id": "a1000000-0000-4000-8000-000000000012",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "stone_east",
+      "x": 272,
+      "y": 960
+    },
+    {
+      "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
+      "id": "a1000000-0000-4000-8000-000000000013",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "minerals_east",
+      "x": 752,
+      "y": 784
+    }
+  ],
+  "plainObjects": [
+    {
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "type": "Tilemap",
+      "label": "tilemap",
+      "scope": "PUBLIC",
+      "key": "tiles_ai_open_economy",
+      "tilesets": [
+        {
+          "name": "tiles",
+          "imageKey": "tiles_1"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "Phaser Editor - Scene Editor",
+    "url": "https://phaser.io/editor",
+    "contentType": "phasereditor2d.core.scene.SceneContentType",
+    "version": 5
+  }
+}

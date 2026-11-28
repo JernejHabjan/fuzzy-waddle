@@ -5,7 +5,7 @@ import {
   getPlayersFromScene,
   isPlayerHostInScene
 } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
-import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { GameSessionState, type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import {
   GameResultStatus,
   type LoseConditions,
@@ -27,12 +27,13 @@ import { filter, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import type EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
 import { getSceneService, getSceneSystem } from "../services/scene-component-helpers";
-import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../../player/ai-controller/commands/ai-player-handler";
 import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
 import { ScoreTracker } from "./ScoreTracker";
 import { SimulationTickService } from "../services/simulation-tick.service";
 import { CancelableSimDelay } from "../services/simulation-time";
+import { CommandBusService } from "../services/multiplayer/command-bus.service";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -42,7 +43,7 @@ export class GameModeConditionChecker {
   private currentPlayerNumber!: number;
   private players!: ProbableWafflePlayer[];
   private currentPlayer!: ProbableWafflePlayer;
-  private selfQuitSubscription?: Subscription;
+  private quitSubscription?: Subscription;
   private playerLeftOrKilledSubscription?: Subscription;
   private stopped: boolean = false;
   private readonly checkIntervalTicks = 20; // 1 second at the fixed 20 Hz simulation rate.
@@ -57,17 +58,17 @@ export class GameModeConditionChecker {
     this.winConditions = gameModeData.winConditions;
     this.tieConditions = gameModeData.tieConditions;
 
-    if (!scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext) {
+    if (!scene.isSpectator && !scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext) {
       this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
       this.listenToPlayerLeftOrKilled();
     }
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-    this.listenToPlayerQuit();
+    this.listenToQuit();
   }
 
   /** Documents the resolve campaign mission outcome member and its declared contract at this boundary. */
   resolveCampaignMissionOutcome(outcome: "victory" | "defeat"): void {
-    if (this.stopped) return;
+    if (this.stopped || this.scene.isSpectator) return;
     this.prepareOutcomeData();
     if (outcome === "victory") this.winGame();
     else this.loseGame();
@@ -83,7 +84,7 @@ export class GameModeConditionChecker {
 
   private check(tick: number) {
     if (!isSceneActive(this.scene)) return;
-    if (this.stopped) return;
+    if (this.stopped || this.scene.isSpectator) return;
     this.prepareData();
     this.checkAiSurrender(tick);
     if (this.checkWinConditions()) {
@@ -118,11 +119,16 @@ export class GameModeConditionChecker {
     this.currentPlayer = currentPlayer;
   }
 
-  private listenToPlayerQuit() {
-    this.selfQuitSubscription = this.scene.communicator.allScenes
+  private listenToQuit() {
+    this.quitSubscription = this.scene.communicator.allScenes
       .pipe(filter((scene) => scene.name === "quit"))
       .subscribe(() => {
         if (this.stopped) return;
+        if (this.scene.isSpectator) {
+          this.navigateToScoreScreenLocally();
+          this.stop();
+          return;
+        }
         this.selfQuit();
       });
   }
@@ -250,15 +256,28 @@ export class GameModeConditionChecker {
   private handleSurrenderAccepted(player: ProbableWafflePlayer) {
     console.log(`Player ${player.playerNumber} surrender accepted - eliminating player`);
     // Mark player as eliminated
-    this.markPlayerLeftOrKilled(player);
-
     // Destroy all units/buildings owned by this player
-    const actors = this.actorsByPlayer?.get(player.playerNumber!) || [];
-    actors.forEach((actor) => {
-      if (isGameObjectActiveInActiveScene(actor)) {
-        actor.destroy();
-      }
+    if (player.playerNumber === undefined) return;
+    getSceneService(this.scene, CommandBusService)?.dispatch({
+      type: "CONCEDE",
+      playerNumber: player.playerNumber,
+      actorIds: [],
+      reason: "surrender_accepted"
     });
+  }
+
+  /** Applies a shared concession command through the normal mode elimination path. */
+  applyConcession(playerNumber: PlayerNumber): boolean {
+    const players = this.players ?? getPlayersFromScene<ProbableWafflePlayer>(this.scene);
+    const player = players.find((candidate) => candidate.playerNumber === playerNumber);
+    if (!player || player.playerController.data.leftOrKilled) return false;
+    this.markPlayerLeftOrKilled(player);
+    const actorsByPlayer = this.actorsByPlayer ?? ScenePlayerHelpers.getActorsByPlayer(this.scene).actorsByPlayer;
+    const actors = actorsByPlayer.get(player.playerNumber!) || [];
+    actors.forEach((actor) => {
+      if (isGameObjectActiveInActiveScene(actor)) actor.destroy();
+    });
+    return true;
   }
 
   private handleSurrenderRejected(player: ProbableWafflePlayer) {
@@ -543,7 +562,7 @@ export class GameModeConditionChecker {
   private destroy() {
     this.simulationTickSub?.unsubscribe();
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-    this.selfQuitSubscription?.unsubscribe();
+    this.quitSubscription?.unsubscribe();
     this.playerLeftOrKilledSubscription?.unsubscribe();
     this.currentDelay?.remove();
   }
