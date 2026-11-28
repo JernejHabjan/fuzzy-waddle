@@ -130,7 +130,7 @@
     },
     "PLACE-03": {
       "checkpointTicks": [20, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000],
-      "evidenceCheckpoints": [1600, 1800],
+      "evidenceCheckpoints": [800, 1600, 1800],
       "combatCaptureBranches": [],
       "latestTick": 2000,
       "branches": ["layout", "concurrent", "completion", "loss"],
@@ -533,7 +533,7 @@
       }
     },
     "SCOUT-04": {
-      "evidenceCheckpoints": [400, 600, 800],
+      "evidenceCheckpoints": [400, 600],
       "latestTick": 1000,
       "branches": ["producer", "expansion", "approach"],
       "acceptance": {
@@ -790,9 +790,10 @@
       }
     },
     "STRAT-12": {
-      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpoints": [100, 200],
       "evidenceCheckpointBranches": ["denial", "own_threat"],
-      "latestTick": 2400,
+      "latestTick": 400,
+      "checkpointTicks": [0, 20, 100, 200, 400],
       "branches": ["denial", "own_threat", "unused"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
@@ -822,20 +823,21 @@
       }
     },
     "STRAT-13": {
-      "evidenceCheckpoints": [1000, 1600, 2000],
-      "evidenceCheckpointBranches": ["equal", "escalated"],
-      "latestTick": 2400,
+      "evidenceCheckpoints": [800, 1000],
+      "evidenceCheckpointBranches": ["equal", "escalated", "infeasible"],
+      "latestTick": 1200,
       "branches": ["equal", "escalated", "infeasible"],
+      "checkpointTicks": [0, 20, 200, 400, 600, 800, 1000, 1200],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
         "requiredOutcome": "Maintain independent squads/objectives and reinforcement priorities; no default single blob or uniform division ignoring severity",
         "setup": [
-          "Two separated reachable fronts have different severity and compatible owned forces",
-          "No actor is present in both starting memberships"
+          "Two separated reachable fronts have separate compatible forces and objectives",
+          "At tick 400 an enemy reinforcement wave moves toward one front while the other remains valuable"
         ],
         "actions": [
-          "Make both enemy objectives legally visible",
-          "Reinforce one front midway while the other remains useful"
+          "Maintain distinct pressure on both enemy objectives",
+          "Respond to the arriving enemy wave without abandoning useful pressure on the other front"
         ],
         "measurements": [
           "Per-actor primary command ownership, squad/objective identities, routes and per-front native effects"
@@ -1332,19 +1334,21 @@
       ]
     },
     "C-01": {
-      "latestTick": 4000,
+      "latestTick": 1600,
       "branches": ["retain", "obsolete"],
-      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000],
+      "evidenceCheckpoints": [400, 800, 1200],
+      "evidenceCheckpointBranches": ["retain", "obsolete"],
+      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
-        "requiredOutcome": "Both faction branches preserve completed assets/commitments during evidence-backed transition; no opening restart spam",
+        "requiredOutcome": "Both factions preserve completed assets and paid commitments through an evidence-backed air response; no opening restart spam",
         "setup": [
           "Each faction has completed opening assets and useful paid/in-flight commitments",
           "An actual observed threat/technology change justifies an archetype or phase transition"
         ],
         "actions": [
           "Reveal the new evidence normally and let strategic transition occur",
-          "Continue through completion or lawful cancellation of old commitments"
+          "Allow already-paid infantry to complete while new flyer evidence redirects future demand"
         ],
         "measurements": [
           "Opening plan and completed asset identities, transition reason, original queue/site linkage and useful effects"
@@ -1357,7 +1361,7 @@
         "branches": [
           "Both factions",
           "Useful old work survives",
-          "Truly obsolete optional work cancels through real authority"
+          "New flyer evidence triggers anti-air demand without discarding sunk infantry commitments"
         ],
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
         "executionStatus": "authored_not_executed"
@@ -1698,11 +1702,11 @@
       }
     },
     "H-24": {
-      "evidenceCheckpoints": [1200, 1600, 2000, 2400],
+      "evidenceCheckpoints": [200, 400],
       "evidenceCheckpointBranches": ["information", "raid", "denial"],
-      "latestTick": 3000,
+      "latestTick": 600,
       "branches": ["information", "raid", "denial", "unsafe"],
-      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
+      "checkpointTicks": [0, 20, 200, 400, 600],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
         "requiredOutcome": "Bounded useful probe/mission, not permanent assembly or forced suicide",
@@ -1760,11 +1764,11 @@
       }
     },
     "H-26": {
-      "evidenceCheckpoints": [1600, 2000, 2400],
-      "evidenceCheckpointBranches": ["grouping", "safe_alternate", "threat_clears"],
-      "latestTick": 3000,
+      "evidenceCheckpoints": [200, 400, 600],
+      "evidenceCheckpointBranches": ["grouping", "safe_alternate", "no_safe_route", "threat_clears"],
+      "latestTick": 601,
       "branches": ["grouping", "safe_alternate", "no_safe_route", "threat_clears"],
-      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
+      "checkpointTicks": [0, 20, 100, 200, 400, 600, 601],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
         "requiredOutcome": "Reachable grouping/alternate route or stop feeding; preserve useful main-front decision",

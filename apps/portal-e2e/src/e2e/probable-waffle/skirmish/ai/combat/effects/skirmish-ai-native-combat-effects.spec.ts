@@ -743,6 +743,50 @@ it.describe("native weapon hits against building footprints", () => {
     expect(nativeWeaponHits(context, "target")).toHaveLength(1);
   });
 
+  it("accepts a committed hit resolving one simulation tick after cooldown, before the next shot", () => {
+    const facts = hitFacts("FrostForge", 1).map((fact) =>
+      fact.kind === "native_damage" && "damage" in fact
+        ? { ...fact, tick: 31, damage: { ...fact.damage, damageTick: 31 } }
+        : fact
+    );
+    facts.push(
+      {
+        sequence: 4,
+        tick: 32,
+        playerNumber: 2,
+        kind: "native_combat",
+        operation: {
+          kind: "attack_requested",
+          actor: actor("attacker", "TivaraMacemanMale", 2),
+          target: actor("target", "FrostForge", 1),
+          weapon,
+          distance: 1,
+          highGroundRangeBonus: 0,
+          targetFlying: false,
+          stunned: false,
+          gaps: [],
+          sceneActive: true,
+          snapshotRestoreInProgress: false,
+          clockTick: 32
+        }
+      } as (typeof facts)[number],
+      {
+        sequence: 5,
+        tick: 32,
+        playerNumber: 2,
+        kind: "native_combat",
+        operation: {
+          kind: "attack_committed",
+          actor: actor("attacker", "TivaraMacemanMale", 2),
+          target: actor("target", "FrostForge", 1),
+          weapon
+        }
+      } as (typeof facts)[number]
+    );
+
+    expect(nativeWeaponHits(contextFor(facts, "FrostForge", 1), "target")).toHaveLength(1);
+  });
+
   it("keeps the ordinary weapon range for units and targets beyond the footprint", () => {
     expect(nativeWeaponHits(contextFor(hitFacts("SkaduweeWorkerMale", 2), "SkaduweeWorkerMale", 0), "target")).toEqual(
       []

@@ -87,6 +87,16 @@ test("FIGHT-03 unequal fronts retain a durable primary, isolated contact and mat
     "infeasible"
   ]);
   assert.deepEqual(nativeScenarioBindings.cases["FIGHT-03"].evidenceCheckpoints, [800, 1000]);
+  for (const variant of fixture.recipe.variants) {
+    assert.equal(
+      variant.presetWorld.actors.some((actor) => actor.fixtureActorId === "contact-group"),
+      false
+    );
+    assert.equal(
+      variant.presetWorld.actors.some((actor) => actor.fixtureActorId === "enemy-producer"),
+      false
+    );
+  }
   for (const variant of fixture.recipe.variants.filter((entry) => /(?:unequal|infeasible)$/.test(entry.id))) {
     const world = variant.presetWorld;
     const primary = world.actors.find((actor) => actor.fixtureActorId === "front-target-a");

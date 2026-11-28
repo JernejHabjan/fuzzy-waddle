@@ -11,7 +11,10 @@ import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capa
 import { aiDeadline } from "../../../contracts/ai-core-types";
 import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { AI_RECOVERY_NO_PROGRESS_TICKS, AiRecoveryManager } from "../ai-recovery-manager";
 
 const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
@@ -248,7 +251,8 @@ describe("AiRecoveryManager", () => {
   });
 
   it("REC-03 prioritizes an observed blocker without targeting an unseen hostile ID", () => {
-    const visible = manager.propose(observation([actor("proxy", ObjectNames.Olival, 7, 5, "enemy")]), {
+    const proxy = { ...actor("proxy", ObjectNames.Olival, 7, 5, "enemy"), capabilities: [] };
+    const visible = manager.propose(observation([proxy]), {
       ...state(),
       squads: [
         {
@@ -294,7 +298,7 @@ describe("AiRecoveryManager", () => {
   });
 
   it("does not spend a critically wounded ranged defender on a visible blocker", () => {
-    const blocker = actor("proxy", ObjectNames.Olival, 7, 5, "enemy");
+    const blocker = { ...actor("proxy", ObjectNames.Olival, 7, 5, "enemy"), capabilities: [] };
     const woundedRanged: AiObservedActor = {
       ...actor("ranged", ObjectNames.TivaraMacemanMale, 7, 6),
       healthPermille: { status: "known", value: 400, observedTick: 100 },
@@ -366,6 +370,49 @@ describe("AiRecoveryManager", () => {
     expect(
       proposal.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === blocker.actorId)
     ).toBe(false);
+  });
+
+  it("does not redirect an active defense squad from its current target to another nearby hostile", () => {
+    const blocker = { ...actor("proxy", ObjectNames.Olival, 7, 5, "enemy"), capabilities: [] };
+    const proposal = manager.propose(observation([blocker]), {
+      ...state(),
+      squads: [
+        {
+          squadId: "squad:defend",
+          role: "defense",
+          domain: "ground",
+          actorIds: ["worker-a"],
+          objectiveId: "active-local-threat",
+          state: "engage"
+        }
+      ]
+    });
+
+    expect(
+      proposal.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === blocker.actorId)
+    ).toBe(false);
+  });
+
+  it("leaves a visible local economy raid to the defense manager instead of blocker recovery", () => {
+    const proxy = { ...actor("proxy", ObjectNames.Olival, 7, 5, "enemy"), capabilities: [] };
+    const raider = actor("raider", ObjectNames.TivaraMacemanMale, 8, 5, "enemy");
+    const proposal = manager.propose(observation([proxy, raider]), {
+      ...state(),
+      squads: [
+        {
+          squadId: "squad:defend",
+          role: "defense",
+          domain: "ground",
+          actorIds: ["worker-a"],
+          objectiveId: null,
+          state: "ready"
+        }
+      ]
+    });
+
+    expect(proposal.intents.some((intent) => intent.reasonCode === "recovery:visible_proxy_or_egress_blocker")).toBe(
+      false
+    );
   });
 
   it("does not order a defender against an incompatible or locally unseen blocker", () => {

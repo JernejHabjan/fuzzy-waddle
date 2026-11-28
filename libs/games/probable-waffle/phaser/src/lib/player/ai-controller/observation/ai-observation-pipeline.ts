@@ -20,6 +20,7 @@ import { HealthComponent } from "../../../entity/components/combat/components/he
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
@@ -247,7 +248,7 @@ export class AiObservationPipeline {
       );
       projectedActors.push(projection);
       liveById.set(actorId, actor);
-      if (!owned) this.remember(projection, tick);
+      if (!owned) this.remember(projection, tick, !getActorComponent(actor, ActorTranslateComponent));
       if (owned || visibility === "visible") {
         const catalogEntry = projectCatalogEntry(
           actor,
@@ -371,7 +372,7 @@ export class AiObservationPipeline {
     return !health?.killed;
   }
 
-  private remember(actor: AiObservedActor, tick: number): void {
+  private remember(actor: AiObservedActor, tick: number, wasStationary?: boolean): void {
     if (actor.relation === "self") return;
     this.memory.set(actor.actorId, {
       actorId: actor.actorId,
@@ -382,6 +383,7 @@ export class AiObservationPipeline {
       lastSeenTick: tick,
       confidencePermille: 1000,
       ...(actor.mainBuilding?.status === "known" ? { mainBuilding: actor.mainBuilding.value } : {}),
+      ...(wasStationary === undefined ? {} : { wasStationary }),
       wasCombatant:
         actor.relation === "enemy" &&
         (actor.capabilities.some((capability) => capability.family === "military") ||

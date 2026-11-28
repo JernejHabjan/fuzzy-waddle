@@ -82,14 +82,16 @@ describe("observation actor eligibility", () => {
       visibility: "visible",
       observedTick: 100,
       logicalPosition: { status: "known", value: { x: 2, y: 3, z: 0 }, observedTick: 100 },
-      capabilities: [{
-        id: "enemy-maceman:attack",
-        family: "military",
-        level: 1,
-        domains: ["ground"],
-        targetDomains: ["ground"],
-        capacity: { status: "known", value: 0, observedTick: 100 }
-      }]
+      capabilities: [
+        {
+          id: "enemy-maceman:attack",
+          family: "military",
+          level: 1,
+          domains: ["ground"],
+          targetDomains: ["ground"],
+          capacity: { status: "known", value: 0, observedTick: 100 }
+        }
+      ]
     };
 
     pipeline.remember(visibleEnemy, 100);
@@ -373,15 +375,24 @@ describe("Stage 4 observation generation guards", () => {
         contact("empty-core", 2, true),
         contact("hidden-core", 8, true),
         contact("moving-contact", 2, false),
-        contact("visible-core", 2, true)
+        contact("visible-core", 2, true),
+        { ...contact("empty-tower", 2, false), wasStationary: true },
+        { ...contact("hidden-tower", 8, false), wasStationary: true },
+        { ...contact("moving-unit", 2, false), wasStationary: false }
       ]
     });
     if (!state) throw new Error("missing_memory_state");
     const memory = new Map(state.contacts.map((entry) => [entry.actorId, entry]));
     const remembered = projectRememberedContacts(memory, new Set(["visible-core"]), 500, (tile) => tile.x === 2);
 
-    expect(remembered.map((entry) => entry.actorId)).toEqual(["hidden-core", "moving-contact"]);
+    expect(remembered.map((entry) => entry.actorId)).toEqual([
+      "hidden-core",
+      "hidden-tower",
+      "moving-contact",
+      "moving-unit"
+    ]);
     expect(memory.has("empty-core")).toBe(false);
+    expect(memory.has("empty-tower")).toBe(false);
     expect(memory.has("visible-core")).toBe(true);
   });
 });

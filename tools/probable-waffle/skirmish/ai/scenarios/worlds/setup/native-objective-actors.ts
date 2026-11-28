@@ -35,11 +35,46 @@ export function configureNativeObjectiveActors(context: NativeActorLayoutContext
       )
     );
   }
-
+  if (id === "STRAT-12" && branch === "own_threat")
+    for (let index = 0; index < 3; index++)
+      actors.find((candidate) => candidate.fixtureActorId === `reinforcement-${index}`)!.position = tile(
+        28 + index,
+        27
+      );
   if (["STRAT-13", "FIGHT-03"].includes(id)) {
+    if (id === "STRAT-13") {
+      // The scenario tests independent pressure on two enemy fronts. Remove the shared battle map's
+      // unrelated contact and economy targets so squads are allocated to the authored objectives.
+      for (const fixtureActorId of [
+        "contact-group",
+        "scout-probe",
+        "ranged-probe",
+        "support-probe",
+        "enemy-producer",
+        "enemy-deposit",
+        "enemy-source",
+        "enemy-worker",
+        "noise-scout"
+      ]) {
+        const actorIndex = actors.findIndex((entry) => entry.fixtureActorId === fixtureActorId);
+        if (actorIndex >= 0) actors.splice(actorIndex, 1);
+      }
+      actors.find((entry) => entry.fixtureActorId === "front-target-a").position = tile(22, 18);
+      actors.find((entry) => entry.fixtureActorId === "front-target-b").position = tile(42, 38);
+      if (branch === "infeasible")
+        actors.find((entry) => entry.fixtureActorId === "front-target-a").actorName =
+          enemy === "Tivara" ? "Sandhold" : "FrostForge";
+    }
     if (id === "FIGHT-03") {
       // This case measures only its two authored fronts; unrelated economy targets would consume the bounded raid slot.
-      for (const fixtureActorId of ["noise-scout", "enemy-deposit", "enemy-source", "enemy-worker"]) {
+      for (const fixtureActorId of [
+        "contact-group",
+        "enemy-producer",
+        "noise-scout",
+        "enemy-deposit",
+        "enemy-source",
+        "enemy-worker"
+      ]) {
         const actorIndex = actors.findIndex((entry) => entry.fixtureActorId === fixtureActorId);
         if (actorIndex >= 0) actors.splice(actorIndex, 1);
       }
@@ -47,6 +82,7 @@ export function configureNativeObjectiveActors(context: NativeActorLayoutContext
       actors.find((entry) => entry.fixtureActorId === "front-target-b").position = tile(22, 32);
     }
     actors.push(actor("front-observer-a", melee(own), 2, 25, 20), actor("front-observer-b", melee(own), 2, 25, 32));
+    if (id === "STRAT-13") actors.find((entry) => entry.fixtureActorId === "front-observer-b").position = tile(40, 32);
     if (id === "FIGHT-03" && branch !== "equal") {
       // Keep the valuable main building alive for the authored tick-400 loss/escalation boundary.
       actors.find((entry) => entry.fixtureActorId === "front-target-a").position = tile(20, 5);

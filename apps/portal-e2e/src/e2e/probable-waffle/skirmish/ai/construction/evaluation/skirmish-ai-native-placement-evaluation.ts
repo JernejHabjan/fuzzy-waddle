@@ -101,17 +101,19 @@ export function evaluateNativePlacement(
     return failures;
   }
   if (id === "PLACE-03") {
-    const completions = placed.toSorted((a, b) => a.completionTick - b.completionTick);
-    const measuredLayout = branch === "layout" ? completions.slice(0, 2) : completions;
+    const completions = placed.toSorted((a, b) => a.completionTick - b.completionTick),
+      measuredLayout =
+        branch === "layout" ? placed.toSorted((a, b) => a.fact.tick - b.fact.tick).slice(0, 2) : completions;
     const layoutTail = branch === "layout" ? measuredLayout[1] : measuredLayout[2];
     const firstType = measuredLayout[0]?.value.site.canonicalObjectName;
     const differentType = measuredLayout.find((placement) => placement.value.site.canonicalObjectName !== firstType);
     const requiredLayoutSize = branch === "layout" ? 2 : 3;
+    const requiresDifferentTypes = branch !== "concurrent";
     const layoutCompleteTick =
-      layoutTail && measuredLayout.length >= requiredLayoutSize && differentType
-        ? Math.max(layoutTail.completionTick, differentType.completionTick)
+      layoutTail && measuredLayout.length >= requiredLayoutSize && (!requiresDifferentTypes || differentType)
+        ? Math.max(layoutTail.completionTick, differentType?.completionTick ?? layoutTail.completionTick)
         : Number.POSITIVE_INFINITY;
-    if (measuredLayout.length < requiredLayoutSize || !differentType)
+    if (measuredLayout.length < requiredLayoutSize || (requiresDifferentTypes && !differentType))
       failures.push("placement_competing_useful_building_layout_missing");
     else
       failures.push(

@@ -1,4 +1,6 @@
 import type { nativeScenarioContext } from "../contracts/skirmish-ai-native-scenario-context";
+import type { AiRuntimeMovement } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-movement";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { nativeWeaponHits } from "../combat/effects/skirmish-ai-native-combat-effects";
 import { nativePaidMissionOutputs } from "../combat/missions/skirmish-ai-native-mission-evidence";
 import {
@@ -13,7 +15,8 @@ import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Fail closed on missing native premises before interpreting deadlines or a reassuring recovery trace. */
 export function evaluateNativeRecovery(id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>) {
-  const failures = nativeRecoveryCommonFailures(context).filter(
+  const requiresUnrelatedIncome = id !== "H-26";
+  const failures = nativeRecoveryCommonFailures(context, requiresUnrelatedIncome).filter(
     (failure) => !(["H-03", "H-19"].includes(id) && failure === "recovery_unrelated_native_income_missing")
   );
   if (["H-24", "H-25", "H-26"].includes(id)) failures.push(...evaluateNativeMissionRecovery(id, branch, context));
@@ -110,7 +113,7 @@ function healthyWorkFailures(branch: string, context: ReturnType<typeof nativeSc
 /** The authored pending/error seam must actually intercept; nearby native defense has to execute during that fixed fault. */
 function optionalQueryFailures(branch: string, context: ReturnType<typeof nativeScenarioContext>) {
   const failures: string[] = [],
-    end = branch === "late" ? 600 : 1001;
+    end = branch === "pending" ? 1001 : 600;
   const actorId = context.role("army-0");
   const fault = context.result.perturbations.find(
     (event) => event.id === "optional-query-outage" && event.affectedActorId === actorId
@@ -141,19 +144,49 @@ function optionalQueryFailures(branch: string, context: ReturnType<typeof native
     original?.kind === "spatial_authority" && original.spatial.kind === "movement"
       ? original.spatial.originalDestination
       : null;
-  const resolved =
-    destination &&
-    context.facts.some(
-      (fact) =>
-        fact.kind === "spatial_authority" &&
-        fact.spatial.kind === "movement" &&
-        fact.spatial.source.actorId === actorId &&
-        ["destination", "returned_false"].includes(fact.spatial.phase) &&
-        fact.tick > end &&
-        fact.spatial.originalDestination?.x === destination.x &&
-        fact.spatial.originalDestination?.y === destination.y
-    );
-  if (!resolved) failures.push("recovery_original_optional_query_never_resolved_after_fixed_release");
+  const routeFacts = context.facts.filter(
+    (
+      fact
+    ): fact is Extract<AiRuntimeProductionFact, { readonly kind: "spatial_authority" }> & {
+      readonly spatial: AiRuntimeMovement;
+    } =>
+      fact.kind === "spatial_authority" && fact.spatial.kind === "movement" && fact.spatial.source.actorId === actorId
+  );
+  const resolvedAfterRelease =
+    branch === "error"
+      ? (() => {
+          const failedAttempts = new Set(
+            routeFacts
+              .filter((fact) => fact.spatial.phase === "threw" && fact.tick <= end)
+              .map((fact) => fact.spatial.executionId)
+          );
+          const retryAttempts = new Set(
+            routeFacts
+              .filter((fact) => fact.spatial.phase === "started" && fact.tick > end)
+              .map((fact) => fact.spatial.executionId)
+          );
+          return (
+            failedAttempts.size > 0 &&
+            routeFacts.some(
+              (fact) =>
+                (fact.spatial.phase === "destination" || fact.spatial.phase === "returned_false") &&
+                fact.tick > end &&
+                retryAttempts.has(fact.spatial.executionId)
+            )
+          );
+        })()
+      : destination !== null &&
+        context.facts.some(
+          (fact) =>
+            fact.kind === "spatial_authority" &&
+            fact.spatial.kind === "movement" &&
+            fact.spatial.source.actorId === actorId &&
+            ["destination", "returned_false"].includes(fact.spatial.phase) &&
+            fact.tick > end &&
+            fact.spatial.originalDestination?.x === destination.x &&
+            fact.spatial.originalDestination?.y === destination.y
+        );
+  if (!resolvedAfterRelease) failures.push("recovery_original_optional_query_never_resolved_after_fixed_release");
   return failures;
 }
 

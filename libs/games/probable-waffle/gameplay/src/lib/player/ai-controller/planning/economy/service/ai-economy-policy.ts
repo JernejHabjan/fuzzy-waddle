@@ -60,14 +60,14 @@ export function observedAiEconomyThreats(observation: AiObservation): AiObserved
     (actor) => actor.relation === "enemy" && actor.visibility === "visible" && visibleIds.has(actor.actorId)
   );
   if (visibleEnemies.length === 0) return [];
-  const protectedPositions = observation.actors.flatMap((actor) =>
+  const protectedAssets = observation.actors.flatMap((actor) =>
     actor.relation === "self" &&
     actor.visibility === "owned" &&
     actor.logicalPosition.status === "known" &&
     ((actor.mainBuilding?.status === "known" && actor.mainBuilding.value) ||
       actor.resourceState.status === "known" ||
       actor.capabilities.some((capability) => ["gather", "drop_off"].includes(capability.family)))
-      ? [actor.logicalPosition.value]
+      ? [actor]
       : []
   );
   const threats = visibleEnemies.filter((enemy) => {
@@ -76,26 +76,36 @@ export function observedAiEconomyThreats(observation: AiObservation): AiObserved
     const attackCapability = enemy.capabilities.some(
       (capability) => capability.family === "attack" && capability.targetDomains.length > 0
     );
-    if (
-      !armed &&
-      !attackCapability &&
-      !(enemy.activeOrder?.status === "known" && enemy.activeOrder.value?.orderType === OrderType.Attack)
-    )
-      return false;
+    const activeOrder = enemy.activeOrder?.status === "known" ? enemy.activeOrder.value : null;
+    if (!armed && !attackCapability && activeOrder?.orderType !== OrderType.Attack) return false;
     if (enemy.logicalPosition.status !== "known") return false;
     const enemyPosition = enemy.logicalPosition.value;
-    return protectedPositions.some((position) => {
-      const distance = Math.abs(position.x - enemyPosition.x) + Math.abs(position.y - enemyPosition.y);
-      return distance <= LOCAL_THREAT_DISTANCE;
+    const mobileThreat = enemy.housingCost.status === "known" && enemy.housingCost.value > 0;
+    const attacks = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value.attacks : null;
+    return protectedAssets.some((asset) => {
+      const assetPosition = asset.logicalPosition.status === "known" ? asset.logicalPosition.value : null;
+      if (!assetPosition) return false;
+      if (activeOrder?.orderType === OrderType.Attack && activeOrder.targetActorId === asset.actorId) return true;
+      const separation = Math.hypot(assetPosition.x - enemyPosition.x, assetPosition.y - enemyPosition.y);
+      if (mobileThreat || attacks === null) return separation <= LOCAL_THREAT_DISTANCE;
+      return attacks.some((attack) => {
+        if (attack.damage <= 0 || !attack.targetDomains.includes("ground")) return false;
+        const elevationBonus = enemyPosition.z > assetPosition.z ? attack.highGroundRangeBonus : 0;
+        return separation >= attack.minRange && separation <= attack.range + elevationBonus;
+      });
     });
   });
   const protectedDistance = (enemy: AiObservedActor): number => {
     if (enemy.logicalPosition.status !== "known") return Number.POSITIVE_INFINITY;
     const position = enemy.logicalPosition.value;
     return Math.min(
-      ...protectedPositions.map(
-        (protectedPosition) => Math.abs(protectedPosition.x - position.x) + Math.abs(protectedPosition.y - position.y)
-      )
+      ...protectedAssets.map((protectedAsset) => {
+        const protectedPosition =
+          protectedAsset.logicalPosition.status === "known" ? protectedAsset.logicalPosition.value : null;
+        return protectedPosition
+          ? Math.abs(protectedPosition.x - position.x) + Math.abs(protectedPosition.y - position.y)
+          : Number.POSITIVE_INFINITY;
+      })
     );
   };
   return threats.sort(

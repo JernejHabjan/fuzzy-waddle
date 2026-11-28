@@ -30,7 +30,8 @@ function attackFacts(
   sequence: number,
   tick: number,
   targetId: string,
-  sourceActorId = "attacker"
+  sourceActorId = "attacker",
+  healthAfter = 95
 ): AiRuntimeProductionFact[] {
   const source = actor(sourceActorId, 2),
     target = actor(targetId, 1);
@@ -64,7 +65,7 @@ function attackFacts(
         targetInCaptureScene: true,
         initiatorInCaptureScene: true,
         amount: 5,
-        healthAfter: 95,
+        healthAfter,
         armourAfter: 0,
         damageType: "piercing",
         damageTick: tick + 10,
@@ -455,4 +456,123 @@ test("STRAT-05 accepts initial attackers physically retargeting discovered count
   expect(evaluateNativeStrategy("STRAT-05", "reinforced", context(initialAttack, frames))).toContain(
     "strategy_counterforce_reassessment_or_control_continuation_missing"
   );
+});
+
+test("STRAT-13 measures response to the arriving enemy wave and maintains alternate-front pressure", () => {
+  const evaluate = (responds: boolean, alternateFront: "continued" | "destroyed" | "abandoned") => {
+    const reinforcementIds = ["reinforcement-0", "reinforcement-1", "reinforcement-2"],
+      roles = {
+        ...context([], []).roles,
+        ...Object.fromEntries(reinforcementIds.map((id) => [id, id]))
+      },
+      firstFronts = [
+        {
+          tick: 100,
+          decision: {
+            missionState: {
+              squads: [
+                { actorIds: ["front-a-unit"], tactics: { targetActorId: "front-target-a" } },
+                { actorIds: ["front-b-unit"], tactics: { targetActorId: "front-target-b" } }
+              ]
+            }
+          }
+        }
+      ],
+      response = responds
+        ? [
+            {
+              tick: 600,
+              decision: {
+                missionState: {
+                  squads: reinforcementIds.map((id, index) => ({
+                    actorIds: [`response-${index}`],
+                    tactics: { targetActorId: id }
+                  }))
+                }
+              }
+            }
+          ]
+        : [],
+      facts = [
+        ...attackFacts(1, 120, "front-target-a", "front-a-unit"),
+        ...attackFacts(4, 120, "front-target-b", "front-b-unit"),
+        ...(responds
+          ? reinforcementIds.flatMap((id, index) =>
+              attackFacts(7 + index * 3, 500 + index * 10, id, `response-${index}`)
+            )
+          : []),
+        ...(alternateFront === "continued" ? attackFacts(20, 1100, "front-target-b", "front-b-late") : []),
+        ...(alternateFront === "destroyed" ? attackFacts(30, 760, "front-target-b", "front-b-finisher", 0) : [])
+      ];
+    const base = context(facts, [...firstFronts, ...response]);
+    return evaluateNativeFronts("escalated", {
+      ...base,
+      roles,
+      role: (name: string) => roles[name as keyof typeof roles]
+    } as ReturnType<typeof nativeScenarioContext>);
+  };
+
+  expect(evaluate(true, "continued")).toEqual([]);
+  expect(evaluate(true, "destroyed")).toEqual([]);
+  expect(evaluate(false, "continued")).toContain("combat_reinforcements_not_proportionally_engaged");
+  expect(evaluate(true, "abandoned")).toContain("combat_escalation_abandoned_alternate_front");
+});
+
+test("STRAT-13 does not require a generic contact target outside its authored fronts", () => {
+  const base = context([], []);
+  const focused = {
+    ...base,
+    roles: Object.fromEntries(Object.entries(base.roles).filter(([role]) => role !== "contact-group")),
+    role: (name: string) => (name === "contact-group" ? undefined : base.roles[name as keyof typeof base.roles])
+  } as ReturnType<typeof nativeScenarioContext>;
+
+  expect(() => evaluateNativeStrategy("STRAT-13", "equal", focused)).not.toThrow();
+  expect(evaluateNativeStrategy("STRAT-13", "equal", focused)).toContain(
+    "combat_independent_physically_useful_fronts_missing"
+  );
+});
+
+test("STRAT-13 infeasible control releases an assigned lost front and keeps attacking the remaining front", () => {
+  const frames = [
+    {
+      tick: 200,
+      decision: {
+        missionState: {
+          squads: [
+            { actorIds: ["attacker-a"], tactics: { targetActorId: "front-target-a" } },
+            { actorIds: ["attacker-b"], tactics: { targetActorId: "front-target-b" } }
+          ]
+        }
+      }
+    },
+    {
+      tick: 420,
+      decision: {
+        missionState: {
+          squads: [{ actorIds: ["attacker-b"], tactics: { targetActorId: "front-target-b" } }]
+        }
+      }
+    },
+    {
+      tick: 1000,
+      decision: {
+        missionState: {
+          squads: [{ actorIds: ["attacker-b"], tactics: { targetActorId: "front-target-b" } }]
+        }
+      }
+    }
+  ];
+  const facts = attackFacts(1, 450, "front-target-b", "attacker-b"),
+    appliedLoss = [{ id: "loss-front-target-a", tick: 400, affectedActorId: "front-target-a" }];
+
+  expect(evaluateNativeFronts("infeasible", context(facts, frames, appliedLoss))).toEqual([]);
+  expect(evaluateNativeFronts("infeasible", context(facts, frames))).toContain(
+    "combat_infeasible_front_not_released_independently"
+  );
+  expect(
+    evaluateNativeFronts(
+      "infeasible",
+      context(attackFacts(20, 250, "front-target-b", "attacker-b"), frames, appliedLoss)
+    )
+  ).toContain("combat_infeasible_front_not_released_independently");
 });

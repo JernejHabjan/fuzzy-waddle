@@ -53,6 +53,7 @@ export function ownedCombat(observation: AiObservation, catalog: AiCapabilityCat
     .filter(canFight)
     .filter(
       (actor) =>
+        !actor.capabilities.some((capability) => capability.family === "gather") &&
         !catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0)
     )
     .sort((left, right) => {

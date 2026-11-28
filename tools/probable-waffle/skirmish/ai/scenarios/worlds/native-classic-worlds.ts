@@ -12,16 +12,18 @@ export function nativeClassicWorld(id, faction, branch): NativeScenarioWorld {
   for (let i = 0; i < 3; i++)
     add(`reserve-house-${i}`, faction === "Tivara" ? "Olival" : "Emberstone", 2, 41, 31 + i * 4);
   if (id === "C-01") {
+    // Four 60-food infantry commands are paid before resourceStarts resets the observed post-setup balance.
+    world.resourceGrants.push({ playerNumber: 2, amounts: { food: 80 } });
     world.queues = [{ producerFixtureActorId: "ready-producer", actorName: melee(faction), count: 4 }];
     add("new-contact", enemy === "Tivara" ? "TivaraAlchemist" : "SkaduweeOwl", 1, 5, 5);
     world.controls.push(
-      control("transition-contact", "new-contact", 400, { kind: "move", worldPosition: tile(27, 23) })
+      control("transition-contact", "new-contact", 200, { kind: "move", worldPosition: tile(27, 23) })
     );
     if (branch === "obsolete")
       for (let i = 0; i < 3; i++) {
         add(`air-counter-${i}`, enemy === "Tivara" ? "TivaraAlchemist" : "SkaduweeOwl", 1, 5 + i, 7);
         world.controls.push(
-          control(`transition-air-${i}`, `air-counter-${i}`, 400, {
+          control(`transition-air-${i}`, `air-counter-${i}`, 200, {
             kind: "attack",
             targetFixtureActorId: "original-home"
           })

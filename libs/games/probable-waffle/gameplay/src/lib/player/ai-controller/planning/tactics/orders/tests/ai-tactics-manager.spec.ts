@@ -15,6 +15,14 @@ import {
 } from "../../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 
 describe("AiTacticsManager", () => {
+  it("does not recruit a gathering worker as a combat reinforcement", () => {
+    const fighter = combatActor("fighter", "self", 0);
+    const worker = combatActor("worker", "self", 1, "ground", 1000, { capabilityFamilies: ["gather"] });
+    const attack = squad("squad:attack", "attack", [fighter.actorId]);
+    const result = manager.propose(observation([fighter, worker]), fixtureState([attack]));
+    expect(result.statePatch?.squadUpdates?.flatMap((entry) => entry.actorIds)).not.toContain(worker.actorId);
+  });
+
   it("releases a raid mission when its objective is no longer present in observed enemy contacts", () => {
     const raider = combatActor("raider", "self", 12);
     const raid = {
@@ -120,6 +128,133 @@ describe("AiTacticsManager", () => {
     const selected = proposal.intents.find((intent) => intent.kind === "attack");
 
     expect(selected?.targetActorId).toBe(westThreat.actorId);
+  });
+
+  it("protects a vulnerable reinforcement threatened far from the squad's first member", () => {
+    const front = combatActor("front", "self", 0),
+      reinforcement = {
+        ...combatActor("reinforcement", "self", 30, "ground", 333),
+        activeOrder: {
+          status: "known" as const,
+          observedTick: 100,
+          value: { orderType: OrderType.Attack, targetActorId: "tower" }
+        }
+      },
+      tower = combatActor("tower", "enemy", 33, "ground", 1000, { damage: 20 }),
+      attack = {
+        ...squad("squad:attack", "attack", [front.actorId, reinforcement.actorId]),
+        objectiveId: tower.actorId,
+        state: "engage" as const
+      };
+
+    const proposal = manager.propose(observation([front, reinforcement, tower]), fixtureState([attack]));
+
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({ kind: "move", actorIds: [reinforcement.actorId] })
+    );
+    expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.individualFallbackActorIds).toContain(
+      reinforcement.actorId
+    );
+  });
+
+  it("answers a nearby threat for a reinforcement while the front attacks the committed core", () => {
+    const front = combatActor("front", "self", 0, "ground", 1000, { damage: 100 });
+    const reinforcement = combatActor("reinforcement", "self", 30, "ground", 1000, { damage: 100 });
+    const core = combatActor("core", "enemy", 2, "ground", 1000, { mainBuilding: true, damage: 0 });
+    const tower = combatActor("tower", "enemy", 33, "ground", 1000, { damage: 10 });
+    const attack = {
+      ...squad("squad:attack", "attack", [front.actorId, reinforcement.actorId]),
+      objectiveId: core.actorId,
+      state: "engage" as const
+    };
+
+    const proposal = manager.propose(observation([front, reinforcement, core, tower]), fixtureState([attack]));
+
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({ kind: "attack", actorIds: [front.actorId], targetActorId: core.actorId })
+    );
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({ kind: "attack", actorIds: [reinforcement.actorId], targetActorId: tower.actorId })
+    );
+    expect(
+      proposal.intents.filter((intent) => "actorIds" in intent && intent.actorIds.includes(reinforcement.actorId))
+    ).toHaveLength(1);
+  });
+
+  it("does not send an assembling reinforcement forward when a front member is endangered", () => {
+    const front = combatActor("front", "self", 2, "ground", 200);
+    const reinforcement = combatActor("reinforcement", "self", 35);
+    const core = combatActor("core", "enemy", 0, "ground", 1000, { mainBuilding: true, damage: 20 });
+    const attack = {
+      ...squad("squad:attack", "attack", [front.actorId, reinforcement.actorId]),
+      objectiveId: core.actorId,
+      state: "assemble" as const
+    };
+    const initial = fixtureState([attack]);
+    const waiting = {
+      ...initial,
+      bases: initial.bases.map((base) => ({ ...base, anchorPosition: { x: 40, y: 0, z: 0 } })),
+      strategy: {
+        ...initial.strategy,
+        assessment: {
+          choice: "pressure" as const,
+          reason: "assembling_compatible_force",
+          targetActorId: core.actorId,
+          readyForce: 2,
+          requiredForce: 8,
+          visibleThreatCount: 1,
+          confidencePermille: 1000,
+          expectedEffectTick: 500,
+          reconsiderTick: 240,
+          alternatives: []
+        }
+      }
+    };
+    const world = observation([front, reinforcement, core]);
+    const proposal = manager.propose(
+      {
+        ...world,
+        map: {
+          ...world.map!,
+          constructionCells: [
+            {
+              tileKey: "40,0",
+              position: { x: 40, y: 0, z: 0 },
+              groundPassable: true,
+              waterPassable: false,
+              elevation: 0,
+              observedBlocked: false
+            }
+          ]
+        }
+      },
+      waiting
+    );
+
+    expect(
+      proposal.intents.some(
+        (intent) =>
+          intent.kind === "move" && intent.actorIds.includes(reinforcement.actorId) && intent.logicalPosition.x < 35
+      )
+    ).toBe(false);
+  });
+
+  it("does not redirect a ground reinforcement toward an air-only threat", () => {
+    const front = combatActor("front", "self", 0, "ground", 1000, { damage: 100 });
+    const reinforcement = combatActor("reinforcement", "self", 30, "ground", 1000, { damage: 100 });
+    const core = combatActor("core", "enemy", 2, "ground", 1000, { mainBuilding: true, damage: 0 });
+    const tower = combatActor("tower", "enemy", 33, "ground", 1000, { damage: 10, targetDomains: ["air"] });
+    const attack = {
+      ...squad("squad:attack", "attack", [front.actorId, reinforcement.actorId]),
+      objectiveId: core.actorId,
+      state: "engage" as const
+    };
+
+    const proposal = manager.propose(observation([front, reinforcement, core, tower]), fixtureState([attack]));
+
+    expect(proposal.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === tower.actorId)).toBe(
+      false
+    );
   });
 
   it("H-30 advances a quiet mission through assembly, rally and advance without skipping a boundary", () => {

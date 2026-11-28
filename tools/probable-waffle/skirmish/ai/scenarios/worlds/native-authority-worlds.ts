@@ -44,6 +44,8 @@ export function nativeAuthorityWorld(id, faction, branch): NativeScenarioWorld {
       ...(id === "H-07" && branch === "destroyed" ? { destroyOutput: true } : {})
     };
   }
+  // TODO: focus backlog admission/drain setup so the full H-10 recipe fits the three-minute test ceiling.
+  // Keep the real 128-record capacity and controls; exceeding the budget must fail, not certify partial evidence.
   if (id === "H-10") {
     world.resourceStarts.find((start) => start.playerNumber === 2).amounts = {
       food: 50000,

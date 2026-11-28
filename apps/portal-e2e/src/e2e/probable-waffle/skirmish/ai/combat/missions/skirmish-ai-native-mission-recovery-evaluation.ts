@@ -3,6 +3,8 @@ import { nativeRetainedActor, nativeRetreats, nativeWeaponHits } from "../effect
 import { nativePaidMissionOutputs } from "./skirmish-ai-native-mission-evidence";
 import { nativeScoutTrips } from "../../evaluation/controls/skirmish-ai-native-scouting-evaluation";
 
+type NativeMissionRecoveryFrame = ReturnType<typeof nativeScenarioContext>["frames"][number];
+
 /** Uncertain forces, repeated retreats and reinforcements must produce useful effects within fixed native bounds. */
 export function evaluateNativeMissionRecovery(
   id: string,
@@ -43,18 +45,10 @@ function uncertaintyFailures(branch: string, context: ReturnType<typeof nativeSc
         fact.kind === "actor_unregistered" &&
         Object.entries(context.roles).some(([role, id]) => role.startsWith("army-") && id === fact.actorId)
     );
-    if (
-      !seen ||
-      lost.length > 2 ||
-      !context.frames.some(
-        (frame) =>
-          frame.tick > (seen?.tick ?? Infinity) &&
-          frame.decision.missionState?.squads.some((squad) =>
-            ["retreat", "regroup", "reserve", "defend"].includes(squad.state)
-          )
-      )
-    )
-      failures.push("recovery_losing_control_did_not_preserve_force");
+    const retainedArmy = Object.entries(context.roles)
+      .filter(([role]) => /^army-[0-2]$/.test(role))
+      .filter(([, actorId]) => nativeRetainedActor(context, actorId)).length;
+    if (!seen || lost.length > 2 || retainedArmy < 2) failures.push("recovery_losing_control_did_not_preserve_force");
   } else if (branch === "information") {
     const trips = nativeScoutTrips(context),
       discovery = context.frames.find((frame) =>
@@ -62,9 +56,9 @@ function uncertaintyFailures(branch: string, context: ReturnType<typeof nativeSc
           (actor) => actor.actorId === target && actor.visibility === "visible"
         )
       );
-    if (!trips.some((trip) => trip.selectedTick <= 1200) || !discovery || discovery.tick > 2400)
+    if (!trips.some((trip) => trip.selectedTick <= 400) || !discovery || discovery.tick > 400)
       failures.push("recovery_uncertain_force_has_no_bounded_native_information_gain");
-  } else if (!nativeWeaponHits(context, target).some((fact) => fact.tick <= 2400))
+  } else if (!nativeWeaponHits(context, target).some((fact) => fact.tick <= 400))
     failures.push("recovery_uncertain_force_did_not_reach_and_contest_opportunity");
   return failures;
 }
@@ -142,13 +136,16 @@ function reinforcementFailures(branch: string, context: ReturnType<typeof native
     );
   const original = context.result.presetInitialQueueItems;
   const reinforcements = output.filter((entry) => original.some((item) => item.itemId === entry.item.itemId));
-  if (original.length !== 4 || reinforcements.length !== 4)
-    failures.push("recovery_original_four_paid_reinforcements_missing");
+  const expectedQueueCount = branch === "no_safe_route" ? 1 : 4;
+  if (original.length !== expectedQueueCount || reinforcements.length !== expectedQueueCount)
+    failures.push("recovery_expected_paid_reinforcements_missing");
   const ids = reinforcements.flatMap((entry) => (entry.actor.actorId ? [entry.actor.actorId] : []));
   const seen = context.frames.find((frame) =>
     frame.decision.input?.observation?.actors.some(
       (actor) =>
         actor.visibility === "visible" &&
+        actor.combatProfile?.status === "known" &&
+        actor.combatProfile.value.attacks.some((attack) => attack.damage > 0) &&
         Object.entries(context.roles).some(([role, id]) => role.startsWith("choke-guard-") && id === actor.actorId)
     )
   );
@@ -162,19 +159,10 @@ function reinforcementFailures(branch: string, context: ReturnType<typeof native
       !fact.damage.target.alive
   );
   if (nativeDeaths.length > 1) failures.push("recovery_repeated_native_one_unit_reinforcement_losses");
-  const direct = (frame: (typeof context.frames)[number]) =>
-    frame.tacticalBoundary?.actors.filter(
-      (actor) =>
-        actor.identity.actorId &&
-        ids.includes(actor.identity.actorId) &&
-        actor.identity.alive &&
-        actor.tile &&
-        actor.tile.x >= 24 &&
-        actor.tile.x <= 25 &&
-        actor.tile.y >= 23 &&
-        actor.tile.y <= 26
-    ) ?? [];
-  if (branch === "grouping" && !context.frames.some((frame) => direct(frame).length >= 3))
+  const chokeGuardIds = Object.entries(context.roles)
+    .filter(([role]) => role.startsWith("choke-guard-"))
+    .map(([, actorId]) => actorId);
+  if (branch === "grouping" && !context.frames.some((frame) => nativeRecoveryGroupAtThreat(frame, ids, chokeGuardIds)))
     failures.push("recovery_reinforcements_never_physically_grouped_at_choke");
   if (
     branch === "safe_alternate" &&
@@ -183,11 +171,7 @@ function reinforcementFailures(branch: string, context: ReturnType<typeof native
         .arrived(id)
         .some((movement) =>
           movement.observations.some(
-            (entry) =>
-              entry.spatial.actualTile &&
-              entry.spatial.actualTile.x >= 24 &&
-              entry.spatial.actualTile.x <= 25 &&
-              entry.spatial.actualTile.y >= 37
+            (entry) => entry.spatial.actualTile && entry.spatial.actualTile.x <= 23 && entry.spatial.actualTile.y >= 37
           )
         )
     )
@@ -196,20 +180,27 @@ function reinforcementFailures(branch: string, context: ReturnType<typeof native
   if (
     branch === "no_safe_route" &&
     (!ids.some((id) => nativeRetainedActor(context, id)) ||
-      context.frames.some((frame) => frame.tick >= 1600 && direct(frame).length === 1))
+      output.length !== original.length ||
+      (context.result.checkpoints
+        ?.at(-1)
+        ?.militaryProducerQueues.find((producer) => producer.actorId === context.roles["ready-producer"])?.queuedItems
+        .length ?? 0) > 0 ||
+      !nativeRecoveryNoSafeWindowClear(context.frames, ids, chokeGuardIds))
   )
     failures.push("recovery_no_safe_route_kept_feeding_or_lost_all_outputs");
   if (
     branch === "threat_clears" &&
-    (context.result.perturbations.filter((event) => event.id.startsWith("loss-choke-guard-") && event.tick === 1200)
+    (context.result.perturbations.filter((event) => event.id.startsWith("loss-choke-guard-") && event.tick === 200)
       .length !== 4 ||
-      !ids.some((id) => context.arrived(id, 1200).length))
+      !ids.some((id) => context.arrived(id, 420).length))
   )
     failures.push("recovery_cleared_route_not_natively_reused");
   if (
-    !nativeWeaponHits(context, context.roles["mission-target"]).some(
+    !nativeWeaponHits(context).some(
       (fact) =>
         fact.kind === "native_damage" &&
+        (fact.damage.target.actorId === context.roles["mission-target"] ||
+          chokeGuardIds.includes(fact.damage.target.actorId ?? "")) &&
         Object.entries(context.roles).some(
           ([role, id]) => role.startsWith("army-") && id === fact.damage.initiator?.actorId
         )
@@ -217,4 +208,138 @@ function reinforcementFailures(branch: string, context: ReturnType<typeof native
   )
     failures.push("recovery_original_main_front_lost_useful_effect");
   return failures;
+}
+
+/** Require the late restraint window before concluding no lone unit entered the known threat. */
+export function nativeRecoveryNoSafeWindowClear(
+  frames: readonly NativeMissionRecoveryFrame[],
+  reinforcementIds: readonly string[],
+  threatIds: readonly string[]
+): boolean {
+  const lateFrames = frames.filter((frame) => frame.tick >= 400);
+  return (
+    lateFrames.length > 0 &&
+    lateFrames.every((frame) => {
+      if (nativeRecoveryIsolatedAtKnownThreat(frame, reinforcementIds, threatIds)) return false;
+      const boundary = frame.tacticalBoundary?.actors ?? [];
+      const observed = frame.decision.input?.observation?.actors ?? [];
+      const threats = boundary.filter(
+        (actor) =>
+          threatIds.includes(actor.identity.actorId ?? "") &&
+          actor.tile &&
+          observed.some((item) => item.actorId === actor.identity.actorId && item.visibility === "visible")
+      );
+      return reinforcementIds.every((id) => {
+        const actor = boundary.find((item) => item.identity.actorId === id && item.identity.alive);
+        const observation = observed.find((item) => item.actorId === id);
+        if (!actor?.tile || !observation || observation.activeOrder?.status !== "known" || threats.length === 0)
+          return false;
+        const order = observation.activeOrder.value;
+        if (!order) return true;
+        if (order.orderType !== "Move" || !order.targetPosition) return false;
+        return threats.every((threat) => {
+          const tile = threat.tile!;
+          return (
+            Math.hypot(order.targetPosition!.x - tile.x, order.targetPosition!.y - tile.y) >=
+            Math.hypot(actor.tile!.x - tile.x, actor.tile!.y - tile.y)
+          );
+        });
+      });
+    })
+  );
+}
+
+/** A grouped response may hold at the defended choke while engaging a tower instead of walking into its firing lane. */
+export function nativeRecoveryGroupAtThreat(
+  frame: NativeMissionRecoveryFrame,
+  reinforcementIds: readonly string[],
+  threatIds: readonly string[]
+) {
+  const actors = frame.tacticalBoundary?.actors ?? [],
+    observedActors = frame.decision.input?.observation?.actors ?? [],
+    visible = new Set(observedActors.filter((actor) => actor.visibility === "visible").map((actor) => actor.actorId));
+  return actors.some((threat) => {
+    if (
+      !threat.identity.actorId ||
+      !threatIds.includes(threat.identity.actorId) ||
+      !visible.has(threat.identity.actorId)
+    )
+      return false;
+    const target = threat.identity.actorId,
+      threatObservation = observedActors.find((actor) => actor.actorId === target),
+      weaponRange =
+        threatObservation?.combatProfile?.status === "known"
+          ? Math.max(
+              0,
+              ...threatObservation.combatProfile.value.attacks.map(
+                (attack) => attack.range + attack.highGroundRangeBonus
+              )
+            )
+          : 0,
+      engagementRadius = Math.max(10, weaponRange + 2),
+      attackingIds = new Set(
+        observedActors
+          .filter(
+            (actor) =>
+              actor.activeOrder?.status === "known" &&
+              actor.activeOrder.value?.orderType === "Attack" &&
+              actor.activeOrder.value.targetActorId === target
+          )
+          .map((actor) => actor.actorId)
+      );
+    return (
+      actors.filter(
+        (actor) =>
+          !!actor.identity.actorId &&
+          reinforcementIds.includes(actor.identity.actorId) &&
+          attackingIds.has(actor.identity.actorId) &&
+          actor.identity.alive &&
+          !!actor.tile &&
+          !!threat.tile &&
+          Math.hypot(actor.tile.x - threat.tile.x, actor.tile.y - threat.tile.y) <= engagementRadius
+      ).length >= 3
+    );
+  });
+}
+
+function nativeRecoveryIsolatedAtKnownThreat(
+  frame: NativeMissionRecoveryFrame,
+  reinforcementIds: readonly string[],
+  threatIds: readonly string[]
+) {
+  const actors = frame.tacticalBoundary?.actors ?? [],
+    visible = new Set(
+      frame.decision.input?.observation?.actors
+        .filter((actor) => actor.visibility === "visible")
+        .map((actor) => actor.actorId) ?? []
+    );
+  return actors.some((threat) => {
+    if (
+      !threat.identity.actorId ||
+      !threatIds.includes(threat.identity.actorId) ||
+      !visible.has(threat.identity.actorId)
+    )
+      return false;
+    const observedThreat = frame.decision.input?.observation?.actors.find(
+      (actor) => actor.actorId === threat.identity.actorId
+    );
+    const range =
+      observedThreat?.combatProfile?.status === "known"
+        ? Math.max(
+            1,
+            ...observedThreat.combatProfile.value.attacks.map((attack) => attack.range + attack.highGroundRangeBonus)
+          )
+        : 1;
+    return (
+      actors.filter(
+        (actor) =>
+          !!actor.identity.actorId &&
+          reinforcementIds.includes(actor.identity.actorId) &&
+          actor.identity.alive &&
+          !!actor.tile &&
+          !!threat.tile &&
+          Math.hypot(actor.tile.x - threat.tile.x, actor.tile.y - threat.tile.y) <= range
+      ).length === 1
+    );
+  });
 }

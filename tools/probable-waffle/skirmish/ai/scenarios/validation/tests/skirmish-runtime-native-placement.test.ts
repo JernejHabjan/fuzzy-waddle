@@ -22,7 +22,7 @@ test("PLACE-03 layout branch keeps the worker-service route active through the m
         .filter((actor) => actor.owner === 1)
         .map((actor) => actor.fixtureActorId)
         .sort(),
-      ["army-transit", ...(variant.id.endsWith("-layout") ? [] : ["worker-transit"])].sort()
+      ["army-transit", "worker-transit"].sort()
     );
     const scoutProbe = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "scout-probe");
     if (variant.id.endsWith("-layout")) assert.deepEqual(scoutProbe?.position, tile(21, 31));
@@ -41,10 +41,7 @@ test("PLACE-03 layout branch keeps the worker-service route active through the m
       variant.id.includes("tivara")
     );
     for (const role of ["worker-transit", "army-transit"])
-      assert.equal(
-        variant.presetWorld.actors.find((actor) => actor.fixtureActorId === role)?.owner,
-        role === "worker-transit" && variant.id.endsWith("-layout") ? 2 : 1
-      );
+      assert.equal(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === role)?.owner, 1);
     const routeControls = variant.presetWorld.controls.filter((control) =>
       ["worker-transit", "army-transit"].includes(control.producerFixtureActorId)
     );
@@ -79,7 +76,7 @@ test("PLACE-03 layout branch keeps the worker-service route active through the m
       );
       assert.deepEqual(
         routeControls.map(({ id, requestTick }) => [id, requestTick]),
-        [["post-layout-cross-worker-transit", 1400]]
+        [["post-layout-cross-worker-transit", variant.id.includes("skaduwee") ? 500 : 1400]]
       );
     }
     if (variant.id.endsWith("-concurrent"))
@@ -88,6 +85,8 @@ test("PLACE-03 layout branch keeps the worker-service route active through the m
         [["post-layout-cross-worker-transit", 1470]]
       );
     const routes = variant.presetWorld.protectedRoutes;
+    if (variant.id.includes("place-03") && !layout)
+      assert.deepEqual(coordinates(routes[0].to), coordinates(tile(29, 31)));
     for (const [role, route] of [
       ["worker-transit", routes[0]],
       ["army-transit", routes[1]]

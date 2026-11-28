@@ -21,6 +21,7 @@ import { selectAiNavalFiringPosition } from "./select-ai-offensive-force";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";
 import { retainAiSquadTacticsForActors } from "../../tactics/orders/ai-skirmish-tactics-ownership";
 import { canSeeTarget } from "../../tactics/combat/ai-tactics-combat";
+import { isScoutDirectPathThreatened } from "../scouting/ai-skirmish-scouting";
 import {
   selectAiAttackApproachPositions,
   targetFootprintRadiusTiles
@@ -560,11 +561,14 @@ export function advanceAiSkirmishOffense(
   const coreScoutObjective = `core:${context.opponent.evidenceId}`;
   const existingScout = context.activeScout;
   const continuingCoreScout = existingScout?.objectiveId === coreScoutObjective;
+  const safeCoreScouts = targetPosition
+    ? primaryAttackers.filter((actor) => !isScoutDirectPathThreatened(context, actor, targetPosition))
+    : [];
   const scoutActor =
     rememberedCore && attack.state === "forming"
-      ? (primaryAttackers.find((actor) => continuingCoreScout && existingScout.actorIds.includes(actor.actorId)) ??
-        primaryAttackers.find((actor) => domains(actor).includes("air")) ??
-        primaryAttackers[0])
+      ? (safeCoreScouts.find((actor) => continuingCoreScout && existingScout.actorIds.includes(actor.actorId)) ??
+        safeCoreScouts.find((actor) => domains(actor).includes("air")) ??
+        safeCoreScouts[0])
       : undefined;
   const coreScout = scoutActor
     ? {

@@ -106,7 +106,9 @@ export function nativeWeaponHits(
         value.weapon.damage === fact.damage.amount &&
         fact.tick - start.tick >=
           Math.ceil((value.weapon.projectile ? value.weapon.delays.fire : value.weapon.delays.hit) / 50) &&
-        fact.tick - start.tick < Math.ceil(value.weapon.cooldown / 50) &&
+        // Native attack cooldowns and projectile hits resolve on discrete simulation ticks;
+        // allow one boundary tick for the committed hit before the next attack request.
+        fact.tick - start.tick <= Math.ceil(value.weapon.cooldown / 50) + 1 &&
         (commits.get(JSON.stringify([value.actor.actorId, value.target.actorId, start.tick, value.weapon])) ?? []).some(
           (sequence) => sequence > start.sequence
         )

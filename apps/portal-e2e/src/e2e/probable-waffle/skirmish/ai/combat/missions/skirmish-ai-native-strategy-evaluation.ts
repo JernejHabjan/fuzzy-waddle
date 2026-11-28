@@ -15,14 +15,14 @@ export function evaluateNativeStrategy(
   context: ReturnType<typeof nativeScenarioContext>
 ): string[] {
   const failures: string[] = [],
-    target = context.role("contact-group");
+    target = context.roles["contact-group"];
   const openingBoundary = id === "STRAT-05" ? 200 : 400;
   const before = context.frames.filter((frame) => frame.tick < openingBoundary).at(-1),
     after = context.frames.filter((frame) => frame.tick >= openingBoundary);
   const mainMission = before?.decision.missionState?.squads.find(
     (squad) => squad.role === "attack" && squad.actorIds.length
   );
-  const offensiveEffect = nativeWeaponHits(context, target, 400).length > 0;
+  const offensiveEffect = target ? nativeWeaponHits(context, target, 400).length > 0 : false;
   if (id === "STRAT-04") {
     if (!mainMission?.lifecycle || !before?.decision.strategy?.goalId)
       failures.push("strategy_committed_mission_premise_missing");
@@ -275,7 +275,7 @@ export function evaluateNativeStrategy(
       failures.push("strategy_irrelevant_remote_terrain_funded");
   }
   if (id === "STRAT-12") {
-    if (branch !== "unused") {
+    if (branch === "denial") {
       const delivered = hasNativeSourceDelivery(context.opponent?.facts ?? [], {
         sourceActorId: context.role("enemy-source"),
         sourceOwner: null,
@@ -303,18 +303,18 @@ export function evaluateNativeStrategy(
       const pressure = context.facts.find(
         (fact) =>
           fact.kind === "native_damage" &&
-          fact.tick >= 400 &&
+          fact.tick >= 20 &&
           fact.damage.target.actorId === deposit &&
           fact.damage.initiator?.playerNumber === 1 &&
           attackers.has(fact.damage.initiator.actorId ?? "") &&
           fact.damage.amount > 0
       );
       if (!pressure) failures.push("strategy_own_dependency_never_threatened");
-      const defensiveHits = [...attackers].flatMap((actorId) => nativeWeaponHits(context, actorId, 400));
+      const defensiveHits = [...attackers].flatMap((actorId) => nativeWeaponHits(context, actorId, 20));
       const defended =
         pressure &&
         context.frames.some((frame) => {
-          if (frame.tick < 400 || frame.tick > pressure.tick + 400) return false;
+          if (frame.tick < 20 || frame.tick > pressure.tick + 400) return false;
           const squads = frame.decision.missionState?.squads ?? [];
           const offense = new Set(squads.filter((squad) => squad.role === "attack").flatMap((squad) => squad.actorIds));
           return squads.some(

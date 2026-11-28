@@ -104,10 +104,48 @@ function scoutingAnswerContext(attackTick: number, appliedAttack: boolean) {
   } as unknown as ReturnType<typeof nativeScenarioContext>;
 }
 
+function airTransitionContext(adaptsToAir: boolean) {
+  return {
+    roles: {
+      "ready-producer": "producer",
+      "ready-house": "house",
+      "own-deposit": "deposit",
+      "new-contact": "air-contact"
+    },
+    role: (name: string) => (name === "new-contact" ? "air-contact" : undefined),
+    result: { presetInitialQueueItems: [] },
+    facts: [],
+    capture: { frontiers: { intervals: [] } },
+    frames: [
+      {
+        tick: 400,
+        decision: {
+          economyProduction: {
+            adaptation: {
+              lastTransitionTick: 200,
+              evidence: [{ kind: "flyer", sourceContactId: "air-contact" }],
+              activeRoleTargets: adaptsToAir ? [{ role: "anti_air" }] : []
+            }
+          },
+          opening: { plan: { planId: "opening:original" } }
+        }
+      }
+    ]
+  } as unknown as ReturnType<typeof nativeScenarioContext>;
+}
+
 test("C-04 accepts confidence decay for unchanged dated evidence", () => {
   expect(evaluateNativeClassic("C-04", "confidence-control", evidenceContext([700, 300]))).not.toContain(
     "classic_unchanged_dated_evidence_inflated_confidence"
   );
+});
+
+test("C-01 requires an anti-air response to new flyer evidence without cancelling paid commitments", () => {
+  const adapted = evaluateNativeClassic("C-01", "obsolete", airTransitionContext(true)),
+    ignored = evaluateNativeClassic("C-01", "obsolete", airTransitionContext(false));
+  expect(adapted).not.toContain("classic_transition_air_threat_not_adapted");
+  expect(ignored).toContain("classic_transition_air_threat_not_adapted");
+  expect(adapted).not.toContain("classic_obsolete_optional_work_never_lawfully_cancelled");
 });
 
 test("C-04 rejects confidence inflation for unchanged dated evidence", () => {

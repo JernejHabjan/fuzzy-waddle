@@ -29,7 +29,8 @@ export function canSeeTarget(
 
 export function isEconomicActor(actor: AiObservedActor, catalog: AiCapabilityCatalog | undefined): boolean {
   return (
-    catalog?.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0) ?? false
+    actor.capabilities.some((capability) => capability.family === "gather") ||
+    (catalog?.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0) ?? false)
   );
 }
 

@@ -18,7 +18,7 @@ export function configureNativeConstructionControls(context: NativeWorldSetupCon
           id.startsWith("WALL-") || ["H-27", "H-28"].includes(id) ? 33 : 32,
           id.startsWith("WALL-") || ["H-27", "H-28"].includes(id) ? 24 : 23
         ),
-        to: tile(28, 31),
+        to: tile(id === "PLACE-03" ? 29 : 28, 31),
         tileMargin: 0
       },
       {
@@ -187,8 +187,8 @@ export function configureNativeConstructionControls(context: NativeWorldSetupCon
       attack("wall-approach-probe", "protected-deposit", approach.attack);
     }
     if (id === "PLACE-03") {
-      actors.get("worker-transit").owner = branch === "layout" ? 2 : 1;
-      actors.get("worker-transit").actorName = `${branch === "layout" ? own : enemy}WorkerMale`;
+      actors.get("worker-transit").owner = 1;
+      actors.get("worker-transit").actorName = `${enemy}WorkerMale`;
       actors.get("army-transit").owner = 1;
       actors.get("army-transit").actorName = enemy === "Tivara" ? "TivaraMacemanMale" : "SkaduweeWarriorMale";
       if (branch === "layout") {
@@ -263,8 +263,8 @@ export function configureNativeConstructionControls(context: NativeWorldSetupCon
           world.controls.push({
             id: "post-layout-cross-" + role,
             producerFixtureActorId: role,
-            requestTick: branch === "layout" ? 1400 : 1470,
-            applicationTick: branch === "layout" ? 1400 : 1470,
+            requestTick: branch === "layout" ? (own === "Skaduwee" ? 500 : 1400) : 1470,
+            applicationTick: branch === "layout" ? (own === "Skaduwee" ? 500 : 1400) : 1470,
             action: { kind: "move", worldPosition: { ...route.to, z: route.to.z ?? 0 } }
           });
       } else {

@@ -53,15 +53,14 @@ export function evaluateNativeAuthority(id: string, branch: string, context: Ret
       continue;
     }
     const raw = context.facts.filter((fact) => fact.kind === "outcome" && fact.outcome.commandId === commandId);
-    const terminal = raw.find(
-      (fact) => fact.kind === "outcome" && ["completed", "rejected", "failed", "cancelled"].includes(fact.outcome.kind)
-    );
+    const terminalTick = nativeCommandTerminalTick(raw, commandId);
     const delayedHistory = id === "H-05" && branch === "uncertain";
     const reconciled = context.frames.find(
       (frame) =>
         (delayedHistory
           ? frame.tick >= released.fact.tick && frame.tick <= released.fact.tick + 40
           : frame.tick < released.fact.tick) &&
+        !frame.decision.missionState?.authority.pendingCommandIds.includes(`command:${commandId}`) &&
         frame.decision.missionState?.pendingOutcomes.some(
           (outcome) =>
             outcome.identity.commandId === `command:${commandId}` &&
@@ -96,7 +95,7 @@ export function evaluateNativeAuthority(id: string, branch: string, context: Ret
             fact.kind === "intent_dispatch" &&
             fact.event.kind === "requested" &&
             fact.sequence > requested.sequence &&
-            fact.tick < (reconciled?.tick ?? released.fact.tick) &&
+            fact.tick < (terminalTick ?? released.fact.tick) &&
             fact.event.acceptedIntent?.demandId === demandId &&
             fact.event.correlation.effectId !== original.effectId &&
             nativeIntentOperation(fact.event.acceptedIntent) === operation
@@ -104,7 +103,7 @@ export function evaluateNativeAuthority(id: string, branch: string, context: Ret
       )
         failures.push("authority_uncertain_original_demand_retried_with_new_effect_identity");
     }
-    if (id !== "H-10" && (!terminal || !reconciled))
+    if (id !== "H-10" && (terminalTick === undefined || !reconciled))
       failures.push("authority_missing_original_native_terminal_or_independent_reconciliation");
     if (
       id !== "H-10" &&
@@ -120,13 +119,14 @@ export function evaluateNativeAuthority(id: string, branch: string, context: Ret
         !deliveries.some(({ value }) => value.phase === "queue_contended"))
     )
       failures.push("authority_rejected_control_not_native_unspent_nonapplication");
-    const settledThroughTick = Math.max(released.fact.tick, terminal?.tick ?? released.fact.tick);
+    const settledThroughTick = Math.max(released.fact.tick, terminalTick ?? released.fact.tick);
     const stillPending = context.frames.some(
       (frame) =>
         frame.tick > settledThroughTick + 1 &&
         frame.decision.missionState?.authority.pendingCommandIds.includes(`command:${commandId}`)
     );
-    if (terminal && stillPending) failures.push("authority_late_original_receipt_resurrected_settled_work");
+    if (terminalTick !== undefined && stillPending)
+      failures.push("authority_late_original_receipt_resurrected_settled_work");
     if (id === "H-07" && branch === "destroyed") {
       const output = paid.find((entry) => entry.item.commandId === commandId);
       const loss = deliveries.find(
@@ -212,17 +212,13 @@ export function backlogFailures(
     !context.facts.some((fact) => fact.kind === "authority_delivery" && fact.delivery.phase === "history_unavailable")
   )
     failures.push("authority_checkpoint_unavailability_control_not_exercised");
-  const terminalHeld = heldAtPeak.filter((id) =>
-    context.facts.some(
-      (fact) =>
-        fact.kind === "outcome" &&
-        fact.outcome.commandId === id.replace(/^command:/, "") &&
-        ["completed", "rejected", "failed", "cancelled"].includes(fact.outcome.kind)
-    )
+  const terminalHeld = heldAtPeak.filter(
+    (id) => nativeCommandTerminalTick(context.facts, id.replace(/^command:/, "")) !== undefined
   );
   const after = context.frames.find(
     (frame) =>
       frame.tick > releaseTick &&
+      terminalHeld.length > 0 &&
       terminalHeld.every((id) => !frame.decision.missionState?.authority.pendingCommandIds.includes(id))
   );
   if (!after || !nativeResourceIncomeAfterRelease(context, releaseTick))
@@ -230,6 +226,30 @@ export function backlogFailures(
   if (during.some((frame) => frame.decision.acceptedIntents.some((intent) => intent.kind === "concede")))
     failures.push("authority_transport_failure_caused_strategic_concession");
   return failures;
+}
+
+/** A command may cover several actors; one actor's terminal callback cannot settle the shared command identity. */
+function nativeCommandTerminalTick(
+  facts: ReturnType<typeof nativeScenarioContext>["facts"],
+  commandId: string
+): number | undefined {
+  const dispatched = facts.find(
+    (fact) => fact.kind === "outcome" && fact.outcome.commandId === commandId && fact.outcome.kind === "dispatched"
+  );
+  if (!dispatched || dispatched.kind !== "outcome" || !dispatched.outcome.actorIds.length) return undefined;
+  const expectedActors = new Set(dispatched.outcome.actorIds);
+  const terminalActors = new Set<string>();
+  for (const fact of facts) {
+    if (
+      fact.kind !== "outcome" ||
+      fact.outcome.commandId !== commandId ||
+      !["completed", "rejected", "failed", "cancelled"].includes(fact.outcome.kind)
+    )
+      continue;
+    fact.outcome.actorIds.forEach((actorId) => terminalActors.add(actorId));
+    if ([...expectedActors].every((actorId) => terminalActors.has(actorId))) return fact.tick;
+  }
+  return undefined;
 }
 
 /** Shared demand IDs may produce different valid operations; only identical intent work is a retry. */
