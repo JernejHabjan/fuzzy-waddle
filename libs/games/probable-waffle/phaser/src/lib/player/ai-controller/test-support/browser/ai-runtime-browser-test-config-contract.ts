@@ -12,5 +12,7 @@ export interface AiRuntimeBrowserTestConfig {
   readonly captureMovementOnly?: true;
   /** Native damage callbacks reuse the authority ledger only for explicitly bound combat recipes. */
   readonly captureCombat?: true;
+  /** Decision-boundary tactical facts without subscribing to every combat event. */
+  readonly captureTactics?: true;
   readonly presetWorld?: AiRuntimePresetWorld;
 }

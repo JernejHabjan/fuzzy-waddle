@@ -36,8 +36,8 @@ import { environment } from "@fuzzy-waddle/environments/environment";
 import { CampaignProfileServiceInterface } from "./campaign-profile.service.interface";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 
-const GUEST_PROFILE_KEY = "aota-campaign-profile-v1";
-const LEGACY_PROGRESS_KEY = "aota-campaign-progress-v1";
+const GUEST_PROFILE_KEY = "aota-campaign-profile";
+const LEGACY_PROGRESS_KEY = "aota-campaign-progress";
 
 @Injectable({ providedIn: "root" })
 /**

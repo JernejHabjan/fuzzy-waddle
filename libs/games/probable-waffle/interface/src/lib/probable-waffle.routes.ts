@@ -49,6 +49,10 @@ export const probableWaffleRoutes = [
             path: "skirmish",
             loadComponent: () => import("./gui/skirmish/skirmish.component").then((m) => m.SkirmishComponent)
           },
+          ...(!environment.production ? [{
+            path: "ai-scenarios",
+            loadComponent: () => import("./gui/ai-scenarios/ai-scenarios.component").then((m) => m.AiScenariosComponent)
+          }] : []),
           {
             path: "instant-game",
             loadComponent: () =>

@@ -28,6 +28,13 @@ describe("runtime preset neutral source validation", () => {
       expect(isAiRuntimeBrowserTestConfig({ ...config, captureProduction: true, captureCombat })).toBe(false);
     }
   });
+  it("accepts decision evidence independently of combat callbacks", () => {
+    expect(isAiRuntimeBrowserTestConfig({ ...config, captureProduction: true, captureTactics: true })).toBe(true);
+    expect(isAiRuntimeBrowserTestConfig({ ...config, captureTactics: true })).toBe(false);
+    expect(isAiRuntimeBrowserTestConfig({ ...config, captureProduction: true, captureTactics: false })).toBe(false);
+    expect(isAiRuntimeBrowserTestConfig({ ...config, captureProduction: true, captureTactics: true, captureMovementOnly: true })).toBe(false);
+  });
+
   it("requires explicit capture for owned placement-route declarations", () => {
     const scoped = { ...config, captureProduction: true, presetWorld: { ...config.presetWorld,
       actors: [{ ...neutralSource, owner: 2 }], protectedRoutes: [{
