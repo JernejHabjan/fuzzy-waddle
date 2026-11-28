@@ -92,7 +92,7 @@ jobs:
 #         id: select
 #         run: node tools/probable-waffle/skirmish/ai/cli/select-ai-regression-shards.ts
 #
-  # Runtime matrix also excluded by request.
+# Runtime matrix also excluded by request.
 #   ai-regression:
 #     if: vars.RUN_AI_REGRESSION == 'true'
 #     needs: ai-regression-plan
@@ -124,7 +124,7 @@ jobs:
 #       - name: Install Playwright Chromium
 #         run: pnpm exec playwright install --with-deps chromium
 #       - name: Run selected AI regression case
-#         run: pnpm ai:regression -- --case "${{ matrix.caseId }}"
+#         run: pnpm ai:skirmish:regression -- --case "${{ matrix.caseId }}"
 #       - name: Retain AI regression evidence
 #         if: always()
 #         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

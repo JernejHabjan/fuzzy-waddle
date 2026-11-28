@@ -55,10 +55,10 @@ Persistent state holds goals, knowledge, squads, demand, bases, reservations, tr
 The catalog contains 121 named obligations before variants. Registration, an explanation label or an accepted command does not prove a useful physical result. Retained evidence includes both-faction victory, placement/recovery, walls/expansion, scouting fairness, justified air, harassment, upgrades and selected ownership controls. Full-family adaptation and extended save/load limitations remain explicit in the coverage record.
 
 ```sh
-pnpm ai:regression -- --list
-pnpm ai:regression
-pnpm ai:regression -- --profile scout
-pnpm ai:skirmish-matrix -- --scenario SCOUT-02 --mode runtime
+pnpm ai:skirmish:regression -- --list
+pnpm ai:skirmish:regression
+pnpm ai:skirmish:regression -- --profile scout
+pnpm ai:skirmish:matrix -- --scenario SCOUT-02 --mode runtime
 pnpm ai:skirmish:report -- --failures-only --details
 ```
 

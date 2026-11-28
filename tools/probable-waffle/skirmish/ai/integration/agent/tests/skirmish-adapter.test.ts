@@ -44,7 +44,7 @@ test("keeps an authored scenario on the existing matrix runner", async (t) => {
   assert.deepEqual(selection.scenarios, ["ECO-08"]);
   assert.deepEqual(selection.checks[0].commands[0], {
     executable: "pnpm",
-    arguments: ["ai:skirmish-matrix", "--scenarios", "ECO-08", "--mode", "runtime", "--seed", "7"]
+    arguments: ["ai:skirmish:matrix", "--scenarios", "ECO-08", "--mode", "runtime", "--seed", "7"]
   });
   assert.equal(selectSkirmishScenarios(root, { scenarioIds: ["ECO-08"], mode: "both", seed: 7 }).configured, true);
 });

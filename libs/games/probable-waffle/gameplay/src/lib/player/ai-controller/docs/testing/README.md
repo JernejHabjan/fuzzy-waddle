@@ -24,10 +24,10 @@ owns this improvement across focused scenario families.
 pnpm tools:test
 pnpm ai:tools:typecheck
 pnpm ai:skirmish:catalog -- --inventory
-pnpm ai:skirmish-matrix -- --scenario PLACE-03 --mode runtime
-pnpm ai:skirmish-matrix -- --scenario PLACE-03 --mode runtime --variant <ID> --repetition 1
+pnpm ai:skirmish:matrix -- --scenario PLACE-03 --mode runtime
+pnpm ai:skirmish:matrix -- --scenario PLACE-03 --mode runtime --variant <ID> --repetition 1
 pnpm ai:skirmish:report -- --report <artifact> --scenario PLACE-03 --failures-only --details
-pnpm ai:regression -- --list
+pnpm ai:skirmish:regression -- --list
 ```
 
 The Playwright spec is parameterized by the matrix runner. A gutter run without its request is not a scenario run.

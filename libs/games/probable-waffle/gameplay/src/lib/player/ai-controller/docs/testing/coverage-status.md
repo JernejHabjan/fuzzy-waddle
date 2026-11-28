@@ -6,7 +6,7 @@ The current single-player iteration covers purposeful economy/production, both-f
 
 The gameplay reliability batch addressed local save control, scene teardown, movement stability, pursuit, defense, counter production and retreat. Camera-bounded fog drawing reduced median elapsed time by 25.5% in the two measured workloads, with logical fog coverage retained (see historical commit `33b9c5680` for evidence and limits). Broader save continuation remains in #823.
 
-`tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json` and `tools/probable-waffle/skirmish/ai/testing/bindings/native-scenario-bindings.json` own scenario registration. The regression selection is `tools/probable-waffle/skirmish/ai/testing/fixtures/periodic-native-regression-profiles.json`; use `pnpm ai:regression -- --list` or the scout profile's `--list` for current variants/exclusions.
+`tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json` and `tools/probable-waffle/skirmish/ai/testing/bindings/native-scenario-bindings.json` own scenario registration. The regression selection is `tools/probable-waffle/skirmish/ai/testing/fixtures/periodic-native-regression-profiles.json`; use `pnpm ai:skirmish:regression -- --list` or the scout profile's `--list` for current variants/exclusions.
 
 ## Validation closure
 
@@ -62,6 +62,6 @@ These are separately tracked follow-ups to the single-player delivery. Their bro
 
 ## Execution policy
 
-The AI regression workflow is stored under `.github/disabled-workflows/`; both its manual and tag triggers are commented out. Local `pnpm ai:regression` and its scout profile remain usable; the explicit `pnpm e2e:ai` and `pnpm e2e:ai-full` commands are documented in [testing commands](./README.md#periodic-regression-profiles). Do not re-enable the workflow without a new request.
+The AI regression workflow is stored under `.github/disabled-workflows/`; both its manual and tag triggers are commented out. Local `pnpm ai:skirmish:regression` and its scout profile remain usable; the explicit `pnpm e2e:ai` and `pnpm e2e:ai-full` commands are documented in [testing commands](./README.md#periodic-regression-profiles). Do not re-enable the workflow without a new request.
 
 Use focused causal checks before affected native confirmation. Keep one local native runner and each invocation at or below 30 minutes. Retain valid evidence and avoid unchanged full-family reruns. Missing or infrastructure-only results are not gameplay passes. PR review/readiness is separate from broader matrix certification; merging remains a user-controlled action.

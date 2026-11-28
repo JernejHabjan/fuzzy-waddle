@@ -75,6 +75,7 @@ pnpm start
 Client runs at `http://localhost:4200` · API at `http://localhost:3333`
 
 For full setup instructions see the [Getting Started guide](./wiki/getting-started.md).
+For every package command, see the grouped [package scripts reference](./wiki/scripts.md).
 
 ---
 

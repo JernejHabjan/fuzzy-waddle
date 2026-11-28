@@ -20,7 +20,7 @@ const selection = resolveAiRegressionSelection(
 );
 
 if (args.help) {
-  process.stdout.write("Usage: pnpm ai:regression [--profile core|scout] [--list | --case CASE_ID]\n");
+  process.stdout.write("Usage: pnpm ai:skirmish:regression [--profile core|scout] [--list | --case CASE_ID]\n");
   process.exit(0);
 }
 if (args.list) {

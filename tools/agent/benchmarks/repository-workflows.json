@@ -175,7 +175,7 @@
       "commands": [
         {
           "executable": "pnpm",
-          "arguments": ["ai:skirmish-matrix", "--", "--scenario", "ECO-08", "--mode", "runtime"],
+          "arguments": ["ai:skirmish:matrix", "--", "--scenario", "ECO-08", "--mode", "runtime"],
           "expectedOutcome": "passed",
           "outputIncludes": ["tmp/ai-skirmish-matrix/"]
         }

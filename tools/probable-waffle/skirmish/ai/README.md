@@ -37,10 +37,10 @@ deadlines and positive/negative predicates explicit. Move data together with its
 pnpm ai:tools:typecheck
 pnpm tools:test
 pnpm ai:skirmish:catalog
-pnpm ai:regression -- --list
-pnpm ai:regression
-pnpm ai:regression -- --profile scout
-pnpm ai:skirmish-matrix -- --scenario PLACE-03 --mode runtime
+pnpm ai:skirmish:regression -- --list
+pnpm ai:skirmish:regression
+pnpm ai:skirmish:regression -- --profile scout
+pnpm ai:skirmish:matrix -- --scenario PLACE-03 --mode runtime
 ```
 
 Tools run directly on the pinned Node 24 with erasable TypeScript and explicit relative `.ts` imports. The scoped

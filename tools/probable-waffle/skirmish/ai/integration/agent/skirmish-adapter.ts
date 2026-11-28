@@ -11,7 +11,7 @@ export function selectSkirmishScenarios(root, { mode, scenarioIds, seed }) {
   const manifest = readManifest(root, manifestPath);
   const rows = scenarioIds.map((id) => findScenario(manifest, id));
   validateMode(manifest, rows, mode);
-  const arguments_ = ["ai:skirmish-matrix", "--scenarios", scenarioIds.join(","), "--mode", mode];
+  const arguments_ = ["ai:skirmish:matrix", "--scenarios", scenarioIds.join(","), "--mode", mode];
   if (seed !== null) arguments_.push("--seed", String(seed));
   return {
     configured: true,

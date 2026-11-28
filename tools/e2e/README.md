@@ -9,7 +9,7 @@
 Use Node 24. The AI commands stop if ordinary E2E fails and return the additional runner's exit code otherwise.
 Extra arguments go only to ordinary E2E, for example `pnpm e2e:ai -- --grep opening`.
 The core profile is explicit; `AI_REGRESSION_PROFILE` does not change it. `RUN_AI_REGRESSION` no longer changes `e2e`.
-For standalone core/scout selection, use `pnpm ai:regression` or `pnpm ai:regression -- --profile scout`.
+For standalone core/scout selection, use `pnpm ai:skirmish:regression` or `pnpm ai:skirmish:regression -- --profile scout`.
 
 ## Full release matrix
 
@@ -29,9 +29,9 @@ Core summaries are written to `tmp/ai-skirmish-regression/latest.json`; full mat
 These replace redundant package aliases:
 
 ```sh
-pnpm ai:skirmish-matrix -- --scenario ECO-08 --mode runtime
-pnpm ai:skirmish-matrix -- --scenarios PRO-01,PRO-02,PRO-03,PRO-04,PRO-05,PRO-06,PRO-07 --mode runtime
-pnpm ai:skirmish-matrix -- --scenarios SEQ-01,SEQ-02 --mode runtime
+pnpm ai:skirmish:matrix -- --scenario ECO-08 --mode runtime
+pnpm ai:skirmish:matrix -- --scenarios PRO-01,PRO-02,PRO-03,PRO-04,PRO-05,PRO-06,PRO-07 --mode runtime
+pnpm ai:skirmish:matrix -- --scenarios SEQ-01,SEQ-02 --mode runtime
 pnpm ai:skirmish:report -- --failures-only --details
 ```
 

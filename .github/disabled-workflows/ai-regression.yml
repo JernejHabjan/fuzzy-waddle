@@ -2,7 +2,7 @@ name: AI Regression Pack
 
 on:
   # Extended AI regression is too slow for routine CI or manual triggers.
-  # Manual trigger (workflow_dispatch) is disabled; run scenarios locally using `pnpm ai:regression`.
+  # Manual trigger (workflow_dispatch) is disabled; run scenarios locally using `pnpm ai:skirmish:regression`.
   # Automatic tag triggering is also disabled.
   # push:
   #   tags: ["ai-regression/**"]
@@ -69,7 +69,7 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
       - name: Run selected AI regression case
-        run: pnpm ai:regression -- --case "${{ matrix.caseId }}"
+        run: pnpm ai:skirmish:regression -- --case "${{ matrix.caseId }}"
       - name: Retain AI regression evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
