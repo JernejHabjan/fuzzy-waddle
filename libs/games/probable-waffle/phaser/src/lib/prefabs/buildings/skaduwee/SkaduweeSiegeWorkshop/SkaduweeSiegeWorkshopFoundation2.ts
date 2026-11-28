@@ -13,7 +13,12 @@ export default class SkaduweeSiegeWorkshopFoundation2 extends Phaser.GameObjects
     this.setInteractive(new Phaser.Geom.Polygon("-64 -48 0 -80 64 -48 64 16 0 48 -64 16"), Phaser.Geom.Polygon.Contains);
 
     // skaduweeSiegeWorkshopFoundation2Image
-    const skaduweeSiegeWorkshopFoundation2Image = scene.add.image(0, -32, "factions", "buildings/skaduwee/workshop/skaduwee-siege-workshop2.png");
+    const skaduweeSiegeWorkshopFoundation2Image = scene.add.image(
+      0,
+      -32,
+      "factions",
+      "buildings/skaduwee/workshop/skaduwee-siege-workshop2.png"
+    );
     this.add(skaduweeSiegeWorkshopFoundation2Image);
 
     /* START-USER-CTR-CODE */

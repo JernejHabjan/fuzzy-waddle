@@ -13,9 +13,7 @@ import { getCostForObjectName } from "../../entity/components/production/cost-ut
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getPlayer } from "../scene-data";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
-import { getActorComponent } from "../actor-component";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
-import { ProductionComponent } from "../../entity/components/production/production-component";
 import { shouldConsiderActorUnlocked } from "./actor-unlock-utils";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 
@@ -91,10 +89,17 @@ export class ProductionValidator {
 
     const missingBuildings: ObjectNames[] = [];
 
-    // Filter buildings to only include finished and alive ones
-    const validBuildings = this.blackboard.productionBuildings.filter((building) =>
-      shouldConsiderActorUnlocked(building)
-    );
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    const ownedActors =
+      actorIndex && this.player.playerNumber !== undefined
+        ? Array.from(actorIndex.getOwnedActors(this.player.playerNumber))
+        : [];
+    const candidateBuildings = new Set<Phaser.GameObjects.GameObject>([
+      ...this.blackboard.productionBuildings,
+      ...ownedActors
+    ]);
+    // Include all finished, alive owned buildings so non-production structures (e.g. Granaries) satisfy prerequisites.
+    const validBuildings = Array.from(candidateBuildings).filter((building) => shouldConsiderActorUnlocked(building));
 
     // Check requiresAnyOf
     if (buildingPrereqs.requiresAnyOf && buildingPrereqs.requiresAnyOf.length > 0) {
@@ -123,8 +128,10 @@ export class ProductionValidator {
       }
     }
 
-    if (missingBuildings.length > 0) {
-      result.prereqs.objectNames.push(...missingBuildings);
+    for (const missing of missingBuildings) {
+      if (!result.prereqs.objectNames.includes(missing)) {
+        result.prereqs.objectNames.push(missing);
+      }
     }
   }
 
@@ -260,8 +267,10 @@ export class ProductionValidator {
       }
     }
 
-    if (missingBuildings.length > 0) {
-      result.prereqs.objectNames.push(...missingBuildings);
+    for (const missing of missingBuildings) {
+      if (!result.prereqs.objectNames.includes(missing)) {
+        result.prereqs.objectNames.push(missing);
+      }
     }
   }
 

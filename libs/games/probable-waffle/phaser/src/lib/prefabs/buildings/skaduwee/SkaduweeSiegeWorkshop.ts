@@ -9,7 +9,9 @@ import SkaduweeSiegeWorkshopFoundation1 from "./SkaduweeSiegeWorkshop/SkaduweeSi
 import SkaduweeSiegeWorkshopFoundation2 from "./SkaduweeSiegeWorkshop/SkaduweeSiegeWorkshopFoundation2";
 import SkaduweeSiegeWorkshopLevel1 from "./SkaduweeSiegeWorkshop/SkaduweeSiegeWorkshopLevel1";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
+import {
+  ConstructionGameObjectInterfaceComponent
+} from "../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 

@@ -9,7 +9,9 @@ import SkaduweeDockFoundation1 from "./SkaduweeDock/SkaduweeDockFoundation1";
 import SkaduweeDockFoundation2 from "./SkaduweeDock/SkaduweeDockFoundation2";
 import SkaduweeDockLevel1 from "./SkaduweeDock/SkaduweeDockLevel1";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
+import {
+  ConstructionGameObjectInterfaceComponent
+} from "../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 

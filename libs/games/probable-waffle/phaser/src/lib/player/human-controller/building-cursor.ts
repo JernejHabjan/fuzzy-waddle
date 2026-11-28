@@ -37,7 +37,9 @@ import {
   emitStructureTopologyChangedAtTile
 } from "../../prefabs/buildings/tivara/navigation-topology.events";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
-import type { ConstructionPlacementRule } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-placement-rule";
+import type {
+  ConstructionPlacementRule
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-placement-rule";
 import {
   createNavigationTerrainProbe,
   isConstructionFootprintValidForRule,

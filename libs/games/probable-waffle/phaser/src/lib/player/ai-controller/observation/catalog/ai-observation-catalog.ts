@@ -101,9 +101,10 @@ export function projectCatalogDefinition(
   factionActorIds?: ReadonlySet<ObjectNames>
 ): AiCapabilityCatalogEntry {
   const anyOfPrereqs = definition.components?.buildingPrerequisites?.requiresAnyOf ?? [];
-  const matchingAnyOf = factionActorIds
+  const filteredAnyOf = factionActorIds
     ? anyOfPrereqs.filter((candidate) => factionActorIds.has(candidate))
     : anyOfPrereqs;
+  const matchingAnyOf = filteredAnyOf.length > 0 ? filteredAnyOf : anyOfPrereqs;
   const requiredObjectNames = [
     ...new Set([
       ...(definition.components?.requirements?.actors ?? []),

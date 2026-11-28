@@ -13,7 +13,12 @@ export default class SkaduweeSiegeWorkshopLevel1 extends Phaser.GameObjects.Cont
     this.setInteractive(new Phaser.Geom.Polygon("-64 -48 0 -80 64 -48 64 16 0 48 -64 16"), Phaser.Geom.Polygon.Contains);
 
     // skaduweeSiegeWorkshopLevel1Image
-    const skaduweeSiegeWorkshopLevel1Image = scene.add.image(0, -32, "factions", "buildings/skaduwee/workshop/skaduwee-siege-workshop3.png");
+    const skaduweeSiegeWorkshopLevel1Image = scene.add.image(
+      0,
+      -32,
+      "factions",
+      "buildings/skaduwee/workshop/skaduwee-siege-workshop3.png"
+    );
     this.add(skaduweeSiegeWorkshopLevel1Image);
 
     /* START-USER-CTR-CODE */

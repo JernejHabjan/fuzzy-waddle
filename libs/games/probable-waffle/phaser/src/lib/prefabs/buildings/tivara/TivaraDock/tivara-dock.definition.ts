@@ -28,7 +28,11 @@ export const tivaraDockDefinition = {
     info: {
       name: "Oasis Pier",
       description: "A sunlit desert wharf where Tivara shipwrights launch river transports and warships.",
-      tooltipDescription: ["Must be placed on the shoreline (land and water)","Builds transport boats and warships","Researches naval upgrades"],
+      tooltipDescription: [
+        "Must be placed on the shoreline (land and water)",
+        "Builds transport boats and warships",
+        "Researches naval upgrades"
+      ],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/dock/tivara-dock3.png",

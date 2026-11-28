@@ -9,7 +9,9 @@ import TivaraGranaryFoundation1 from "./TivaraGranary/TivaraGranaryFoundation1";
 import TivaraGranaryFoundation2 from "./TivaraGranary/TivaraGranaryFoundation2";
 import TivaraGranaryLevel1 from "./TivaraGranary/TivaraGranaryLevel1";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
+import {
+  ConstructionGameObjectInterfaceComponent
+} from "../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 

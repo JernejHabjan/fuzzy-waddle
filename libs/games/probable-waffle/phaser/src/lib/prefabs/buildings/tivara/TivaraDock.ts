@@ -9,7 +9,9 @@ import TivaraDockFoundation1 from "./TivaraDock/TivaraDockFoundation1";
 import TivaraDockFoundation2 from "./TivaraDock/TivaraDockFoundation2";
 import TivaraDockLevel1 from "./TivaraDock/TivaraDockLevel1";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
+import {
+  ConstructionGameObjectInterfaceComponent
+} from "../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 

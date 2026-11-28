@@ -1,5 +1,7 @@
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { ConstructionPlacementRule } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-placement-rule";
+import type {
+  ConstructionPlacementRule
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-placement-rule";
 import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 
 export interface ConstructionTerrainProbe {

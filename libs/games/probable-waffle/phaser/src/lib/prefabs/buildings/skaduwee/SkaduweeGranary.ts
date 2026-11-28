@@ -9,7 +9,9 @@ import SkaduweeGranaryFoundation1 from "./SkaduweeGranary/SkaduweeGranaryFoundat
 import SkaduweeGranaryFoundation2 from "./SkaduweeGranary/SkaduweeGranaryFoundation2";
 import SkaduweeGranaryLevel1 from "./SkaduweeGranary/SkaduweeGranaryLevel1";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
+import {
+  ConstructionGameObjectInterfaceComponent
+} from "../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 
