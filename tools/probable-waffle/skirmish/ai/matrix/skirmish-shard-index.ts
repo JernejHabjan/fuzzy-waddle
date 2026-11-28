@@ -1,12 +1,22 @@
 import type { RuntimeScenarioOutcome } from "../contracts/reports/runtime-scenario-outcome.ts";
 function firstFailure(scenario) {
-  const failure = scenario.failures?.[0];
+  const failure = scenario?.failures?.[0];
   if (typeof failure !== "string") return "scenario_failed_without_reason";
   return failure.slice(0, 160);
 }
 
+function isRuntimeTestAbort(scenario) {
+  return (
+    scenario?.passed === false &&
+    Array.isArray(scenario.failures) &&
+    scenario.failures.some((failure) => typeof failure === "string" && failure.startsWith("runtime_test_"))
+  );
+}
+
 function scenarioStatus(scenario) {
-  if (!scenario || !Array.isArray(scenario.variants) || scenario.variants.length === 0) return "unexecuted";
+  if (!scenario) return "unexecuted";
+  if (isRuntimeTestAbort(scenario)) return "failed";
+  if (!Array.isArray(scenario.variants) || scenario.variants.length === 0) return "unexecuted";
   if (scenario.passed && (!scenario.failures || scenario.failures.length === 0)) return "passed";
   return "failed";
 }
@@ -21,17 +31,22 @@ export function buildSkirmishShardIndex(report, artifact, maxBytes = 8192) {
   );
   const hasWork = (shard.workCounts?.ticks ?? 0) > 0 && (shard.workCounts?.decisions ?? 0) > 0;
   const processFailed = shard.process?.exitCode !== undefined && shard.process.exitCode !== 0;
+  const hasRecordedFailure = [...scenarios.values()].some((scenario) => scenarioStatus(scenario) === "failed");
+  const unexplainedProcessFailure = processFailed && !hasRecordedFailure;
   const failed = [];
   const stopReasons = {};
   let passed = 0;
   let unexecuted = 0;
   for (const id of ids) {
     const scenario = scenarios.get(id);
+    const rawStatus = scenarioStatus(scenario);
     const status = hasWork
-      ? scenarioStatus(scenario) === "passed" && processFailed
+      ? rawStatus === "passed" && unexplainedProcessFailure
         ? "failed"
-        : scenarioStatus(scenario)
-      : "unexecuted";
+        : rawStatus
+      : isRuntimeTestAbort(scenario)
+        ? "failed"
+        : "unexecuted";
     for (const variant of scenario?.variants ?? []) {
       const reason = variant.stopReason ?? "unknown";
       stopReasons[reason] = (stopReasons[reason] ?? 0) + 1;
@@ -41,7 +56,10 @@ export function buildSkirmishShardIndex(report, artifact, maxBytes = 8192) {
     else
       failed.push({
         scenarioId: id,
-        predicate: processFailed && scenario?.passed ? `process_exit:${shard.process.exitCode}` : firstFailure(scenario)
+        predicate:
+          unexplainedProcessFailure && scenario?.passed
+            ? `process_exit:${shard.process.exitCode}`
+            : firstFailure(scenario)
       });
   }
   const index = {
@@ -66,7 +84,7 @@ export function buildSkirmishShardIndex(report, artifact, maxBytes = 8192) {
     reason:
       shard.reason ??
       report.reason ??
-      (!hasWork ? "runtime_zero_work" : processFailed ? `process_exit:${shard.process.exitCode}` : null),
+      (!hasWork ? "runtime_zero_work" : unexplainedProcessFailure ? `process_exit:${shard.process.exitCode}` : null),
     artifact,
     failures: [],
     omittedFailures: 0

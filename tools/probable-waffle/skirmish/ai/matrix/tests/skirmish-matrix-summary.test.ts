@@ -36,8 +36,17 @@ test("runtime summary distinguishes passing, failing and missing scenarios", () 
       ]
     }
   };
-  assert.match(summarizeMatrixRun(report).join("\n"), /2\/3 executed; 1 passed; 1 failed; 1 not run/);
-  assert.match(summarizeMatrixRun({ ...report, process: { exitCode: 1 } }).join("\n"), /0 passed; 2 failed/);
+  const summary = summarizeMatrixRun(report).join("\n");
+  assert.match(summary, /2\/3 executed; 1 passed; 1 failed; 1 not run/);
+  assert.match(summary, /Failed runtime scenarios \(1\)/);
+  assert.match(summary, /- B: predicate/);
+  assert.match(summarizeMatrixRun({ ...report, process: { exitCode: 1 } }).join("\n"), /1 passed; 1 failed/);
+  const crashedPassing = {
+    ...report,
+    runtime: { scenarios: [{ scenarioId: "A", passed: true, variants: [{ variantId: "a" }] }] },
+    process: { exitCode: 1 }
+  };
+  assert.match(summarizeMatrixRun(crashedPassing).join("\n"), /0 passed; 1 failed/);
 });
 
 test("combined report separates pure evidence, runtime results and missing baseline comparisons", () => {
@@ -46,16 +55,22 @@ test("combined report separates pure evidence, runtime results and missing basel
     rows: ["A", "B"],
     reason: "baseline_runtime_adapter_not_implemented",
     pure: {
-      rows: ["A", "B"],
+      rows: ["A", "B", "C"],
       pureScenarioEvidence: {
         executed: [
           { scenarioId: "A", passedTestCount: 2, bindingsComplete: true },
-          { scenarioId: "B", passedTestCount: 1, bindingsComplete: false }
+          {
+            scenarioId: "B",
+            passedTestCount: 1,
+            bindingsComplete: false,
+            bindings: [{ title: "missing guard contract", passed: false }]
+          },
+          { scenarioId: "C", passedTestCount: 0 }
         ]
       }
     },
     runtime: {
-      rows: ["A"],
+      rows: ["A", "B"],
       status: "passed",
       workCounts: { decisions: 1, ticks: 1 },
       runtime: { scenarios: [{ scenarioId: "A", passed: true, variants: [{ variantId: "a" }] }] }
@@ -63,8 +78,12 @@ test("combined report separates pure evidence, runtime results and missing basel
     unexecutedBaselineRuntime: ["A"]
   }).join("\n");
   assert.match(text, /AI matrix: blocked; 2 catalog entries/);
-  assert.match(text, /AI pure coverage: 1\/2 proven; 1 unproven/);
-  assert.match(text, /AI runtime scenarios: 1\/1 executed; 1 passed; 0 failed; 0 not run/);
+  assert.match(text, /AI pure coverage: 1\/3 proven; 2 unproven/);
+  assert.match(text, /Unproven pure scenarios \(2\)/);
+  assert.match(text, /- B: failed binding\(s\): missing guard contract/);
+  assert.match(text, /- C: no passing test matched/);
+  assert.match(text, /AI runtime scenarios: 1\/2 executed; 1 passed; 0 failed; 1 not run/);
+  assert.match(text, /Not run runtime scenarios \(1\): B/);
   assert.match(text, /baseline runtime comparisons not run: 1/);
 });
 

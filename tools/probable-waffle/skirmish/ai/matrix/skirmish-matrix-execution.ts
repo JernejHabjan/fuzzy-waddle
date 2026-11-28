@@ -9,6 +9,8 @@ import { digestString, readHead, readJson, readWorkingTreeSource } from "./skirm
 import { createRuntimeResultPath, readRuntimeResultOutcome } from "./skirmish-runtime-result.ts";
 import { writeRuntimeRequest } from "../shared/transport/skirmish-ai-runtime-request-transport.ts";
 import { readNativeScenarioFixture } from "../scenarios/registration/read-native-scenario-fixture.ts";
+import { assembleRuntimeParts } from "../shared/transport/skirmish-ai-runtime-parts.ts";
+import { mergeRuntimeShardReports, planRuntimeExecutionShards } from "./skirmish-runtime-shards.ts";
 
 export function invokeSelectedHarness(input, context) {
   const { manifest, fixtureDirectory } = context;
@@ -182,11 +184,45 @@ export function invokeHarness(input, context) {
 }
 
 function invokeRuntimeHarness(input, context) {
-  const { manifest, workspaceRoot, fixtureDirectory } = context;
+  const { fixtureDirectory } = context;
   const runId = input.options?.["run-id"] ?? process.env.AI_SKIRMISH_MATRIX_RUN_ID ?? null;
   if (runId !== null && (typeof runId !== "string" || !/^[A-Za-z0-9._-]{1,100}$/.test(runId))) {
     throw new Error("invalid_skirmish_matrix_run_id");
   }
+  const shards = planRuntimeExecutionShards(input.rows, fixtureDirectory, input.diagnosticSelection ?? null);
+  if (shards.length <= 1) return invokeSingleRuntimeShard(input, context, runId);
+
+  const startedAt = performance.now();
+  const workingTreeSource = readWorkingTreeSource();
+  const workingTreeDigest = workingTreeSource.length > 0 ? digestString(workingTreeSource) : null;
+  const shardEntries = [];
+  for (const [index, shard] of shards.entries()) {
+    const modeLabel = shard.requiresMultiplayer ? "multiplayer" : "singleplayer";
+    const idList = shard.rows.map((row) => row.id).join(", ");
+    process.stdout.write(
+      `[AI runtime ${index + 1}/${shards.length}] ${shard.group} (${modeLabel}, ${shard.rows.length}: ${idList})\n`
+    );
+    const shardReport = invokeSingleRuntimeShard({ ...input, rows: shard.rows }, context, runId);
+    shardEntries.push({ shard, report: shardReport });
+    const scenarios = shardReport.runtime?.scenarios ?? [];
+    const passed = scenarios.filter((entry) => entry.passed).length;
+    const failed = scenarios.filter((entry) => !entry.passed);
+    const notRun = Math.max(0, shard.rows.length - scenarios.length);
+    const seconds = (shardReport.execution.wallMs / 1000).toFixed(1);
+    process.stdout.write(`  -> ${passed} passed, ${failed.length} failed, ${notRun} not run (${seconds}s)\n`);
+    for (const failure of failed) {
+      const detail = (failure.failures?.[0] ?? "failed").slice(0, 140);
+      process.stdout.write(`     FAIL ${failure.scenarioId}: ${detail}\n`);
+    }
+  }
+  const wallMs = Math.round(performance.now() - startedAt);
+  const merged = mergeRuntimeShardReports(shardEntries, input, context, runId, workingTreeDigest, wallMs);
+  if (merged.status !== "passed" && merged.status !== "diagnostic_passed") process.exitCode = 1;
+  return merged;
+}
+
+function invokeSingleRuntimeShard(input, context, runId) {
+  const { manifest, workspaceRoot, fixtureDirectory } = context;
   const startedAt = performance.now();
   const fixtures = [
     ...new Map<string, { reference: string; digest: string }>(
@@ -258,6 +294,13 @@ function invokeRuntimeHarness(input, context) {
     timeout: 30 * 60 * 1000
   });
   const wallMs = Math.round(performance.now() - startedAt);
+  // Assemble any incremental per-fixture parts if Playwright exited before afterAll could run.
+  assembleRuntimeParts(resultArtifact, {
+    sourceRevision,
+    dirtySourceDigest: workingTreeDigest,
+    fixtureDigest,
+    diagnosticSelection: input.diagnosticSelection ?? null
+  });
   const result = readRuntimeResultOutcome(
     resultArtifact,
     {

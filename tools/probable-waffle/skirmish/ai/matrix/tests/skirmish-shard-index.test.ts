@@ -52,13 +52,37 @@ test("zero-work shard cannot report a passing scenario", () => {
   assert.equal(index.reason, "runtime_zero_work");
 });
 
-test("a failing browser process invalidates apparently passing scenario rows", () => {
+test("an unexplained failing browser process invalidates apparently passing scenario rows", () => {
   const input = report();
+  input.runtime.scenarios = [
+    { scenarioId: "PRO-01", passed: true, failures: [], variants: [{ variantId: "subject" }] }
+  ];
   input.process = { exitCode: 1 };
   const index = buildSkirmishShardIndex(input, "tmp/raw.json");
   assert.equal(index.totals.passed, 0);
-  assert.equal(index.totals.failed, 2);
+  assert.equal(index.totals.failed, 1);
   assert.deepEqual(index.failures[0], { scenarioId: "PRO-01", predicate: "process_exit:1" });
+});
+
+test("expected test-failure exit code preserves passing scenarios alongside failing ones", () => {
+  const input = report();
+  input.process = { exitCode: 1 };
+  const index = buildSkirmishShardIndex(input, "tmp/raw.json");
+  assert.equal(index.totals.passed, 1);
+  assert.equal(index.totals.failed, 1);
+  assert.deepEqual(index.failures, [{ scenarioId: "PRO-02", predicate: "subject:capacity_not_observed" }]);
+});
+
+test("timed-out scenario without variant captures is counted as failed with its timeout reason", () => {
+  const input = report();
+  input.workCounts = { decisions: 0, ticks: 0 };
+  input.runtime.scenarios = [
+    { scenarioId: "PRO-01", passed: false, failures: ["runtime_test_timeout:180000ms"], variants: [] }
+  ];
+  const index = buildSkirmishShardIndex(input, "tmp/raw.json");
+  assert.equal(index.totals.executed, 1);
+  assert.equal(index.totals.failed, 1);
+  assert.deepEqual(index.failures, [{ scenarioId: "PRO-01", predicate: "runtime_test_timeout:180000ms" }]);
 });
 
 test("combined pure/runtime wrapper indexes only the runtime shard", () => {
