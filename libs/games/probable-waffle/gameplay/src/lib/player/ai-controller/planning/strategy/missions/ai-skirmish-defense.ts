@@ -160,10 +160,20 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
   if (!localThreat || combat.length === 0) return;
   let eligibleDefenders = combat.filter((actor) => canTarget(actor, localThreat));
   const questionScoutActors = new Set(
-    context.activeScout?.objectiveId?.startsWith("question:") ||
-    (context.activeScout?.objectiveId?.startsWith("neutral:") && context.activeScout.state === "moving")
-      ? context.activeScout.actorIds
-      : []
+    [
+      ...context.state.squads,
+      ...(context.activeScout && !context.state.squads.some((squad) => squad.squadId === context.activeScout?.squadId)
+        ? [context.activeScout]
+        : [])
+    ]
+      .filter(
+        (squad) =>
+          squad.role === "scout" &&
+          !["completed", "cancelled"].includes(squad.state) &&
+          (squad.objectiveId?.startsWith("question:") ||
+            (squad.objectiveId?.startsWith("neutral:") && ["moving", "retreat"].includes(squad.state)))
+      )
+      .flatMap((squad) => squad.actorIds)
   );
   if (eligibleDefenders.length > 1 && questionScoutActors.size > 0) {
     eligibleDefenders = eligibleDefenders.filter((actor) => !questionScoutActors.has(actor.actorId));

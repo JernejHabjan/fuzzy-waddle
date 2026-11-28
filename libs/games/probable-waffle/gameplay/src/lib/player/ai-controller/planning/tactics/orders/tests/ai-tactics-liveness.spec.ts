@@ -144,6 +144,48 @@ function observation(tick: number, actors: readonly AiObservedActor[]): AiObserv
 }
 
 describe("AiTacticsManager pressure liveness", () => {
+  it("releases an attack squad after a mobile enemy's last-seen position goes stale", () => {
+    const friendly = actor("guard", "self", 1000, 10);
+    const runner: AiObservedActor = {
+      ...actor("runner", "enemy", 1000, 0),
+      objectName: ObjectNames.TivaraAlchemist,
+      visibility: "last_seen",
+      evidenceId: "evidence:contact:runner",
+      mainBuilding: { status: "known", value: false, observedTick: 100 },
+      logicalPosition: {
+        status: "known",
+        value: { x: 34, y: 15, z: 0 },
+        observedTick: 100
+      }
+    };
+    const mission = { ...squad(), objectiveId: `hypothesis:${runner.evidenceId}` };
+    const update = manager.propose(observation(341, [friendly, runner]), state(mission)).statePatch?.squadUpdates?.[0];
+
+    expect(update).toMatchObject({
+      squadId: mission.squadId,
+      actorIds: [],
+      state: "completed",
+      lifecycle: { terminalReason: "stale_contact_released" }
+    });
+  });
+
+  it("retains a last-seen enemy core longer than a mobile pursuit target", () => {
+    const friendly = actor("guard", "self", 1000, 10);
+    const core: AiObservedActor = {
+      ...actor("core", "enemy", 1000, 0),
+      visibility: "last_seen",
+      mainBuilding: { status: "known", value: true, observedTick: 100 },
+      logicalPosition: {
+        status: "known",
+        value: { x: 34, y: 15, z: 0 },
+        observedTick: 100
+      }
+    };
+    const update = manager.propose(observation(341, [friendly, core]), state(squad())).statePatch?.squadUpdates?.[0];
+
+    expect(update?.state).not.toBe("completed");
+  });
+
   it("retreats an endangered assembling squad without launching an attack prematurely", () => {
     const friendly = actor("guard", "self", 200, 10);
     const enemy = actor("core", "enemy", 1000, 100);

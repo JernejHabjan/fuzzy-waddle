@@ -1,14 +1,35 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog, AiCapabilityCatalogEntry } from "../../contracts/observation/ai-capability-catalog";
 
 import type { AiObservation } from "../../contracts/observation/ai-observation";
+import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
 
 /** Initial graph caps prevent a new plan identity from turning fortification into unbounded work. */
 export const AI_FORTIFICATION_GRAPH_CAPS = { walls: 16, towers: 3, stairs: 2 } as const;
 export const AI_STANDARD_FORTIFICATION_SPEND_PERMILLE = 200;
-export const AI_TURTLE_FORTIFICATION_SPEND_PERMILLE = 300;
+export const AI_TURTLE_FORTIFICATION_SPEND_PERMILLE = 400;
+export const AI_FORTIFICATION_CONTINUATION_UTILITY = 750;
+
+/** Keeps generic construction sites clear of the planned entrance and one-tile movement margin. */
+export function fortificationOpeningClearanceTileKeys(state: Pick<AiBrainState, "fortifications">): string[] {
+  const keys = new Set<string>();
+  for (const plan of state.fortifications) {
+    if (plan.lifecycle === "abandoned" || !plan.graph) continue;
+    const opening = plan.graph.nodes.find(
+      (candidate) => candidate.nodeId === plan.graph?.openingNodeId && candidate.kind === "gate_slot"
+    );
+    if (!opening) continue;
+    const centerX = Math.round(opening.position.x);
+    const centerY = Math.round(opening.position.y);
+    for (let offsetY = -1; offsetY <= 1; offsetY += 1) {
+      for (let offsetX = -1; offsetX <= 1; offsetX += 1) {
+        keys.add(`${centerX + offsetX},${centerY + offsetY}`);
+      }
+    }
+  }
+  return [...keys].sort();
+}
 
 export type ConstructionCell = NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number];
 

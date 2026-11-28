@@ -19,6 +19,7 @@ import { proposeAiConstructionRecovery } from "../../construction/ai-constructio
 import { nextAiMilitarySpendingReserve } from "../capacity/ai-military-spending-reserve";
 import { proposeAiCounterInfrastructure } from "../../adaptation/ai-counter-infrastructure-proposal";
 import type { AiAdaptationRole } from "../../adaptation/ai-adaptation-role";
+import { fortificationOpeningClearanceTileKeys } from "../../fortification/ai-fortification-support";
 
 /** Shared macro infrastructure follows strategic openings and confirmed live role deficits. */
 export function aiMacroInfrastructureRoles(state: AiBrainState): readonly AiAdaptationRole[] {
@@ -66,6 +67,7 @@ export class AiMacroManager implements AiProposalManager {
       checkpointStatus,
       activeCheckpointId
     } = opening;
+    fortificationOpeningClearanceTileKeys(state).forEach((tileKey) => selectedConstructionTileKeys.add(tileKey));
     let ordinal = opening.ordinal;
 
     const self = owned(observation);

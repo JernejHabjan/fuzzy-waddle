@@ -5,6 +5,7 @@ import { queryAiAccessRoute } from "../../access/ai-access-graph";
 import type { AiSkirmishProposalContext } from "../missions/ai-skirmish-proposal-context";
 import { canFight, canTarget, distance, domains, position } from "../missions/ai-skirmish-support";
 import { selectAiOffensiveForce } from "./select-ai-offensive-force";
+import { STALE_MOBILE_OBJECTIVE_TICKS } from "../../tactics/combat/ai-tactics-rules";
 
 export interface AiOffensiveOpportunity {
   readonly opponent: AiObservedActor | undefined;
@@ -211,7 +212,15 @@ export function selectAiOffensiveOpportunity(
 ): AiOffensiveOpportunity {
   const recentFailure = recentFailedMission(context);
   const contacts = [...context.visibleEnemies, ...context.rememberedEnemies]
-    .filter(options.candidateFilter ?? (() => true))
+    // Tactical release alone is insufficient: without expiring the strategic candidate, offense can recreate the
+    // same pursuit on its next decision. Remembered cores remain useful for bounded long-range pressure/scouting.
+    .filter(
+      (actor) =>
+        (actor.visibility !== "last_seen" ||
+          isCore(actor) ||
+          context.observation.tick - actor.observedTick <= STALE_MOBILE_OBJECTIVE_TICKS) &&
+        (options.candidateFilter ?? (() => true))(actor)
+    )
     .slice(0, MAX_CANDIDATES);
   const candidates = contacts
     .flatMap((opponent) => {

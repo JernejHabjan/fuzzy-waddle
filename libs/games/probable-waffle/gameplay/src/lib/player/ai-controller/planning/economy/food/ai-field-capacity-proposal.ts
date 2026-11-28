@@ -4,7 +4,10 @@ import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capa
 import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../../contracts/observation/ai-observation";
 import type { AiDemand } from "../../../contracts/planning/ai-plan-contracts";
-import { selectConstructionPosition } from "../../construction/ai-construction-site-selector";
+import {
+  aiFortificationGateClearanceFilter,
+  selectConstructionPosition
+} from "../../construction/ai-construction-site-selector";
 import { reachableAiAccessNodeIds } from "../../access/ai-access-graph";
 import { canAffordAiEconomyCost } from "../service/ai-economy-policy";
 import { nextIds } from "../../production/macro/ai-macro-effect-identity";
@@ -15,6 +18,9 @@ import {
 } from "../../production/macro/ai-macro-observation";
 import { createAiResourceCostClaims } from "../forecast/ai-resource-cost-claims";
 import { aiEconomySiteSafety } from "../service/ai-economy-site-safety";
+
+const PREFERRED_FIELD_SERVICE_DISTANCE = 6;
+const MAX_CONSTRAINED_FIELD_SERVICE_DISTANCE = 12;
 
 /** Commits only missing renewable Field capacity with a usable food drop-off. */
 export function proposeAiFieldCapacity(args: {
@@ -86,7 +92,7 @@ export function proposeAiFieldCapacity(args: {
   )
     return { demand, intent: null };
   const alreadyClaimed = claimedActorIds(priorIntents);
-  const builder = self
+  const builders = self
     .filter(isAvailableBuilder)
     .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
     .filter((actor) =>
@@ -98,8 +104,8 @@ export function proposeAiFieldCapacity(args: {
       const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 0 : 1;
       const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 0 : 1;
       return leftIdle - rightIdle || compareAiActorsByVisibleGeometry(left, right);
-    })[0];
-  if (!builder) return { demand, intent: null };
+    });
+  if (builders.length === 0) return { demand, intent: null };
   const safety = aiEconomySiteSafety(observation);
   const foodDropOffs = self.flatMap((actor) => {
     const accessNodeId = actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null;
@@ -121,48 +127,71 @@ export function proposeAiFieldCapacity(args: {
         ? reachableAiAccessNodeIds(observation.map.accessGraph, [dropOff.accessNodeId], "ground", 1)
         : new Set([dropOff.accessNodeId])
   }));
-  const fieldHasLocalFoodService = (
-    cell: NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number]
+  const fieldHasFoodServiceWithin = (
+    cell: NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number],
+    maxDistance: number
   ) => {
     if (!enforceFoodDropOffRegion) return true;
     if (!cell.groundAccessNodeId) return false;
     return foodDropOffRoutes.some((dropOff) => {
       if (!dropOff.position || !dropOff.reachableNodeIds.has(cell.groundAccessNodeId!)) return false;
       const distance = Math.abs(cell.position.x - dropOff.position.x) + Math.abs(cell.position.y - dropOff.position.y);
-      return distance <= 6;
+      return distance <= maxDistance;
     });
   };
-  const acceptsFieldSite = (cell: NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number]) =>
-    safety.positionSafe(cell.position) && fieldHasLocalFoodService(cell);
-  const existingFieldPositions = readyFoodSources.flatMap((field) =>
-    field.logicalPosition.status === "known" ? [field.logicalPosition.value] : []
-  );
-  const alignedPosition =
-    existingFieldPositions.length > 0
-      ? selectConstructionPosition(
-          observation,
-          builder,
-          state.scheduler.decisionSequence,
-          ordinal,
-          selectedConstructionTileKeys,
-          foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
-          (cell) =>
-            acceptsFieldSite(cell) &&
-            existingFieldPositions.some((field) => field.x === cell.position.x || field.y === cell.position.y)
-        )
-      : undefined;
-  const position =
-    alignedPosition ??
-    selectConstructionPosition(
-      observation,
-      builder,
-      state.scheduler.decisionSequence,
-      ordinal,
-      selectedConstructionTileKeys,
-      foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
-      acceptsFieldSite
+  const acceptsFieldSite = (
+    cell: NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number],
+    maxServiceDistance: number
+  ) => safety.positionSafe(cell.position) && fieldHasFoodServiceWithin(cell, maxServiceDistance);
+  const existingFieldPositions = [
+    ...readyFoodSources.flatMap((field) =>
+      field.logicalPosition.status === "known" ? [field.logicalPosition.value] : []
+    ),
+    ...priorIntents.flatMap((intent) =>
+      intent.kind === "construct" && intent.objectName === ObjectNames.Field ? [intent.logicalPosition] : []
+    )
+  ];
+  const footprintRadius = foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0;
+  const selectForFirstBuilder = (
+    acceptCell: NonNullable<Parameters<typeof selectConstructionPosition>[6]>
+  ):
+    | { builder: AiObservation["actors"][number]; position: ReturnType<typeof selectConstructionPosition> }
+    | undefined => {
+    // Search a placement preference across every available builder before falling back to a
+    // weaker preference. Otherwise the nearest worker can consume an unaligned local site
+    // before a later worker gets the chance to reach an aligned plot.
+    for (const builder of builders) {
+      const position = selectConstructionPosition(
+        observation,
+        builder,
+        state.scheduler.decisionSequence,
+        ordinal,
+        selectedConstructionTileKeys,
+        footprintRadius,
+        aiFortificationGateClearanceFilter(state.fortifications, acceptCell)
+      );
+      if (position) return { builder, position };
+    }
+    return undefined;
+  };
+  const aligned = (maxServiceDistance: number) =>
+    selectForFirstBuilder(
+      (cell) =>
+        acceptsFieldSite(cell, maxServiceDistance) &&
+        existingFieldPositions.some((field) => field.x === cell.position.x || field.y === cell.position.y)
     );
-  if (!position) return { demand, intent: null };
+  const local = (maxServiceDistance: number) =>
+    selectForFirstBuilder((cell) => acceptsFieldSite(cell, maxServiceDistance));
+  // Keep Fields aligned when possible, including a bounded service-distance fallback. Only
+  // after all builders fail those preferred layouts may a local unaligned site be selected.
+  const selectedBuilder =
+    (existingFieldPositions.length > 0 ? aligned(PREFERRED_FIELD_SERVICE_DISTANCE) : undefined) ??
+    (existingFieldPositions.length > 0 ? aligned(MAX_CONSTRAINED_FIELD_SERVICE_DISTANCE) : undefined) ??
+    local(PREFERRED_FIELD_SERVICE_DISTANCE) ??
+    local(MAX_CONSTRAINED_FIELD_SERVICE_DISTANCE);
+  const builder = selectedBuilder?.builder;
+  const position = selectedBuilder?.position;
+  if (!builder || !position) return { demand, intent: null };
   const next = nextIds(state, `food-capacity:${ObjectNames.Field}`, ordinal);
   const intent: AiIntent = {
     ...next,

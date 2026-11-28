@@ -66,7 +66,7 @@ it("keeps a scout travelling to its information destination instead of reforming
   expect(next.intents.filter((intent) => intent.kind === "move")).toEqual([]);
 });
 
-it("keeps a frontier scout on its information destination after an enemy becomes visible", () => {
+it("withdraws a frontier scout from a local enemy before damage is observed", () => {
   const actor = combatActor("scout", "self", 0);
   const enemy = combatActor("enemy", "enemy", 3);
   const mission = { ...squad("squad:scout:primary", "scout", [actor.actorId]), objectiveId: "question:search:a" };
@@ -92,11 +92,11 @@ it("keeps a frontier scout on its information destination after an enemy becomes
   const proposal = manager.propose(world, state);
   const move = proposal.intents.find((intent) => intent.kind === "move");
   if (move?.kind !== "move") throw new Error("scout_move_missing");
-  expect(move.logicalPosition.x).toBeGreaterThan(8);
-  expect(Math.abs(move.logicalPosition.x - 12)).toBeLessThanOrEqual(4);
+  expect(move.reasonCode).toContain("protected_retreat");
+  expect(move.logicalPosition).not.toEqual({ x: 12, y: 0, z: 0 });
 });
 
-it("keeps a frontier scout's native trip through visible contact unless retreat is needed", () => {
+it("physically withdraws a frontier scout when a visible enemy is already in weapon reach", () => {
   const destination = { x: 12, y: 0, z: 0 };
   const actor = {
     ...combatActor("scout", "self", 4),
@@ -120,7 +120,9 @@ it("keeps a frontier scout's native trip through visible contact unless retreat 
 
   const proposal = manager.propose(world, fixtureState([mission]));
 
-  expect(proposal.intents.filter((intent) => intent.actorIds.includes(actor.actorId))).toEqual([]);
+  expect(
+    proposal.intents.find((intent) => intent.kind === "move" && intent.actorIds.includes(actor.actorId))?.reasonCode
+  ).toContain("protected_retreat");
 });
 it("leaves a scout's active frontier route to the scouting manager when its next question changes", () => {
   const actor = {

@@ -1,4 +1,5 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { AiAccessNodeId } from "../../../contracts/ai-core-types";
 import type { AiBrainState, AiSquadState } from "../../../contracts/state/ai-state-contracts";
 import type { AiDomain, AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { MAX_RETREAT_CANDIDATES } from "./ai-tactics-rules";
@@ -20,6 +21,87 @@ export function harmfulAt(position: Vector3Simple, observation: AiObservation): 
   return observation.effects.some(
     (effect) => effect.influence === "harmful" && distance(position, effect.position) <= (effect.radius ?? 0) + 1
   );
+}
+
+export function hasKnownGroundRoute(
+  sourceNodeId: AiAccessNodeId,
+  targetNodeId: AiAccessNodeId,
+  observation: AiObservation
+): boolean | undefined {
+  return createGroundRouteLookup(observation).hasRoute(sourceNodeId, targetNodeId);
+}
+
+/** Builds one indexed route query for the immutable observation used by a tactical decision. */
+export function createGroundRouteLookup(observation: AiObservation) {
+  const graph = observation.map?.accessGraph;
+  const nodes = new Map(graph?.nodes.map((node) => [node.nodeId, node]) ?? []);
+  const adjacency = new Map<AiAccessNodeId, AiAccessNodeId[]>();
+  if (graph?.status === "ready") {
+    for (const link of graph.links) {
+      if (link.domain !== "ground" || link.knowledge === "unknown" || link.clearance < 1) continue;
+      const from = adjacency.get(link.fromNodeId) ?? [];
+      from.push(link.toNodeId);
+      adjacency.set(link.fromNodeId, from);
+      if (!link.directional) {
+        const to = adjacency.get(link.toNodeId) ?? [];
+        to.push(link.fromNodeId);
+        adjacency.set(link.toNodeId, to);
+      }
+    }
+  }
+  const cellsByPosition = new Map(
+    [...(observation.map?.constructionCells ?? []), ...(observation.map?.tacticalCells ?? [])].map((cell) => [
+      `${cell.position.x},${cell.position.y},${cell.position.z}`,
+      cell.groundAccessNodeId
+    ])
+  );
+  const reachableBySource = new Map<AiAccessNodeId, Set<AiAccessNodeId>>();
+  const hasRoute = (sourceNodeId: AiAccessNodeId, targetNodeId: AiAccessNodeId): boolean | undefined => {
+    if (graph?.status !== "ready") return undefined;
+    const source = nodes.get(sourceNodeId);
+    const target = nodes.get(targetNodeId);
+    if (!source || !target || source.domain !== "ground" || target.domain !== "ground") return false;
+    if (source.knowledge === "unknown" || target.knowledge === "unknown") return false;
+    if (source.clearance < 1 || target.clearance < 1) return false;
+    let reachable = reachableBySource.get(sourceNodeId);
+    if (!reachable) {
+      reachable = new Set([sourceNodeId]);
+      const queue = [sourceNodeId];
+      for (let cursor = 0; cursor < queue.length; cursor += 1) {
+        const current = queue[cursor];
+        if (!current) continue;
+        for (const next of adjacency.get(current) ?? []) {
+          if (reachable.has(next)) continue;
+          const node = nodes.get(next);
+          if (!node || node.domain !== "ground" || node.knowledge === "unknown" || node.clearance < 1) continue;
+          reachable.add(next);
+          queue.push(next);
+        }
+      }
+      reachableBySource.set(sourceNodeId, reachable);
+    }
+    return reachable.has(targetNodeId);
+  };
+  const positionReachableFrom = (member: AiObservedActor, position: Vector3Simple): boolean | undefined => {
+    if (!movementDomains(member).includes("ground")) return true;
+    const sourceNodeId = member.accessNodeId?.status === "known" ? member.accessNodeId.value : null;
+    if (!sourceNodeId) return undefined;
+    if (!cellsByPosition.size) return undefined;
+    const destinationNodeId = cellsByPosition.get(`${position.x},${position.y},${position.z}`);
+    if (!destinationNodeId) return graph?.status === "ready" ? false : undefined;
+    if (graph?.status === "ready") return hasRoute(sourceNodeId, destinationNodeId) === true;
+    return graph ? sourceNodeId === destinationNodeId : undefined;
+  };
+  return { hasRoute, positionReachableFrom };
+}
+
+/** Uses a completed graph when available; while it is pending, only trust movement within a known region. */
+export function groundPositionReachableFrom(
+  member: AiObservedActor,
+  position: Vector3Simple,
+  observation: AiObservation
+): boolean | undefined {
+  return createGroundRouteLookup(observation).positionReachableFrom(member, position);
 }
 
 export function legalForMembers(
@@ -46,6 +128,7 @@ export function safeRetreatPosition(
   members: readonly AiObservedActor[],
   protectedBaseId?: string | null
 ): Vector3Simple | null {
+  const routeLookup = createGroundRouteLookup(observation);
   const anchors = state.bases
     .filter((base) => base.active && base.anchorPosition)
     .map((base) => base.anchorPosition!)
@@ -58,7 +141,11 @@ export function safeRetreatPosition(
       .slice(0, MAX_RETREAT_CANDIDATES),
     anchor
   ]);
-  const allLegalCandidates = candidates.filter((candidate) => legalForMembers(candidate, observation, members));
+  const allLegalCandidates = candidates.filter(
+    (candidate) =>
+      legalForMembers(candidate, observation, members) &&
+      members.every((member) => routeLookup.positionReachableFrom(member, candidate) !== false)
+  );
   const protectedBase = protectedBaseId
     ? (state.bases.find((base) => base.baseId === protectedBaseId && base.active) ??
       (protectedBaseId === "base:home"

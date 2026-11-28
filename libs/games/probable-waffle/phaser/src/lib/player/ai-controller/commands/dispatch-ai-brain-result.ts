@@ -34,24 +34,29 @@ export function dispatchAiBrainResult(
     decisionSequence: debug.decisionSequence,
     authorityEpoch: authority.authorityEpoch
   };
-  if (scene.events.listenerCount(AI_DECISION_DISPATCH_EVENT)) scene.events.emit(
-    AI_DECISION_DISPATCH_EVENT,
-    structuredClone({
-      identity,
-      ...(input ? { input } : {}),
-      persistedProfile: { profileVersion: result.nextState.profileVersion, profileDifficulty: result.nextState.profileDifficulty },
-      acceptedIntents: result.acceptedIntents,
-      decisions: result.decisions,
-      reservations: result.nextState.reservations,
-      economyProduction: result.nextState.economyProduction,
-      strategy: result.nextState.strategy,
-      opening: result.nextState.opening,
-      missionState: captureAiSelectedMissionState(result.nextState),
-      gatheringSelections: result.acceptedIntents.flatMap((intent) => {
-        const selection = readAiGatheringSelection(intent);
-        return selection ? [selection] : [];
-      })
-    } satisfies AiDecisionDispatchEvent)
-  );
+  if (scene.events.listenerCount(AI_DECISION_DISPATCH_EVENT))
+    scene.events.emit(
+      AI_DECISION_DISPATCH_EVENT,
+      structuredClone({
+        identity,
+        ...(input ? { input } : {}),
+        persistedProfile: {
+          profileVersion: result.nextState.profileVersion,
+          profileDifficulty: result.nextState.profileDifficulty
+        },
+        acceptedIntents: result.acceptedIntents,
+        decisions: result.decisions,
+        reservations: result.nextState.reservations,
+        economyProduction: result.nextState.economyProduction,
+        strategy: result.nextState.strategy,
+        opening: result.nextState.opening,
+        missionState: captureAiSelectedMissionState(result.nextState),
+        fortificationPlanningReason: debug.fortificationPlanningReason,
+        gatheringSelections: result.acceptedIntents.flatMap((intent) => {
+          const selection = readAiGatheringSelection(intent);
+          return selection ? [selection] : [];
+        })
+      } satisfies AiDecisionDispatchEvent)
+    );
   dispatchAiIntents(scene, playerNumber, result.acceptedIntents, identity);
 }

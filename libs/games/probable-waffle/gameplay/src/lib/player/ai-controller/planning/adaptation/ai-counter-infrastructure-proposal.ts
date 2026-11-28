@@ -82,7 +82,8 @@ export function proposeAiCounterInfrastructure(
     selectedTileKeys: selectedConstructionTileKeys,
     footprintRadiusTiles: entry.constructionProfile.footprintRadiusTiles,
     safePolicy: false,
-    threats: []
+    threats: [],
+    fortifications: state.fortifications
   });
   if (!selected) return null;
   const next = nextIds(state, `counter-infrastructure:${objectName}`, ordinal);

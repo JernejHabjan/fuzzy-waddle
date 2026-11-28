@@ -5,6 +5,8 @@ import { aiDeadline } from "../../../contracts/ai-core-types";
 import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import { arbitrateAiIntents } from "../../../brain/arbitration/ai-intent-arbiter";
 import { AiFortificationManager, fortificationPreservesConnectivity } from "../ai-fortification-manager";
+import { fortificationOpeningClearanceTileKeys } from "../ai-fortification-support";
+import { orderFortificationSideOffsets } from "../ai-fortification-layout";
 import {
   actor,
   catalog,
@@ -14,7 +16,89 @@ import {
 } from "../../../testing/fixtures/fortification/ai-fortification-test-fixture";
 
 describe("AiFortificationManager", () => {
+  it("reserves the planned entrance and its movement margin from unrelated construction", () => {
+    const state: AiBrainState = {
+      ...threatenedState(),
+      fortifications: [
+        {
+          planId: "fortification:base:main",
+          nodeIds: ["gate", "wall"],
+          completedNodeIds: [],
+          protectedBaseIds: ["base:main"],
+          lifecycle: "planned",
+          graph: {
+            baseId: "base:main",
+            createdTick: 20,
+            terrainAnchorTileKeys: [],
+            openingNodeId: "gate",
+            protectedAssetIds: [],
+            wholeConnectivity: "preserved",
+            incrementalConnectivity: "preserved",
+            budget: { spendPermille: 400, committedByResource: {}, remainingByResource: {} },
+            nodes: [
+              {
+                nodeId: "gate",
+                kind: "gate_slot",
+                objectName: null,
+                position: { x: 26, y: 20, z: 0 },
+                footprintTileKeys: [],
+                navigation: null,
+                componentId: "base:main:component:0",
+                dependsOnNodeId: null,
+                lifecycle: "planned",
+                completedActorId: null,
+                attempt: 0,
+                effectId: null,
+                retryAfterTick: 20,
+                marginalCoverage: 0,
+                targetDomains: [],
+                defenderPostReachable: true
+              },
+              {
+                nodeId: "wall",
+                kind: "wall",
+                objectName: ObjectNames.Wall,
+                position: { x: 27, y: 20, z: 0 },
+                footprintTileKeys: ["27,20"],
+                navigation: null,
+                componentId: "base:main:component:0",
+                dependsOnNodeId: null,
+                lifecycle: "planned",
+                completedActorId: null,
+                attempt: 0,
+                effectId: null,
+                retryAfterTick: 20,
+                marginalCoverage: 0,
+                targetDomains: [],
+                defenderPostReachable: true
+              }
+            ],
+            constructionSequenceNodeIds: ["wall"],
+            defenderPosts: [],
+            breach: { missingNodeIds: [], reason: null, risk: "none", responseEffectId: null, recoveryAttempts: 0 }
+          }
+        }
+      ]
+    };
+
+    expect(fortificationOpeningClearanceTileKeys(state)).toEqual([
+      "25,19",
+      "25,20",
+      "25,21",
+      "26,19",
+      "26,20",
+      "26,21",
+      "27,19",
+      "27,20",
+      "27,21"
+    ]);
+  });
+
   const manager = new AiFortificationManager(profile, () => catalog);
+
+  it("builds wall-only components from the terrain anchor toward the opening", () => {
+    expect(orderFortificationSideOffsets([1, 2, 3, 4], undefined)).toEqual([4, 3, 2, 1]);
+  });
 
   it("WALL-01/02 creates a deterministic bounded front with a permanently empty opening", () => {
     const first = manager.propose(observation(), threatenedState());
@@ -25,8 +109,96 @@ describe("AiFortificationManager", () => {
     expect(graph?.wholeConnectivity).toBe("preserved");
     expect(graph?.incrementalConnectivity).toBe("preserved");
     expect(graph?.nodes.filter((node) => node.kind === "gate_slot")).toHaveLength(1);
+    const stair = graph?.nodes.find((node) => node.kind === "stair");
+    expect(stair?.dependsOnNodeId).toBeNull();
+    expect(graph?.constructionSequenceNodeIds[0]).toBe(stair?.nodeId);
+    expect(
+      graph?.nodes
+        .filter((node) => node.kind === "wall" || node.kind === "tower")
+        .every((node) => node.dependsOnNodeId !== null)
+    ).toBe(true);
+    expect(graph?.nodes.some((node) => node.kind === "tower")).toBe(true);
+    expect(graph?.nodes.filter((node) => node.kind === "wall").length).toBeGreaterThan(0);
+    for (const tower of graph?.nodes.filter((node) => node.kind === "tower") ?? []) {
+      const connectedWalls =
+        graph?.nodes.filter((node) => node.kind === "wall" && node.componentId === tower.componentId) ?? [];
+      expect(connectedWalls.every((wall) => wall.dependsOnNodeId === tower.nodeId)).toBe(true);
+    }
     expect(first.intents.every((intent) => intent.kind !== "construct" || intent.objectName !== null)).toBe(true);
     expect(first.intents.find((intent) => intent.kind === "construct")?.urgencyClass).toBe(0);
+  });
+
+  it("moves the fortification opening when a nearby obstacle blocks the wide approach", () => {
+    const source = observation();
+    const sourceMap = source.map;
+    if (!sourceMap) throw new Error("fortification_test_map_missing");
+    const blockedApproach = {
+      ...source,
+      map: {
+        ...sourceMap,
+        constructionCells: (sourceMap.constructionCells ?? []).map((cell) => {
+          const anchor = cell.tileKey === "9,6" || cell.tileKey === "9,16";
+          const obstacle = cell.tileKey === "8,9" || cell.tileKey === "8,10";
+          const replacedAnchor = cell.tileKey === "9,14";
+          return {
+            ...cell,
+            groundPassable: (!anchor && !obstacle) || replacedAnchor,
+            observedBlocked: anchor || obstacle,
+            staticBlocked: anchor || obstacle
+          };
+        })
+      }
+    };
+
+    const proposal = manager.propose(blockedApproach, threatenedState());
+    const graph = proposal.statePatch?.fortifications?.[0]?.graph;
+    const gate = graph?.nodes.find((node) => node.kind === "gate_slot");
+
+    expect(gate?.position).toEqual({ x: 9, y: 11, z: 0 });
+    expect(graph?.wholeConnectivity).toBe("preserved");
+  });
+
+  it("preserves one-tile access to stationary assets without requiring a wide-unit corridor", () => {
+    const cells = Array.from({ length: 121 }, (_, index) => {
+      const x = index % 11;
+      const y = Math.floor(index / 11);
+      return {
+        tileKey: `${x},${y}`,
+        position: { x, y, z: 0 },
+        groundPassable: true,
+        waterPassable: false,
+        elevation: 0,
+        observedBlocked: false,
+        staticBlocked: false,
+        groundAccessNodeId: "access:test:ground" as const
+      };
+    }).map((cell) =>
+      cell.position.x >= 6 && cell.position.x <= 9 && [4, 6].includes(cell.position.y)
+        ? { ...cell, groundPassable: false, staticBlocked: true }
+        : cell
+    );
+    const layout = {
+      cells,
+      blockedTileKeys: [],
+      protectedPosition: { x: 3, y: 5, z: 0 },
+      openingPosition: { x: 4, y: 5, z: 0 },
+      exteriorPosition: { x: 5, y: 5, z: 0 },
+      clearanceRadiusTiles: 1
+    } as const;
+
+    expect(
+      fortificationPreservesConnectivity({
+        ...layout,
+        requiredPositions: [],
+        narrowRequiredPositions: [{ x: 8, y: 5, z: 0 }]
+      })
+    ).toBe(true);
+    expect(
+      fortificationPreservesConnectivity({
+        ...layout,
+        requiredPositions: [{ x: 8, y: 5, z: 0 }]
+      })
+    ).toBe(false);
   });
 
   it.each(["opening:1:safe", "opening:1:turtle", "opening:1:turtle_air"])(
@@ -39,12 +211,14 @@ describe("AiFortificationManager", () => {
         skirmish: { ...state.skirmish, incidents: [] }
       };
       const proposal = manager.propose(observation(), unpressured);
+      const construct = proposal.intents.find((intent) => intent.kind === "construct");
 
-      expect(proposal.intents.find((intent) => intent.kind === "construct")?.urgencyClass).toBe(4);
+      expect(construct?.urgencyClass).toBe(4);
+      expect(construct?.utility).toBeGreaterThan(720);
     }
   );
 
-  it("funds only affordable connected wall prefixes and leaves later tower work for earned stone", () => {
+  it("funds access stairs before their connected tower and wall prefixes", () => {
     const state = threatenedState();
     const turtle = {
       ...state,
@@ -64,8 +238,10 @@ describe("AiFortificationManager", () => {
 
     expect(graph?.nodes.filter((node) => node.objectName !== null)).toHaveLength(6);
     expect(builds).toHaveLength(2);
-    expect(builds.every((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Wall)).toBe(true);
-    expect(graph?.budget.remainingByResource[ResourceType.Stone]).toBe(90);
+    expect(builds.every((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Stairs)).toBe(
+      true
+    );
+    expect(graph?.budget.remainingByResource[ResourceType.Stone]).toBe(130);
     const gate = graph?.nodes.find((node) => node.kind === "gate_slot");
     if (!gate) throw new Error("fortification_gate_missing");
     expect(
@@ -82,7 +258,58 @@ describe("AiFortificationManager", () => {
     ).toBe(true);
   });
 
-  it("starts a narrow measured choke with an affordable wall before optional tower work", () => {
+  it("keeps turtle prefix funding after the tower so a useful wall still proceeds", () => {
+    const turtle = {
+      ...threatenedState(),
+      opening: { ...threatenedState().opening, archetypeId: "opening:tivara:turtle" },
+      skirmish: { ...threatenedState().skirmish, incidents: [] }
+    };
+    const initial = manager.propose(observation(), turtle);
+    const plan = initial.statePatch?.fortifications?.[0];
+    if (!plan?.graph) throw new Error("fortification_graph_missing");
+    const firstTower = plan.graph.nodes.find((node) => node.kind === "tower");
+    if (!firstTower) throw new Error("fortification_tower_missing");
+    const prefixNodes = plan.graph.nodes.filter(
+      (node) => node.kind === "gate_slot" || node.componentId === firstTower.componentId
+    );
+    const prefixNodeIds = new Set(prefixNodes.map((node) => node.nodeId));
+    const completedPrefix = {
+      ...plan,
+      lifecycle: "building" as const,
+      graph: {
+        ...plan.graph,
+        nodes: prefixNodes.map((node) =>
+          node.kind === "stair" || node.kind === "tower"
+            ? {
+                ...node,
+                lifecycle: "finished" as const,
+                completedActorId: `completed:${node.nodeId}`,
+                effectId: null,
+                retryAfterTick: 1_000
+              }
+            : { ...node, effectId: null }
+        ),
+        constructionSequenceNodeIds: plan.graph.constructionSequenceNodeIds.filter((id) => prefixNodeIds.has(id))
+      }
+    };
+    const world = {
+      ...observation([], 200),
+      resources: observation().resources.map((entry) =>
+        entry.resourceType === ResourceType.Stone ? { ...entry, stockpile: 391 } : entry
+      )
+    };
+    const continuation = manager.propose(world, { ...turtle, fortifications: [completedPrefix] });
+    const wall = continuation.intents.find(
+      (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Wall
+    );
+
+    expect(wall?.kind).toBe("construct");
+    expect(continuation.statePatch?.fortifications?.[0]?.graph?.budget.remainingByResource[ResourceType.Stone]).toBe(
+      42
+    );
+  });
+
+  it("starts a narrow measured choke with access stairs before elevated structure work", () => {
     const source = observation();
     const sourceMap = source.map;
     if (!sourceMap) throw new Error("fortification_test_map_missing");
@@ -111,7 +338,7 @@ describe("AiFortificationManager", () => {
 
     expect(graph?.wholeConnectivity).toBe("preserved");
     expect(graph?.nodes.filter((node) => node.kind === "wall")).toHaveLength(1);
-    expect(firstBuild).toMatchObject({ kind: "construct", objectName: ObjectNames.Wall });
+    expect(firstBuild).toMatchObject({ kind: "construct", objectName: ObjectNames.Stairs });
   });
 
   it("reports a funding wait when the next safe construction prefix exceeds the current allowance", () => {
@@ -173,6 +400,51 @@ describe("AiFortificationManager", () => {
     expect(arbitration.decisions.find((decision) => decision.intent.intentId === gather.intentId)?.reason).toBe(
       "claim_conflict"
     );
+  });
+
+  it("chooses the nearest available builder instead of actor-id order", () => {
+    const source = observation();
+    const builders = source.actors.map((candidate) =>
+      candidate.actorId === "worker"
+        ? {
+            ...candidate,
+            logicalPosition: { status: "known" as const, value: { x: 1, y: 1, z: 0 }, observedTick: 100 }
+          }
+        : candidate.actorId === "worker-reserve"
+          ? {
+              ...candidate,
+              logicalPosition: { status: "known" as const, value: { x: 8, y: 10, z: 0 }, observedTick: 100 }
+            }
+          : candidate
+    );
+    const proposal = manager.propose({ ...source, actors: builders }, threatenedState());
+    const construct = proposal.intents.find((intent) => intent.kind === "construct");
+
+    expect(construct?.kind).toBe("construct");
+    if (construct?.kind !== "construct") throw new Error("missing_fortification_build");
+    expect(construct.builderIds).toEqual(["worker-reserve"]);
+  });
+
+  it("does not take a worker with a queued construction order", () => {
+    const source = observation();
+    const builders = source.actors.map((candidate) =>
+      candidate.actorId === "worker"
+        ? {
+            ...candidate,
+            pendingOrder: {
+              status: "known" as const,
+              value: { orderType: OrderType.Build, targetActorId: "existing-site" },
+              observedTick: 100
+            }
+          }
+        : candidate
+    );
+    const proposal = manager.propose({ ...source, actors: builders }, threatenedState());
+    const construct = proposal.intents.find((intent) => intent.kind === "construct");
+
+    expect(construct?.kind).toBe("construct");
+    if (construct?.kind !== "construct") throw new Error("missing_fortification_build");
+    expect(construct.builderIds).toEqual(["worker-reserve"]);
   });
 
   it("finds the same measured choke when the main-building anchor is one tile farther away", () => {
@@ -240,10 +512,24 @@ describe("AiFortificationManager", () => {
     const proposal = wideManager.propose(terrainBounded, threatenedState());
     const graph = proposal.statePatch?.fortifications?.[0]?.graph;
     const towers = graph?.nodes.filter((node) => node.kind === "tower") ?? [];
+    const accessStair = graph?.nodes.find((node) => node.kind === "stair");
 
     expect(graph?.terrainAnchorTileKeys).toEqual(["9,4", "9,11"]);
     expect(graph?.nodes.some((node) => node.kind === "wall")).toBe(true);
     expect(towers.map((tower) => tower.position)).toEqual([{ x: 9, y: 7, z: 0 }]);
+    expect(accessStair).toBeDefined();
+    expect(
+      towers[0]?.footprintTileKeys.some((key) => {
+        const [xText, yText] = key.split(",");
+        return (
+          Math.abs(Number(xText) - accessStair!.position.x) + Math.abs(Number(yText) - accessStair!.position.y) === 1
+        );
+      })
+    ).toBe(true);
+    const constructionOrder = graph?.constructionSequenceNodeIds.map((id) =>
+      graph.nodes.find((node) => node.nodeId === id)
+    );
+    expect(constructionOrder?.slice(0, 2).map((node) => node?.kind)).toEqual(["stair", "tower"]);
     expect(
       towers.every((tower) =>
         tower.footprintTileKeys.every(
@@ -283,6 +569,93 @@ describe("AiFortificationManager", () => {
 
     expect(proposal.statePatch?.fortifications).toEqual([]);
     expect(proposal.reasons).toContain("fortification_terrain_choke_not_found");
+  });
+
+  it("does not use a temporarily occupied tile as a terrain anchor", () => {
+    const source = observation();
+    const proposal = manager.propose(
+      {
+        ...source,
+        map: {
+          ...source.map!,
+          constructionCells: source.map!.constructionCells!.map((cell) =>
+            cell.tileKey === "9,6"
+              ? { ...cell, groundPassable: true, observedBlocked: true, staticBlocked: false }
+              : cell
+          )
+        }
+      },
+      threatenedState()
+    );
+
+    expect(proposal.statePatch?.fortifications).toEqual([]);
+    expect(proposal.reasons).toContain("fortification_terrain_choke_not_found");
+  });
+
+  it("does not treat a neutral resource footprint as a durable fortification anchor", () => {
+    const source = observation();
+    const cells = Array.from({ length: 51 }, (_, y) =>
+      Array.from({ length: 51 }, (_, x) => {
+        const blocked = x === 27 && [13, 19, 24].includes(y);
+        return {
+          tileKey: `${x},${y}`,
+          position: { x, y, z: 0 },
+          groundPassable: !blocked,
+          waterPassable: false,
+          elevation: 0,
+          observedBlocked: blocked,
+          staticBlocked: blocked
+        };
+      })
+    ).flat();
+    const tree = {
+      ...actor("resource-anchor", ObjectNames.Tree6, 27, 19, "enemy"),
+      owner: null,
+      relation: "neutral" as const,
+      resourceState: {
+        status: "known" as const,
+        value: {
+          resourceType: ResourceType.Wood,
+          available: { status: "known" as const, value: 500, observedTick: 100 },
+          carried: { status: "known" as const, value: 0, observedTick: 100 },
+          growthReadyTick: { status: "known" as const, value: 0, observedTick: 100 },
+          serviceCapacity: { status: "known" as const, value: 1, observedTick: 100 }
+        },
+        observedTick: 100
+      }
+    };
+    const sourceWithResource = {
+      ...source,
+      actors: source.actors
+        .map((candidate) =>
+          candidate.actorId === "main"
+            ? {
+                ...candidate,
+                logicalPosition: { status: "known" as const, value: { x: 31, y: 19, z: 0 }, observedTick: 100 }
+              }
+            : candidate.actorId === "enemy"
+              ? {
+                  ...candidate,
+                  logicalPosition: { status: "known" as const, value: { x: 0, y: 19, z: 0 }, observedTick: 100 }
+                }
+              : candidate
+        )
+        .concat(tree),
+      map: {
+        ...source.map!,
+        bounds: { status: "known" as const, value: { width: 51, height: 51 }, observedTick: 100 },
+        constructionCells: cells
+      }
+    };
+    const state = {
+      ...threatenedState(),
+      bases: threatenedState().bases.map((base) => ({ ...base, anchorPosition: { x: 31, y: 19, z: 0 } }))
+    };
+    const proposal = manager.propose(sourceWithResource, state);
+    const graph = proposal.statePatch?.fortifications?.[0]?.graph;
+
+    expect(graph?.terrainAnchorTileKeys).toEqual(["27,13", "27,24"]);
+    expect(graph?.nodes.some((node) => node.kind === "wall")).toBe(true);
   });
 
   it("WALL-03 records marginal tower coverage and only definition-supported target domains", () => {
@@ -525,7 +898,9 @@ describe("fortification native work ownership", () => {
     const first = manager.propose(observation(), threatenedState());
     const plan = first.statePatch?.fortifications?.[0];
     const stair = plan?.graph?.nodes.find((node) => node.kind === "stair");
-    const dependency = plan?.graph?.nodes.find((node) => node.nodeId === stair?.dependsOnNodeId);
+    const dependency = plan?.graph?.nodes.find(
+      (node) => node.componentId === stair?.componentId && (node.kind === "wall" || node.kind === "tower")
+    );
     if (!plan?.graph || !stair || !dependency?.objectName) throw new Error("invalid_fortification_fixture");
     const state: AiBrainState = {
       ...threatenedState(),

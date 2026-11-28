@@ -140,15 +140,22 @@ export function proposeAiMilitaryCapacity(args: {
     });
   const safePolicy = resilient || transition?.status === "committed";
   const threats = safePolicy ? observedAiProducerThreats(observation) : [];
+  const producerSiteReservations =
+    entry?.constructionProfile && canAffordAiEconomyCost(observation, entry.constructionProfile.resourceCost)
+      ? selectedConstructionTileKeys
+      : new Set(selectedConstructionTileKeys);
   const selected = selectAiMilitaryCapacitySite({
     observation,
     builders,
     decisionSequence: state.scheduler.decisionSequence,
     ordinal,
-    selectedTileKeys: selectedConstructionTileKeys,
+    // An unfunded proposal remains visible to resource arbitration, but must not reserve the
+    // only viable site from a funded essential-economy intent proposed later this cycle.
+    selectedTileKeys: producerSiteReservations,
     footprintRadiusTiles: entry?.constructionProfile?.footprintRadiusTiles ?? 0,
     safePolicy,
-    threats
+    threats,
+    fortifications: state.fortifications
   });
   if (!selected) return { demand, intent: null, producers };
   const { builder, position } = selected;

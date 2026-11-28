@@ -3,7 +3,10 @@ import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capa
 import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../../contracts/observation/ai-observation";
 import type { AiDemand } from "../../../contracts/planning/ai-plan-contracts";
-import { selectConstructionPosition } from "../../construction/ai-construction-site-selector";
+import {
+  aiFortificationGateClearanceFilter,
+  selectConstructionPosition
+} from "../../construction/ai-construction-site-selector";
 import { canAffordAiEconomyCost } from "../../economy/service/ai-economy-policy";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { nextIds, unresolvedReservedEffectIds } from "../macro/ai-macro-effect-identity";
@@ -77,7 +80,8 @@ export function proposeAiHousing(
       state.scheduler.decisionSequence,
       ordinal + index,
       selectedConstructionTileKeys,
-      housing.housingEntry.constructionProfile?.footprintRadiusTiles ?? 0
+      housing.housingEntry.constructionProfile?.footprintRadiusTiles ?? 0,
+      aiFortificationGateClearanceFilter(state.fortifications)
     );
     if (!position) continue;
     const ids = nextIds(state, "supply", ordinal++);

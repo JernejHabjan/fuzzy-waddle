@@ -327,6 +327,147 @@ describe("AI food infrastructure", () => {
     ).toBe(true);
   });
 
+  it("checks every builder for an aligned Field site before taking a nearer unaligned fallback", () => {
+    const base = observation(1, 3),
+      [firstBuilder, alignedBuilder, gatheringWorker, baseGranary] = base.actors;
+    if (!firstBuilder || !alignedBuilder || !gatheringWorker || !baseGranary) throw new Error("builders_missing");
+    const field = {
+      ...createAiTestOwnedActor("ready-field"),
+      objectName: ObjectNames.Field,
+      logicalPosition: { status: "known" as const, value: { x: 10, y: 10, z: 0 }, observedTick: 200 }
+    };
+    const granary = {
+      ...createAiTestOwnedActor("ready-granary"),
+      objectName: ObjectNames.Granary,
+      logicalPosition: { status: "known" as const, value: { x: 9, y: 10, z: 0 }, observedTick: 200 }
+    };
+    const cells = [
+      ...Array.from({ length: 9 }, (_, index) => {
+        const x = 7 + (index % 3),
+          y = 7 + Math.floor(index / 3);
+        return {
+          tileKey: `${x},${y}`,
+          position: { x, y, z: 0 },
+          groundPassable: true,
+          waterPassable: false,
+          elevation: 0,
+          observedBlocked: false
+        };
+      }),
+      ...Array.from({ length: 25 }, (_, index) => {
+        const x = 9 + (index % 5),
+          y = 18 + Math.floor(index / 5);
+        return {
+          tileKey: `${x},${y}`,
+          position: { x, y, z: 0 },
+          groundPassable: true,
+          waterPassable: false,
+          elevation: 0,
+          observedBlocked: false
+        };
+      })
+    ];
+    const world = {
+      ...base,
+      actors: [
+        {
+          ...firstBuilder,
+          logicalPosition: { status: "known" as const, value: { x: 8, y: 8, z: 0 }, observedTick: 200 }
+        },
+        {
+          ...alignedBuilder,
+          logicalPosition: { status: "known" as const, value: { x: 10, y: 19, z: 0 }, observedTick: 200 }
+        },
+        {
+          ...gatheringWorker,
+          carriedResourceAmount: 1,
+          activeOrder: {
+            status: "known" as const,
+            value: { orderType: OrderType.Gather, targetActorId: field.actorId },
+            observedTick: 200
+          }
+        },
+        { ...baseGranary, logicalPosition: granary.logicalPosition },
+        field
+      ],
+      map: { ...base.map!, constructionCells: cells }
+    };
+
+    const proposal = new AiMacroManager(() => catalog).propose(world, state());
+    const nextField = proposal.intents.find(
+      (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field
+    );
+
+    expect(nextField?.kind).toBe("construct");
+    if (nextField?.kind !== "construct") return;
+    expect(nextField.logicalPosition.x).toBe(10);
+    expect(nextField.claims).toContainEqual(
+      expect.objectContaining({ kind: "actor", actorId: alignedBuilder.actorId })
+    );
+    expect(nextField.claims).not.toContainEqual(
+      expect.objectContaining({ kind: "actor", actorId: firstBuilder.actorId })
+    );
+  });
+
+  it("keeps Fields aligned when the aligned option is in the bounded service fallback", () => {
+    const base = observation(2, 8);
+    const field = {
+      ...createAiTestOwnedActor("ready-field"),
+      objectName: ObjectNames.Field,
+      logicalPosition: { status: "known" as const, value: { x: 10, y: 10, z: 0 }, observedTick: 200 }
+    };
+    const granary = {
+      ...createAiTestOwnedActor("ready-granary"),
+      objectName: ObjectNames.Granary,
+      logicalPosition: { status: "known" as const, value: { x: 9, y: 10, z: 0 }, observedTick: 200 }
+    };
+    const assignedWorker = base.actors[0];
+    if (!assignedWorker) throw new Error("worker_missing");
+    const world = {
+      ...base,
+      actors: [
+        ...base.actors.map((actor) =>
+          actor.actorId === assignedWorker.actorId
+            ? {
+                ...actor,
+                activeOrder: {
+                  status: "known" as const,
+                  value: { orderType: OrderType.Gather, targetActorId: field.actorId },
+                  observedTick: 200
+                }
+              }
+            : actor
+        ),
+        granary,
+        field
+      ],
+      map: {
+        ...base.map!,
+        constructionCells: Array.from({ length: 78 }, (_, index) => {
+          const x = 8 + (index % 6);
+          const y = 8 + Math.floor(index / 6);
+          return {
+            tileKey: `${x},${y}`,
+            position: { x, y, z: 0 },
+            groundPassable: true,
+            waterPassable: false,
+            elevation: 0,
+            observedBlocked: (x === 10 && y < 17) || y === 10
+          };
+        })
+      }
+    };
+    const proposal = new AiMacroManager(() => catalog).propose(world, state());
+    const nextField = proposal.intents.find(
+      (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field
+    );
+
+    expect(nextField?.kind).toBe("construct");
+    if (nextField?.kind !== "construct") return;
+    expect(nextField.logicalPosition).toMatchObject({ x: 10, y: expect.any(Number) });
+    expect(nextField.logicalPosition.y).toBeGreaterThan(16);
+  });
+
   it("staffs an existing Field before opening another Field construction", () => {
     const field = {
       ...createAiTestOwnedActor("field-ready"),
@@ -485,6 +626,30 @@ describe("AI food infrastructure", () => {
     expect(selectedCell?.groundAccessNodeId).toBe(connectedFieldNodeId);
     expect(selectedCell?.groundAccessNodeId).not.toBe(disconnectedNodeId);
 
+    const constrainedWorld = {
+      ...world,
+      map: {
+        ...world.map,
+        constructionCells: cells.map((cell) => ({
+          ...cell,
+          tileKey: `${cell.position.x + 11},${cell.position.y}`,
+          position: { ...cell.position, x: cell.position.x + 11 }
+        }))
+      }
+    };
+    const constrainedProposal = new AiMacroManager(() => catalog).propose(constrainedWorld, state());
+    const constrainedField = constrainedProposal.intents.find(
+      (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field
+    );
+    expect(constrainedField).toBeDefined();
+    if (constrainedField?.kind !== "construct") throw new Error("constrained_field_missing");
+    expect(
+      Math.abs(constrainedField.logicalPosition.x - 12) + Math.abs(constrainedField.logicalPosition.y - 10)
+    ).toBeGreaterThan(6);
+    expect(
+      Math.abs(constrainedField.logicalPosition.x - 12) + Math.abs(constrainedField.logicalPosition.y - 10)
+    ).toBeLessThanOrEqual(12);
+
     const farWorld = {
       ...world,
       map: {
@@ -500,6 +665,43 @@ describe("AI food infrastructure", () => {
     expect(farProposal.intents).not.toContainEqual(
       expect.objectContaining({ kind: "construct", objectName: ObjectNames.Field })
     );
+  });
+
+  it("tries another builder when the nearest worker stands on a blocked observation cell", () => {
+    const base = observation(1, 3),
+      [nearest] = base.actors;
+    if (!nearest) throw new Error("builders_missing");
+    const world = {
+      ...base,
+      actors: base.actors.map((actor, index) =>
+        index === 0
+          ? { ...actor, logicalPosition: { status: "known" as const, value: { x: 8, y: 8, z: 0 }, observedTick: 200 } }
+          : index === 1
+            ? {
+                ...actor,
+                logicalPosition: { status: "known" as const, value: { x: 9, y: 8, z: 0 }, observedTick: 200 }
+              }
+            : actor
+      ),
+      map: {
+        ...base.map!,
+        constructionCells: constructionCells.map((cell) =>
+          cell.tileKey === "8,8" ? { ...cell, groundPassable: false } : cell
+        )
+      }
+    };
+    const proposal = new AiMacroManager(() => catalog).propose(world, state());
+    const field = proposal.intents.find(
+      (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field
+    );
+
+    expect(field).toBeDefined();
+    expect(
+      base.actors
+        .slice(1)
+        .some((actor) => field?.claims.some((claim) => claim.kind === "actor" && claim.actorId === actor.actorId))
+    ).toBe(true);
+    expect(field?.claims).not.toContainEqual(expect.objectContaining({ kind: "actor", actorId: nearest.actorId }));
   });
 
   it("retries Field capacity after a rejected effect instead of counting it forever", () => {

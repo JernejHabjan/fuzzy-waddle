@@ -81,8 +81,10 @@ describe("dispatchAiBrainResult", () => {
     expect(selected.acceptedIntents).not.toBe(f.result.acceptedIntents);
     expect(selected.reservations).not.toBe(f.result.nextState.reservations);
     expect(selected.persistedProfile).toEqual({
-      profileVersion: f.result.nextState.profileVersion, profileDifficulty: f.result.nextState.profileDifficulty
+      profileVersion: f.result.nextState.profileVersion,
+      profileDifficulty: f.result.nextState.profileDifficulty
     });
+    expect(selected.fortificationPlanningReason).toBe(f.result.debugSnapshot.fortificationPlanningReason);
     expect(dispatchAiIntents).toHaveBeenCalledWith(f.scene, 2, f.result.acceptedIntents, selected.identity);
   });
 

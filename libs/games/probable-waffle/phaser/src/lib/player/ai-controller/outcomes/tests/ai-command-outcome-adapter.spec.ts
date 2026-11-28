@@ -46,6 +46,13 @@ describe("AI command outcome adapter", () => {
     expect(ordered.map((entry) => `${entry.identity.sequence}:${entry.kind}`)).toEqual(["1:dispatched", "2:completed"]);
   });
 
+  it("preserves the native actor on a failed command so site recovery can choose another builder", () => {
+    expect(adaptGameCommandOutcomeToBrain(outcome("failed", 9), "match-a")).toMatchObject({
+      kind: "failed",
+      actorIds: ["caster-a"]
+    });
+  });
+
   it("projects the bounded authority cursor with typed command identities", () => {
     expect(
       adaptCommandAuthorityToBrain({

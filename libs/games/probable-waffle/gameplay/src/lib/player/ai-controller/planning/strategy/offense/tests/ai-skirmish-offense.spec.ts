@@ -115,6 +115,7 @@ describe("AiSkirmishManager offense target selection", () => {
   it("reserves the best positioned scout for the primary information question before neutral scouting", () => {
     const frontierCandidate = actor("frontier-candidate", homeNode, 0);
     const neutralCandidate = actor("neutral-candidate", homeNode, 1);
+    const homeReserve = actor("home-reserve", homeNode, 3);
     const resource: AiObservedActor = {
       ...createAiTestOwnedActor("neutral-resource"),
       objectName: ObjectNames.Tree6,
@@ -140,7 +141,7 @@ describe("AiSkirmishManager offense target selection", () => {
     const world = {
       ...base,
       tick: 20,
-      actors: [frontierCandidate, neutralCandidate, resource],
+      actors: [frontierCandidate, neutralCandidate, homeReserve, resource],
       map: {
         bounds: { status: "known" as const, value: { width: 2, height: 1 }, observedTick: 20 },
         staticRevision: 1,
@@ -168,6 +169,9 @@ describe("AiSkirmishManager offense target selection", () => {
     expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral")?.actorIds).toEqual([
       frontierCandidate.actorId
     ]);
+    expect(
+      proposal.intents.flatMap((intent) => (intent.kind === "move" || intent.kind === "scout" ? intent.actorIds : []))
+    ).not.toContain(homeReserve.actorId);
   });
 
   it("keeps a lone defender home when an enemy is already observed", () => {
@@ -273,6 +277,7 @@ describe("AiSkirmishManager offense target selection", () => {
 
   it("keeps an active frontier scout out of a newly formed attack force", () => {
     const scout = actor("frontier-scout", homeNode, 0);
+    const neutralScout = actor("neutral-scout", homeNode, -1);
     const guard = actor("guard", homeNode, 0);
     const enemy = {
       ...actor("enemy", enemyNode, 1),
@@ -286,7 +291,7 @@ describe("AiSkirmishManager offense target selection", () => {
     const world = {
       ...observation,
       tick: 20,
-      actors: [scout, guard, enemy],
+      actors: [scout, neutralScout, guard, enemy],
       map: {
         bounds: { status: "known" as const, value: { width: 2, height: 1 }, observedTick: 20 },
         staticRevision: 1,
@@ -314,9 +319,9 @@ describe("AiSkirmishManager offense target selection", () => {
           squadId: "squad:scout:neutral",
           role: "scout",
           domain: "ground",
-          actorIds: [],
+          actorIds: [neutralScout.actorId],
           objectiveId: "neutral:nearby",
-          state: "recover"
+          state: "moving"
         },
         {
           squadId: "squad:scout:primary",
@@ -335,7 +340,11 @@ describe("AiSkirmishManager offense target selection", () => {
 
     expect(attack?.actorIds).toContain(guard.actorId);
     expect(attack?.actorIds).not.toContain(scout.actorId);
+    expect(attack?.actorIds).not.toContain(neutralScout.actorId);
     expect(frontierScout?.actorIds).toEqual([scout.actorId]);
+    expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral")).toEqual(
+      expect.objectContaining({ actorIds: [neutralScout.actorId], state: "moving" })
+    );
     for (const intent of proposal.intents) {
       if (intent.kind !== "attack" && intent.kind !== "scout") continue;
       expect(intent.claims.flatMap((claim) => (claim.kind === "actor" ? [claim.actorId] : [])).sort()).toEqual(

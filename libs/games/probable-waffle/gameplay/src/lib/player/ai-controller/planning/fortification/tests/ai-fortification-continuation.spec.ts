@@ -31,7 +31,7 @@ describe("fortification continuation and placement contracts", () => {
     ).toBe(false);
   });
 
-  it("WALL-01 explains when an occupied opening leaves no viable connected wall corridor", () => {
+  it("WALL-01 moves an occupied opening without treating it as a terrain anchor", () => {
     const source = observation();
     const proposal = manager.propose(
       {
@@ -46,9 +46,13 @@ describe("fortification continuation and placement contracts", () => {
       },
       threatenedState()
     );
-    expect(proposal.intents).toEqual([]);
-    expect(proposal.statePatch?.fortifications).toEqual([]);
-    expect(proposal.reasons).toContain("fortification_wall_corridor_not_viable");
+    const graph = proposal.statePatch?.fortifications?.[0]?.graph;
+    const opening = graph?.nodes.find((node) => node.kind === "gate_slot");
+
+    expect(proposal.intents.length).toBeGreaterThan(0);
+    expect(graph?.terrainAnchorTileKeys).toEqual(["9,6", "9,14"]);
+    expect(opening?.position).not.toEqual({ x: 9, y: 10, z: 0 });
+    expect(graph?.wholeConnectivity).toBe("preserved");
   });
 
   it("reports actionable reasons when a fortification graph cannot be created", () => {

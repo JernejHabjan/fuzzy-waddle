@@ -8,6 +8,121 @@ import {
 import { distance, formationPositions, safeRetreatPosition } from "../ai-tactics-geometry";
 
 describe("safeRetreatPosition", () => {
+  it("chooses a route-connected ground retreat when the nearer legal tile is isolated", () => {
+    const base = createTacticsObservation([]);
+    const member = {
+      ...createAiTestOwnedActor("guard"),
+      accessNodeId: { status: "known" as const, value: "access:home" as const, observedTick: 100 }
+    };
+    const cells = [
+      { position: { x: 1, y: 0, z: 0 }, groundAccessNodeId: "access:island" as const },
+      { position: { x: 2, y: 0, z: 0 }, groundAccessNodeId: "access:home" as const }
+    ].map(({ position, groundAccessNodeId }) => ({
+      tileKey: `${position.x},${position.y}`,
+      ...position,
+      position,
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false,
+      groundAccessNodeId
+    }));
+    const observation = {
+      ...base,
+      map: {
+        ...requireValue(base.map, "retreat_map_missing"),
+        constructionCells: cells,
+        accessGraph: {
+          schemaVersion: 1,
+          generation: 1,
+          status: "ready",
+          staticRevision: 1,
+          dynamicRevision: 0,
+          threatRevision: 0,
+          builtTick: 100,
+          continuationCursor: 0,
+          nodes: [
+            {
+              nodeId: "access:home",
+              domain: "ground",
+              knowledge: "known_static",
+              clearance: 1,
+              tileCount: 1,
+              representativePosition: { x: 2, y: 0, z: 0 },
+              elevation: 0
+            },
+            {
+              nodeId: "access:island",
+              domain: "ground",
+              knowledge: "known_static",
+              clearance: 1,
+              tileCount: 1,
+              representativePosition: { x: 1, y: 0, z: 0 },
+              elevation: 0
+            }
+          ],
+          links: [],
+          transferPoints: [],
+          unknownNodeIds: []
+        }
+      }
+    } satisfies AiObservation;
+    const state = {
+      bases: [
+        {
+          baseId: "base:main:home",
+          anchorActorId: "home",
+          memberActorIds: ["home"],
+          active: true,
+          anchorPosition: { x: 0, y: 0, z: 0 }
+        }
+      ]
+    } as unknown as AiBrainState;
+
+    expect(safeRetreatPosition(observation, state, [member])).toEqual({ x: 2, y: 0, z: 0 });
+  });
+
+  it("uses the member's known ground region while the full access graph is pending", () => {
+    const base = createTacticsObservation([]);
+    const member = {
+      ...createAiTestOwnedActor("guard"),
+      accessNodeId: { status: "known" as const, value: "access:home" as const, observedTick: 100 }
+    };
+    const cells = [
+      { x: 1, nodeId: "access:island" },
+      { x: 2, nodeId: "access:home" }
+    ].map(({ x, nodeId }) => ({
+      tileKey: `${x},0`,
+      position: { x, y: 0, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false,
+      groundAccessNodeId: nodeId
+    }));
+    const observation = {
+      ...base,
+      map: {
+        ...requireValue(base.map, "retreat_map_missing"),
+        constructionCells: cells,
+        accessGraph: { status: "pending", nodes: [], links: [] }
+      }
+    } as unknown as AiObservation;
+    const state = {
+      bases: [
+        {
+          baseId: "base:main:home",
+          anchorActorId: "home",
+          memberActorIds: ["home"],
+          active: true,
+          anchorPosition: { x: 0, y: 0, z: 0 }
+        }
+      ]
+    } as unknown as AiBrainState;
+
+    expect(safeRetreatPosition(observation, state, [member])).toEqual({ x: 2, y: 0, z: 0 });
+  });
+
   it("keeps a home-defense retreat near its protected base when local cover is available", () => {
     const observation = {
       actors: [

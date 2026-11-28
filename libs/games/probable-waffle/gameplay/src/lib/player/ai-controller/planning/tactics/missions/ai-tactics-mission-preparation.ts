@@ -14,6 +14,7 @@ import {
   MAX_LOCAL_ENEMIES,
   MAX_OBJECTIVE_ALTERNATIVES,
   MAX_STRATEGIC_CONTACTS,
+  STALE_MOBILE_OBJECTIVE_TICKS,
   STALE_OBJECTIVE_TICKS
 } from "../combat/ai-tactics-rules";
 
@@ -61,6 +62,10 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     objectiveActor?.logicalPosition.status === "known"
       ? objectiveActor.logicalPosition.observedTick
       : objectiveActor?.observedTick;
+  const objectiveStaleTicks =
+    objectiveActor?.mainBuilding?.status === "known" && objectiveActor.mainBuilding.value
+      ? STALE_OBJECTIVE_TICKS
+      : STALE_MOBILE_OBJECTIVE_TICKS;
   if (
     squad.role === "attack" &&
     squad.objectiveId !== null &&
@@ -75,7 +80,7 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
         STALE_OBJECTIVE_TICKS) ||
       (objectiveActor?.visibility === "last_seen" &&
         objectiveObservedTick !== undefined &&
-        observation.tick - objectiveObservedTick > STALE_OBJECTIVE_TICKS))
+        observation.tick - objectiveObservedTick > objectiveStaleTicks))
   ) {
     updates.push({
       ...squad,
@@ -245,13 +250,17 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
           return member && legalForMembers(assignment.position, observation, [member]);
         })?.position
       : undefined;
+  const counteredRaid =
+    squad.role === "attack" &&
+    squad.squadId.startsWith("squad:attack:raid:") &&
+    squad.lifecycle?.terminalReason === "raid_counterforce_abort";
   const retreat =
     retainedRetreat ??
     safeRetreatPosition(
       observation,
       state,
       members,
-      squad.role === "defense" ? squad.lifecycle?.protectedBaseId : undefined
+      squad.role === "defense" ? squad.lifecycle?.protectedBaseId : counteredRaid ? "base:home" : undefined
     );
   return {
     ...context,

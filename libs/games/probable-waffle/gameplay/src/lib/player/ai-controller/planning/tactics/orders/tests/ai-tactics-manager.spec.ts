@@ -36,6 +36,18 @@ describe("AiTacticsManager", () => {
   it("moves a countered raid to safety, then closes it once its survivors arrive", () => {
     const raider = combatActor("raider", "self", 10);
     const target = combatActor("countered-target", "enemy", 12);
+    const retreatCells = [-3, 0, 3].map((x) => ({
+      tileKey: `${x},0`,
+      position: { x, y: 0, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    }));
+    const withRetreatCells = (enemies: readonly ReturnType<typeof combatActor>[], tick: number) => {
+      const current = observation([raider, ...enemies], tick);
+      return { ...current, map: { ...current.map!, constructionCells: retreatCells } };
+    };
     const raid = {
       ...squad("squad:attack:raid:countered-target", "attack", [raider.actorId]),
       objectiveId: "countered-target",
@@ -46,22 +58,36 @@ describe("AiTacticsManager", () => {
       }
     };
 
-    const retreatProposal = manager.propose(observation([raider, target], 200), fixtureState([raid]));
+    const retreatProposal = manager.propose(withRetreatCells([target], 200), fixtureState([raid]));
     const retreatUpdate = retreatProposal.statePatch?.squadUpdates?.[0];
     expect(retreatUpdate).toMatchObject({
       state: "retreat",
       lifecycle: { terminalReason: "raid_counterforce_abort" }
     });
     expect(retreatProposal.intents).toContainEqual(
-      expect.objectContaining({ kind: "move", actorIds: ["raider"], logicalPosition: { x: 0, y: 0, z: 0 } })
+      expect.objectContaining({ kind: "move", actorIds: ["raider"], logicalPosition: { x: -3, y: 0, z: 0 } })
     );
     if (!retreatUpdate) throw new Error("countered_raid_retreat_update_missing");
+    const retreatDestination = requireValue(
+      retreatUpdate.tactics?.assignedPositions[0]?.position,
+      "countered_raid_retreat_destination_missing"
+    );
+
+    const displacedCounterforce = {
+      ...target,
+      logicalPosition: { status: "known" as const, value: { x: -10, y: 0, z: 0 }, observedTick: 220 }
+    };
+    const continuing = manager.propose(withRetreatCells([displacedCounterforce], 220), fixtureState([retreatUpdate]))
+      .statePatch?.squadUpdates?.[0];
+    expect(continuing?.state).toBe("retreat");
+    expect(continuing?.tactics?.assignedPositions).toEqual(retreatUpdate.tactics?.assignedPositions);
+    if (!continuing) throw new Error("countered_raid_retreat_continuation_missing");
 
     const arrived = {
       ...raider,
-      logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 220 }
+      logicalPosition: { status: "known" as const, value: retreatDestination, observedTick: 240 }
     };
-    const update = manager.propose(observation([arrived, target], 220), fixtureState([retreatUpdate])).statePatch
+    const update = manager.propose(withRetreatCells([arrived, target], 240), fixtureState([continuing])).statePatch
       ?.squadUpdates?.[0];
 
     expect(update).toMatchObject({
@@ -299,6 +325,48 @@ describe("AiTacticsManager", () => {
     );
     expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.assignedPositions).not.toContainEqual(
       expect.objectContaining({ actorId: guard.actorId, position: firstPosition })
+    );
+  });
+
+  it("keeps a quiet squad withdrawing until its assigned safe position is reached", () => {
+    const guard = combatActor("guard", "self", 10, "ground", 1000, { damage: 100 });
+    const destination = { x: 0, y: 0, z: 0 };
+    const retreatingSquad = {
+      ...squad("squad:attack", "attack", [guard.actorId]),
+      state: "retreat" as const,
+      tactics: {
+        taskForceId: "task-force:attack",
+        script: "protected_retreat" as const,
+        targetActorId: null,
+        targetScore: 0,
+        engagementRatioPermille: 0,
+        confidencePermille: 1000,
+        predictedFriendlyLossPermille: 0,
+        predictedEnemyLossPermille: 0,
+        lastObservedMemberCount: 1,
+        observedLossCount: 0,
+        lastTransitionTick: 80,
+        nextReconsiderTick: 200,
+        oscillationCount: 0,
+        orderSignature: null,
+        orderedActorIds: [],
+        assignedPositions: [{ actorId: guard.actorId, position: destination }],
+        damageReservations: [],
+        protectedRouteNodeIds: [],
+        mobileReserveActorIds: [],
+        objectiveAlternatives: []
+      }
+    };
+
+    const proposal = manager.propose(observation([guard], 300), fixtureState([retreatingSquad]));
+
+    expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.assignedPositions).toContainEqual({
+      actorId: guard.actorId,
+      position: destination
+    });
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({ kind: "move", actorIds: [guard.actorId], logicalPosition: destination })
     );
   });
 
@@ -642,9 +710,11 @@ describe("AiTacticsManager", () => {
 
   it.each([
     { offset: 4, sameSignature: false, expectedMove: false },
-    { offset: 5, sameSignature: false, expectedMove: true },
+    { offset: 5, sameSignature: false, expectedMove: false },
+    { offset: 7, sameSignature: false, expectedMove: true },
     { offset: 4, sameSignature: true, expectedMove: false },
-    { offset: 5, sameSignature: true, expectedMove: true }
+    { offset: 5, sameSignature: true, expectedMove: false },
+    { offset: 7, sameSignature: true, expectedMove: true }
   ])(
     "retains an active move only near its assigned destination ($offset, same signature $sameSignature)",
     ({ offset, sameSignature, expectedMove }) => {

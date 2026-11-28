@@ -1,4 +1,5 @@
 import type { AiSquadState } from "../../../contracts/state/ai-state-contracts";
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { distance, knownPosition, movementDomains } from "../combat/ai-tactics-geometry";
 import {
   AI_TACTICS_ATTACK_RATIO_PERMILLE,
@@ -52,11 +53,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
   const missingMembers = squad.actorIds.filter((actorId) => !input.actorById.has(actorId)).length;
   const observedLossCount = (squad.tactics?.observedLossCount ?? 0) + missingMembers;
   const majorityOfCommittedForceLost = observedLossCount > squad.actorIds.length - missingMembers;
-  const scoutUnderFire = members.some(
-    (member) => member.healthPermille?.status === "known" && member.healthPermille.value < 1000
-  );
-  const scoutNeedsSafeWithdrawal =
-    squad.role === "scout" && scoutUnderFire && localEnemies.length > 0 && retreat !== null;
+  const scoutNeedsSafeWithdrawal = squad.role === "scout" && localEnemies.length > 0 && retreat !== null;
   const safeFiringPositions = selectAiSafeFiringPositions(members, localEnemies, visibleTarget, observation);
   const endangeredActorIds = members
     .filter((member) => {
@@ -179,11 +176,33 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     squad.squadId.startsWith("squad:attack:raid:") && squad.lifecycle?.terminalReason === "raid_counterforce_abort";
   const raidAbortReachedSafety =
     raidAbortRequested &&
-    retreat !== null &&
     members.length > 0 &&
     members.every((member) => {
       const memberPosition = knownPosition(member);
-      return memberPosition !== null && distance(memberPosition, retreat) <= 3;
+      const committedDestination =
+        squad.tactics?.stateReason === "raid_counterforce_abort"
+          ? squad.tactics.assignedPositions?.find((assignment) => assignment.actorId === member.actorId)?.position
+          : undefined;
+      const destination = committedDestination ?? retreat;
+      return memberPosition !== null && destination !== null && distance(memberPosition, destination) <= 3;
+    });
+  const withdrawalStillInProgress =
+    !raidAbortRequested &&
+    (squad.state === "retreat" ||
+      squad.state === "retreating" ||
+      squad.state === "recover" ||
+      squad.state === "recovering") &&
+    squad.tactics?.script === "protected_retreat" &&
+    members.some((member) => {
+      const memberPosition = knownPosition(member);
+      const assignedDestination = squad.tactics?.assignedPositions?.find(
+        (assignment) => assignment.actorId === member.actorId
+      )?.position;
+      const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
+      const destination =
+        assignedDestination ??
+        (activeOrder?.orderType === OrderType.Move ? (activeOrder.targetPosition ?? undefined) : undefined);
+      return destination !== undefined && (memberPosition === null || distance(memberPosition, destination) > 3);
     });
   const raidTargetLost =
     !raidAbortRequested &&
@@ -223,30 +242,32 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
         ? "retreat"
         : members.length === 0
           ? "recover"
-          : missionExpired
-            ? squad.state === "recover" || squad.state === "recovering"
-              ? quietState
-              : "recover"
-            : shouldWithdraw
-              ? "retreat"
-              : endangeredMemberThreat ||
-                  urgentHomeDefense ||
-                  (localEnemies.length > 0 && (squad.state === "engage" || squad.state === "engaged"))
-                ? "engage"
-                : committedPressure
-                  ? localEnemies.length > 0
-                    ? "engage"
-                    : "advance"
-                  : recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery && retreat
-                    ? "retreat"
-                    : awaitingStrategicLaunch
-                      ? "assemble"
-                      : localEnemies.length > 0 &&
-                          ((recoveringFromRetreat ? favorableRecovery : favorable) || forcedDecision)
-                        ? "engage"
-                        : localEnemies.length > 0
-                          ? "regroup"
-                          : quietState;
+          : withdrawalStillInProgress
+            ? "retreat"
+            : missionExpired
+              ? squad.state === "recover" || squad.state === "recovering"
+                ? quietState
+                : "recover"
+              : shouldWithdraw
+                ? "retreat"
+                : endangeredMemberThreat ||
+                    urgentHomeDefense ||
+                    (localEnemies.length > 0 && (squad.state === "engage" || squad.state === "engaged"))
+                  ? "engage"
+                  : committedPressure
+                    ? localEnemies.length > 0
+                      ? "engage"
+                      : "advance"
+                    : recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery && retreat
+                      ? "retreat"
+                      : awaitingStrategicLaunch
+                        ? "assemble"
+                        : localEnemies.length > 0 &&
+                            ((recoveringFromRetreat ? favorableRecovery : favorable) || forcedDecision)
+                          ? "engage"
+                          : localEnemies.length > 0
+                            ? "regroup"
+                            : quietState;
   const holdQuietRetreat =
     previousRetreat &&
     observation.tick < (squad.tactics?.nextReconsiderTick ?? observation.tick + 2 * TACTICAL_RECONSIDERATION_TICKS);
@@ -280,13 +301,15 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
               ? "defender_post_topology_lost"
               : scoutNeedsSafeWithdrawal
                 ? "scout_withdraws_under_fire"
-                : holdRetreat
-                  ? localEnemies.length > 0
-                    ? "hold_safe_retreat_from_local_threat"
-                    : "hold_retreat_during_regroup_window"
-                  : recoveringFromRetreat
-                    ? "continue_withdrawal_until_recovery_ready"
-                    : "tactical_withdrawal"
+                : withdrawalStillInProgress
+                  ? "continue_withdrawal_until_safe"
+                  : holdRetreat
+                    ? localEnemies.length > 0
+                      ? "hold_safe_retreat_from_local_threat"
+                      : "hold_retreat_during_regroup_window"
+                    : recoveringFromRetreat
+                      ? "continue_withdrawal_until_recovery_ready"
+                      : "tactical_withdrawal"
       : nextState === "engage"
         ? previousRetreat && favorableRecovery
           ? "force_ready_to_reengage"

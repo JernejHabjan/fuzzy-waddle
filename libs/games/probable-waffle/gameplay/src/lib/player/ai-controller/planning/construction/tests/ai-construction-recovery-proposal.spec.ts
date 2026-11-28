@@ -1,8 +1,12 @@
 import { ObjectNames, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { catalog, completedOpeningState } from "../../../testing/fixtures/production/ai-macro-test-fixtures";
 import { AiMacroManager } from "../../production/macro/ai-macro-manager";
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
+import { aiDeadline } from "../../../contracts/ai-core-types";
 
 function fixture() {
   const worker = {
@@ -93,6 +97,58 @@ describe("unfinished construction after the opening", () => {
     ).toBe(false);
   });
 
+  it("does not repeatedly reassign a builder while its site recovery lease is active", () => {
+    const f = fixture();
+    const reserve = { ...f.worker, actorId: "worker-reserve" };
+    const world = { ...f.world, actors: [f.worker, reserve, f.site] };
+    const state = {
+      ...f.state,
+      reservations: [
+        {
+          claimId:
+            `resume-construction:${f.site.actorId}:claim:41:0:builder` as (typeof f.state.reservations)[number]["claimId"],
+          subjectKey: `actor:${f.worker.actorId}`,
+          ownerPlanId: f.state.opening.plan.planId,
+          state: { kind: "provisional" as const, expiresAt: aiDeadline(200) },
+          prerequisites: [],
+          createdTick: 20
+        }
+      ]
+    };
+
+    const proposal = f.manager.propose(world, state);
+    const resume = proposal.intents.find((intent) => intent.kind === "resume_construct");
+
+    expect(resume).toMatchObject({ actorIds: ["worker-reserve"], targetActorId: f.site.actorId });
+  });
+
+  it("retries an unreachable site with another builder after the native failure", () => {
+    const f = fixture();
+    const reserve = { ...f.worker, actorId: "worker-reserve" };
+    const world = { ...f.world, actors: [f.worker, reserve, f.site] };
+    const failure = {
+      kind: "failed" as const,
+      tick: 60,
+      reason: "application_failed",
+      actorIds: [f.worker.actorId],
+      identity: {
+        matchId: "match" as never,
+        authorityEpoch: 0,
+        playerNumber: 1,
+        sequence: 41,
+        commandId: "command:41" as never,
+        effectId: "effect:resume-construction:abandoned-house:effect:41:0" as never,
+        intentId: `intent:resume-construction:${f.site.actorId}:intent:41:0` as never
+      }
+    } satisfies (typeof f.state.pendingOutcomes)[number];
+    const state = { ...f.state, pendingOutcomes: [failure] };
+
+    const proposal = f.manager.propose(world, state);
+    const resume = proposal.intents.find((intent) => intent.kind === "resume_construct");
+
+    expect(resume).toMatchObject({ actorIds: ["worker-reserve"], targetActorId: f.site.actorId });
+  });
+
   it("chooses a reachable builder instead of repeatedly assigning the nearest blocked worker", () => {
     const f = fixture();
     const reachable = {
@@ -160,6 +216,7 @@ describe("unfinished construction after the opening", () => {
     const f = fixture();
     const worker = {
       ...f.worker,
+      logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 20 },
       accessNodeId: { status: "known" as const, value: "access:worker" as const, observedTick: 20 },
       activeOrder: {
         status: "known" as const,
@@ -169,6 +226,7 @@ describe("unfinished construction after the opening", () => {
     };
     const site = {
       ...f.site,
+      logicalPosition: { status: "known" as const, value: { x: 10, y: 10, z: 0 }, observedTick: 20 },
       accessNodeId: { status: "known" as const, value: "access:site" as const, observedTick: 20 }
     };
     const world = {
@@ -194,6 +252,45 @@ describe("unfinished construction after the opening", () => {
         reasonCode: "construction:release_unreachable_site"
       })
     );
+    expect(result.intents.some((intent) => intent.kind === "resume_construct")).toBe(false);
+  });
+
+  it("keeps an assigned builder at the footprint edge when the structure region itself is unreachable", () => {
+    const f = fixture();
+    const worker = {
+      ...f.worker,
+      logicalPosition: { status: "known" as const, value: { x: 9, y: 10, z: 0 }, observedTick: 20 },
+      accessNodeId: { status: "known" as const, value: "access:worker" as const, observedTick: 20 },
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 20,
+        value: { orderType: OrderType.Build, targetActorId: f.site.actorId }
+      }
+    };
+    const site = {
+      ...f.site,
+      logicalPosition: { status: "known" as const, value: { x: 10, y: 10, z: 0 }, observedTick: 20 },
+      accessNodeId: { status: "known" as const, value: "access:site" as const, observedTick: 20 }
+    };
+    const world = {
+      ...f.world,
+      actors: [worker, site],
+      accessProducts: [
+        {
+          queryId: "footprint-region",
+          revision: 1,
+          status: "blocked" as const,
+          fromNodeId: worker.accessNodeId.value,
+          toNodeId: site.accessNodeId.value,
+          domains: ["ground" as const],
+          updatedTick: 20
+        }
+      ]
+    };
+
+    const result = f.manager.propose(world, f.state);
+
+    expect(result.intents.some((intent) => intent.kind === "stop")).toBe(false);
     expect(result.intents.some((intent) => intent.kind === "resume_construct")).toBe(false);
   });
 
