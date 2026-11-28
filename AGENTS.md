@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This file is the repo-level router for Codex and similar coding agents.
+This file is the repo-level router for coding agents.
 
 ## Use Skills First
 
