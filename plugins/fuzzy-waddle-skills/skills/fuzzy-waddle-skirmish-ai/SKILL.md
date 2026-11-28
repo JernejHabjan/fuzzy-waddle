@@ -60,5 +60,8 @@ For a requested AI goal, use the repository task-tracking skill and an existing 
 Define source anchors, positive/negative controls, allowed publication and a bounded finish condition; do not
 create a new scenario catalog or require chat history. A measured stop tick is not a fixture limit: use explicit
 checkpoint/deadline settings and preserve temporal controls. Oversized recipes need focused setup, not larger timeouts.
+Before reporting X/Y closure, reconcile the exact requested variant IDs with applicable evidence and required sibling
+controls. Count measured passing wall times separately from tick counts; a different inventory or a passing subset
+cannot establish complete recipe coverage.
 At a user-approved partial close, retain precise gaps in coverage-status and the PR, retire temporary handoffs and
 artifacts, and never label partial execution as complete certification.
