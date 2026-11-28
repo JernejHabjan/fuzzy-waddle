@@ -3,6 +3,8 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/portal-e2e/src",
   "projectType": "application",
+  "tags": ["scope:portal", "type:e2e"],
+  "implicitDependencies": ["portal"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint",
@@ -11,7 +13,5 @@
         "lintFilePatterns": ["apps/portal-e2e/**/*.{js,ts}"]
       }
     }
-  },
-  "tags": ["scope:portal", "type:e2e"],
-  "implicitDependencies": ["portal"]
+  }
 }

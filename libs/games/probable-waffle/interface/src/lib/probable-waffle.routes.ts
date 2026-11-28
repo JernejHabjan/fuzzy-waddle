@@ -1,7 +1,18 @@
-import type { Routes } from "@angular/router";
+import { inject, Injector } from "@angular/core";
+import type { CanActivateFn, Routes } from "@angular/router";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guard";
-import { GameInstanceGuard } from "./gui/online/lobby-page/game-instance.guard";
+
+/**
+ * Defers the game-instance guard and its Phaser-facing service graph until a protected game route is requested.
+ * The injector must be captured before the dynamic import because `inject()` is unavailable after the asynchronous boundary.
+ */
+export const lazyGameInstanceGuard: CanActivateFn = (route, state) => {
+  const injector = inject(Injector);
+  return import("./gui/online/lobby-page/game-instance.guard").then(({ GameInstanceGuard }) =>
+    injector.get(GameInstanceGuard).canActivate(route, state)
+  );
+};
 
 export const probableWaffleRoutes = [
   {
@@ -38,6 +49,10 @@ export const probableWaffleRoutes = [
             path: "skirmish",
             loadComponent: () => import("./gui/skirmish/skirmish.component").then((m) => m.SkirmishComponent)
           },
+          ...(!environment.production ? [{
+            path: "ai-scenarios",
+            loadComponent: () => import("./gui/ai-scenarios/ai-scenarios.component").then((m) => m.AiScenariosComponent)
+          }] : []),
           {
             path: "instant-game",
             loadComponent: () =>
@@ -93,19 +108,19 @@ export const probableWaffleRoutes = [
           {
             path: "lobby",
             loadComponent: () => import("./gui/lobby/lobby.component").then((m) => m.LobbyComponent),
-            canActivate: [GameInstanceGuard]
+            canActivate: [lazyGameInstanceGuard]
           },
           {
             path: "score-screen",
             loadComponent: () =>
               import("./gui/score-screen/score-screen.component").then((m) => m.ScoreScreenComponent),
-            canActivate: [GameInstanceGuard]
+            canActivate: [lazyGameInstanceGuard]
           },
           {
             path: "game",
             loadComponent: () =>
               import("./gui/main/probable-waffle-game.component").then((m) => m.ProbableWaffleGameComponent),
-            canActivate: [GameInstanceGuard]
+            canActivate: [lazyGameInstanceGuard]
           }
         ]
       },

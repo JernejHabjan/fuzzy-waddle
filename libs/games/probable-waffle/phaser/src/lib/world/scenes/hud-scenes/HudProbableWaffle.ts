@@ -196,6 +196,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   override create() {
     this.editorCreate();
+    if (this.probableWaffleScene?.isSpectator) this.resources_container.setVisible(false);
 
     // resize the scene to match the screen size
     this.scale.on("resize", this.resize, this);
@@ -223,6 +224,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene) {
     this.probableWaffleScene = probableWaffleScene;
+    this.resources_container?.setVisible(!probableWaffleScene.isSpectator);
     this.subscribeToSaveGameEvent();
     this.subscribeToSceneShutdown();
 

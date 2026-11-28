@@ -15,7 +15,7 @@ import { GameModeDefinitionComponent } from "./game-mode-definition/game-mode-de
 import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.component";
 import { LobbyChatComponent } from "./lobby-chat/lobby-chat.component";
 import { MapBrowserComponent } from "./map-browser/map-browser.component";
-import { MapBrowserTestingComponent } from "./map-browser/map-browser.component.spec";
+import { MapBrowserTestingComponent } from "./map-browser/tests/map-browser.component.spec";
 
 @Component({ selector: "probable-waffle-lobby", template: "", standalone: true, imports: [] })
 export class LobbyTestingComponent {}

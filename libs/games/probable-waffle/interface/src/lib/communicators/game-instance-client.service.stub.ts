@@ -27,8 +27,8 @@ export const gameInstanceClientServiceStub = {
     name: string,
     visibility: ProbableWaffleGameInstanceVisibility,
     type: ProbableWaffleGameInstanceType
-  ): Promise<void> {
-    this.gameInstance = new ProbableWaffleGameInstance({
+  ): Promise<ProbableWaffleGameInstance> {
+    const instance = new ProbableWaffleGameInstance({
       gameInstanceMetadataData: {
         name,
         createdBy: "1",
@@ -52,6 +52,8 @@ export const gameInstanceClientServiceStub = {
       } satisfies ProbableWaffleGameModeData,
       gameStateData: {} as ProbableWaffleGameStateData
     });
+    this.gameInstance = instance;
+    return instance;
   },
   async stopGameInstance(): Promise<void> {
     return Promise.resolve();
@@ -73,11 +75,11 @@ export const gameInstanceClientServiceStub = {
   },
   async gameModeChanged(
     property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
-    gameModeData: ProbableWaffleGameModeData
+    gameModeData: Partial<ProbableWaffleGameModeData>
   ): Promise<void> {
     return Promise.resolve();
   },
-  async playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void> {
+  async playerSlotOpened(playerDefinition?: PositionPlayerDefinition): Promise<void> {
     return Promise.resolve();
   },
   async removePlayer(playerNumber: PlayerNumber): Promise<void> {

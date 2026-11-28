@@ -11,7 +11,7 @@ import PushActionScript from "@fuzzy-waddle/platform-game-host/phaser/script-nod
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
-import { PawnAiController } from "../../ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../ai-agents/controller/pawn-ai-controller";
 import { emitEventSelection, getCurrentPlayerNumber } from "../../../data/scene-data";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";

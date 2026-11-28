@@ -1,9 +1,10 @@
-import { Component, type OnInit, output } from "@angular/core";
+import { Component, type OnInit, output, ChangeDetectionStrategy } from "@angular/core";
 import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 
 @Component({
   selector: "probable-waffle-map-filter",
   templateUrl: "./map-filter.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./map-filter.component.scss"]
 })
 export class MapFilterComponent implements OnInit {
@@ -11,7 +12,7 @@ export class MapFilterComponent implements OnInit {
   protected checkedMaps: { id: number; name: string; checked: boolean }[] = [];
 
   ngOnInit(): void {
-    this.checkedMaps = Object.values(ProbableWaffleLevels).map((m) => ({
+    this.checkedMaps = Object.values(ProbableWaffleLevels).filter((map) => !map.testOnly).map((m) => ({
       id: m.id,
       name: m.name,
       checked: true

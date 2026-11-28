@@ -10,3 +10,4 @@
 /libs/games/*/gameplay/src/assets
 /libs/games/*/gameplay/src/metadata
 /libs/games/*/gameplay/src/lib/prefabs
+/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/scenario-catalog.md

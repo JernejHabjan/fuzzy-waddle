@@ -1,4 +1,4 @@
-import { type AfterViewInit, Component, ElementRef, inject, input, viewChild } from "@angular/core";
+import { type AfterViewInit, Component, ElementRef, inject, input, viewChild, ChangeDetectionStrategy } from "@angular/core";
 
 import { AtlasService } from "../../services/atlas/atlas.service";
 
@@ -6,6 +6,7 @@ import { AtlasService } from "../../services/atlas/atlas.service";
   selector: "fuzzy-waddle-atlas-sprite",
   standalone: true,
   template: ` <canvas #canvas [width]="width()" [height]="height()"></canvas> `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       canvas {

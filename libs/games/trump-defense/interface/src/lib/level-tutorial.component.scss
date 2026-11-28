@@ -1,0 +1,114 @@
+/* Keep the briefing legible while leaving the 3D showcase visible around its edges. */
+.td-tutorial {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: grid;
+  align-items: end;
+  justify-items: center;
+  padding: 1rem;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 24%, #071a33a8 100%);
+}
+
+/* The compact card carries the lesson and its navigation controls. */
+.td-tutorial-card {
+  width: min(42rem, 100%);
+  box-sizing: border-box;
+  padding: 1rem 1.25rem;
+  border: 1px solid #fff8e7;
+  border-top: 3px solid #b31942;
+  border-radius: 0.5rem;
+  color: #fff8e7;
+  background: #071a33f2;
+  box-shadow: 0 1rem 3rem #0009;
+  text-align: center;
+  pointer-events: auto;
+}
+
+/* Separate the level and lesson count from the showcase headline. */
+.td-tutorial-count {
+  margin: 0 0 0.2rem;
+  color: #d4dcec;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.td-tutorial-card h2 {
+  margin: 0 0 0.35rem;
+  color: #fff8e7;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  letter-spacing: 0.08em;
+}
+
+.td-tutorial-copy {
+  max-width: 36rem;
+  margin: 0 auto 0.8rem;
+  line-height: 1.45;
+}
+
+/* Arrow controls stay grouped while skip and return actions remain at the edges. */
+.td-tutorial-actions,
+.td-tutorial-arrows {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.td-tutorial-actions {
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+/* The upgrade demonstration has its own row above briefing navigation. */
+.td-tutorial-preview {
+  justify-content: center;
+  margin-bottom: 0.8rem;
+}
+
+.td-tutorial-arrows button {
+  min-width: 2.5rem;
+}
+
+/* Briefing actions share the same compact navy, cream, and red button language as the HUD. */
+.td-tutorial-actions button {
+  min-height: 2rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid #e3eaf5;
+  border-radius: 0.35rem;
+  color: #fff8e7;
+  background: #071a33ed;
+  box-shadow: 0 0.15rem 0.45rem #0007;
+  font-family: "Chakra Petch", "WorkSans", sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.td-tutorial-actions button:hover:not(:disabled) {
+  background: #153b70;
+}
+
+.td-tutorial-actions button:focus-visible {
+  outline: 3px solid #b31942;
+  outline-offset: 2px;
+}
+
+.td-tutorial-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .td-tutorial {
+    padding: 0.5rem;
+  }
+  .td-tutorial-card {
+    padding: 0.75rem;
+  }
+  .td-tutorial-actions {
+    flex-wrap: wrap;
+  }
+}

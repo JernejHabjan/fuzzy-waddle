@@ -48,7 +48,7 @@ export function hasHighGroundAdvantage(
 export function getHighGroundRangeBonus(
   attacker: Phaser.GameObjects.GameObject,
   target: Phaser.GameObjects.GameObject,
-  attack: AttackData
+  attack: Pick<AttackData, "highGroundRangeBonus">
 ): number {
   if (!hasHighGroundAdvantage(attacker, target)) {
     return 0;

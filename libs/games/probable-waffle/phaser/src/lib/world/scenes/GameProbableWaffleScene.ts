@@ -16,7 +16,7 @@ import { AudioService } from "../services/audio.service";
 import { RandomService } from "../services/random.service";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { RestartGame } from "../../data/restart-game";
-import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../../player/ai-controller/commands/ai-player-handler";
 import { BuildingCursor } from "../../player/human-controller/building-cursor";
 import { DebuggingService } from "../services/DebuggingService";
 import { CrossSceneCommunicationService } from "../services/CrossSceneCommunicationService";
@@ -38,9 +38,15 @@ import { LockedCursorHandler } from "../../player/human-controller/locked-cursor
 import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
+import { SummonExpiryService } from "../../entity/systems/summon-expiry.service";
 import { CommandBusService } from "../services/multiplayer/command-bus.service";
+import { SharedCommandApplicationService } from "../services/multiplayer/shared-command-application.service";
 import { SimulationPauseReason, SimulationTickService } from "../services/simulation-tick.service";
 import { StateHashService } from "../services/recovery/state-hash.service";
+import {
+  AiMultiplayerDiagnostics,
+  multiplayerDiagnosticsRequested
+} from "../../player/ai-controller/test-support/multiplayer/ai-multiplayer-diagnostics";
 import { SnapshotService } from "../services/recovery/snapshot.service";
 import { ReconnectService } from "../services/recovery/reconnect.service";
 import { ReplayPlaybackService } from "../services/replay/replay-playback.service";
@@ -57,6 +63,12 @@ import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-c
 import { CampaignParticipantSceneAdapter } from "../../campaign/participants/campaign-participant-scene-adapter";
 import { CampaignRestoreCoordinator } from "../../campaign/campaign-restore-coordinator";
 import { hasMultiplayerCommandRelay } from "../../data/scene-data";
+import { recordAiRuntimeBrowserInitialState } from "../../player/ai-controller/test-support/browser/ai-runtime-browser-test-config";
+import { GathererComponent } from "../../entity/components/resource/gatherer-component";
+import { getActorComponent } from "../../data/actor-component";
+import { applyAiRuntimePresetWorld } from "../../player/ai-controller/test-support/presets/setup/apply-ai-runtime-preset-world";
+import { readAiRuntimeSceneConfig } from "../../player/ai-controller/test-support/browser/ai-runtime-scene-config";
+import { startAiScenarioPreview } from "../../player/ai-controller/test-support/browser/start-ai-scenario-preview";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -100,8 +112,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const creator = new SceneActorCreator(this);
     const actorIndex = new ActorIndexSystem(this);
     const snapshotService = new SnapshotService();
+    const stateHashService = new StateHashService();
     const commandBusService = new CommandBusService(this);
-    const simTickService = new SimulationTickService(this);
+    const savedTick = this.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()
+      ? (this.baseGameData.gameInstance.gameState?.data.simulationTick ?? 0)
+      : 0;
+    const simTickService = new SimulationTickService(this, savedTick);
     const scenarioReferenceRegistry = new IndexedScenarioReferenceRegistry();
     const campaignContentAllowances = new CampaignContentAllowanceService();
 
@@ -118,6 +134,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       // CommandBusService and SimulationTickService must be registered first so they're available during initInitialActors()
       commandBusService,
       simTickService,
+      stateHashService,
       new NavigationService(this, this.tilemap),
       new MovementOccupancyService(this),
       new NavigationDebugService(this, this.tilemap),
@@ -133,8 +150,14 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new TechTreeService(campaignContentAllowances),
       new SpellCursor(this),
       new AoeZoneManager(this),
+      new SummonExpiryService(this),
       new PauseSyncService(this),
       snapshotService
+    );
+    this.sceneGameData.services.push(
+      new SharedCommandApplicationService(this, (playerNumber) =>
+        gameModeConditionChecker.applyConcession(playerNumber)
+      )
     );
     scenarioReferenceRegistry.initialize(this);
     CampaignParticipantSceneAdapter.configure(this, campaignContentAllowances);
@@ -155,13 +178,29 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       this.sceneGameData.systems.push(new AiPlayerHandler(this));
     }
-    if (!this.isSpectator) {
+    // Interactive local-player previews keep their fog bypass; spectators use combined faction vision.
+    const runtimeHost = environment.production ? undefined : window.__fuzzyWaddleAiRuntimeBrowserTest;
+    const preview = runtimeHost?.interactive && runtimeHost.game === this.game;
+    if (this.isSpectator || !preview) {
       this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
     }
 
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
+    applyAiRuntimePresetWorld(this, creator);
+    const runtimeConfig = environment.production ? null : readAiRuntimeSceneConfig(this.game);
+    if (runtimeConfig) {
+      for (const player of this.players) {
+        if (player.playerNumber === undefined) continue;
+        const initialActors = actorIndex.getOwnedActors(player.playerNumber);
+        recordAiRuntimeBrowserInitialState(player.playerNumber, {
+          ownedActorCount: initialActors.length,
+          workerCount: initialActors.filter((actor) => !!getActorComponent(actor, GathererComponent)).length,
+          ownedActorNames: initialActors.map((actor) => actor.name).sort()
+        });
+      }
+    }
     new ReplayPlaybackService().init(this);
     campaignMissionDirector?.startAfterActorIndexing();
     restoreCoordinator?.complete();
@@ -169,13 +208,16 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     commandBusService.tryInitMultiplayer();
     this.applyDefaultSinglePlayerSpeed(simTickService);
 
-    // Desync detection: hash state every 60 ticks and compare with peers (MP only).
-    new StateHashService().init(this);
+    // Desync detection: hash state every 20 ticks and compare with peers (MP only).
+    stateHashService.init(this);
+    if (!environment.production && multiplayerDiagnosticsRequested()) {
+      this.sceneGameData.services.push(new AiMultiplayerDiagnostics(this, commandBusService));
+    }
     // Snapshot service: host keeps a rolling snapshot for reconnect / late spectator catch-up.
     snapshotService.init(this);
     // Reconnect service: non-host clients request a snapshot when they rejoin after a drop.
     new ReconnectService().init(this);
-    new HostMigrationService().init(this);
+    new HostMigrationService().init(this, snapshotService);
     new ReplayRecorderService().init(this);
 
     super.create();
@@ -184,7 +226,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     setTimeout(() => {
       this.scene.scene.data.remove("justCreated");
     });
+    if (preview && simTickService) startAiScenarioPreview(this, simTickService);
     this.sceneGameData.initializers.sceneInitialized.next(true);
+    if (runtimeConfig?.startPaused) simTickService?.pauseTick(SimulationPauseReason.Manual);
     simTickService?.resumeTick(SimulationPauseReason.SceneBootstrap);
 
     if (!environment.production) {

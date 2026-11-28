@@ -1313,5 +1313,35 @@
     "license": {
       "name": "We want you to have the freedom to use this asset pack in both your free and commercial projects. Feel free to modify the assets to suit your unique needs. While credit is not required, we genuinely appreciate any attribution given. You may not redistribute or resell the assets on their own, that includes NFT/images asset compilations."
     }
+  },
+  {
+    "type": "Music",
+    "name": "SandalMaker.mp3",
+    "author": "Stronghold Crusader",
+    "reason": "Used in Trump Defense 2016."
+  },
+  {
+    "type": "Music",
+    "name": "ReadyTheArmy.mp3",
+    "author": "Command & Conquer: Red Alert",
+    "reason": "Used in Trump Defense 2016."
+  },
+  {
+    "type": "Music and sound effects",
+    "name": "Trump Defense 2016 audio sourced from YouTube",
+    "author": "YouTube sources (links unknown)",
+    "reason": "Used in Trump Defense 2016. Source: YouTube (links unknown). Files: Mariachi.mp3, buildWall.wav, mexicoChatter.wav."
+  },
+  {
+    "type": "Sound effects",
+    "name": "Trump Defense 2016 original sound effects",
+    "author": "Jernej Habjan",
+    "reason": "Original sound effects used in Trump Defense 2016: balloon.wav, cannon.wav, cash.wav, constr1.wav–constr7.wav, die.wav, hammer.wav."
+  },
+  {
+    "type": "Sound effects",
+    "name": "Stronghold Crusader sound effects used in Trump Defense 2016",
+    "author": "Stronghold Crusader",
+    "reason": "arrwdth_09.wav, buy.wav, cheer2.wav, firepop2.wav, flamearrow_03.wav, hit_01.wav, mason_chip1.wav, metrock_03.wav, puller_strain.wav, select.wav, towerUpgrade.wav, wallUpgrade.wav, woodhit_06.wav."
   }
 ]

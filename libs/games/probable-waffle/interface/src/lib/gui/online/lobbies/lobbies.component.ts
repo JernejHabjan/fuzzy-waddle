@@ -1,4 +1,4 @@
-import { Component, inject, type OnDestroy, type OnInit, output } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit, output, ChangeDetectionStrategy } from "@angular/core";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 import {
   ProbableWaffleGameInstanceType,
@@ -21,6 +21,7 @@ import { ToastService } from "@fuzzy-waddle/platform-game-host/angular/services/
   selector: "probable-waffle-lobbies",
   templateUrl: "./lobbies.component.html",
   styleUrls: ["./lobbies.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FaIconComponent, MapFilterComponent]
 })
 export class LobbiesComponent implements OnInit, OnDestroy {

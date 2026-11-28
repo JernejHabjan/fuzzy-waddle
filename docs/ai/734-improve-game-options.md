@@ -11,6 +11,13 @@
 - [x] Implement the approved runtime stages and focused automated verification.
 - [ ] Complete the two-client manual visibility/ping/reconnect smoke test in a configured multiplayer environment.
 
+## Integration update (2026-11-28)
+
+- Integrated the current `develop` branch, including the extracted game-instance and multiplayer relay owners.
+- Hydrated audio assets and passed the portal production build, focused preference/component/relay tests,
+  affected project lint, and Phaser Editor validation. The build reports its existing initial-bundle warning.
+- The two-client visibility/ping/reconnect smoke test and the unchecked coverage items below remain outstanding.
+
 ## Implementation update (2026-08-15)
 
 - [x] Added versioned database-synchronized personal preferences with local storage only as the anonymous,
@@ -261,8 +268,7 @@ Results (2026-08-15):
 - [x] Protocol and server TypeScript checks pass; changed client/Phaser code has no new type errors.
 - [x] Phaser Editor validation passes with 0 errors across 469 scenes and 563 prefab references.
 - [x] Portal production compilation and bundle generation complete when dependency tasks are excluded.
-- [ ] Standard production build remains blocked by 511 unhydrated Git LFS audio pointers; the generated bundle then
-      hits the repository's existing 2 MB initial budget (4.12 MB). Neither condition is introduced by issue #734.
+- [x] Current portal production build passes after hydrating Git LFS audio assets; it reports an initial bundle warning.
 - [ ] Two-client manual visibility/ping/reconnect playtest requires a configured multiplayer runtime.
 
 - Focused unit tests for each owning project and changed service/component.

@@ -1,4 +1,4 @@
-import { Component, inject, signal, viewChild } from "@angular/core";
+import { Component, inject, signal, viewChild, ChangeDetectionStrategy } from "@angular/core";
 import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-phaser";
 import { faCheck, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -47,6 +47,7 @@ export class DifficultyDefinitions {
   selector: "probable-waffle-player-definition",
   templateUrl: "./player-definition.component.html",
   styleUrls: ["./player-definition.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, FaIconComponent, ModalComponent, ProfileComponent]
 })
 export class PlayerDefinitionComponent {

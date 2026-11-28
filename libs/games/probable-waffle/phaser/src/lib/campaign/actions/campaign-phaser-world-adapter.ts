@@ -52,7 +52,7 @@ import { IndexedScenarioReferenceRegistry } from "../scenario/scenario-reference
 import { ScenarioActorReferenceComponent } from "../scenario/scenario-actor-reference.component";
 import { CampaignOwnedResourceRegistry } from "./campaign-owned-resource-registry";
 import { CampaignTrustedHookRegistry } from "./campaign-trusted-hook-registry";
-import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../../player/ai-controller/commands/ai-player-handler";
 
 /**
  * Defines the closed campaign presentation request value set. Keeping this union named preserves exhaustive

@@ -6,7 +6,7 @@
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Deployed-brightgreen)](https://jernejhabjan.github.io/fuzzy-waddle/)
 [![Open Issues](https://img.shields.io/github/issues/JernejHabjan/fuzzy-waddle)](https://github.com/JernejHabjan/fuzzy-waddle/issues)
 [![Open Pull Requests](https://img.shields.io/github/issues-pr/JernejHabjan/fuzzy-waddle)](https://github.com/JernejHabjan/fuzzy-waddle/pulls)
-[![Contributing](https://img.shields.io/badge/Contributing-Guidelines-blue)](CONTRIBUTING.md)
+[![Contributing](https://img.shields.io/badge/Contributing-Guidelines-blue)](./CONTRIBUTING.md)
 
 **Play now:** [fuzzy-waddle.onrender.com](https://fuzzy-waddle.onrender.com/)
 
@@ -20,22 +20,27 @@ Reuse, redistribution, or commercial use outside of GitHub requires explicit wri
 
 ## Games
 
-| Game            | Genre              | Status         |
-| --------------- | ------------------ | -------------- |
-| Probable Waffle | Real-time strategy | Active         |
-| Little Muncher  | Platformer         | Active         |
-| Fly Squasher    | Arcade             | Active         |
-| Dungeon Crawler | RPG                | In development |
+| Game               | Genre              | Status         |
+| ------------------ | ------------------ | -------------- |
+| Probable Waffle    | Real-time strategy | Active         |
+| Little Muncher     | Platformer         | Active         |
+| Fly Squasher       | Arcade             | Active         |
+| Trump Defense 2016 | Tower defense      | Active         |
+| Dungeon Crawler    | RPG                | In development |
+
+### Trump Defense 2016
+
+Originally created in 2016 as a school project for the Computer Graphics class at the Faculty of Computer and Information Science, University of Ljubljana. The browser version is a rewrite built with Angular and Three.js.
 
 ### Phaser Editor projects
 
 Open Phaser Editor in the project directory listed for the game. Do not open `libs/games` or the game’s parent directory as the editor project:
 
-| Game | Phaser Editor project directory |
-| ---- | -------------------------------- |
-| Probable Waffle | `libs/games/probable-waffle/phaser` |
-| Little Muncher | `libs/games/little-muncher/gameplay` |
-| Fly Squasher | `libs/games/fly-squasher/gameplay` |
+| Game            | Phaser Editor project directory       |
+| --------------- | ------------------------------------- |
+| Probable Waffle | `libs/games/probable-waffle/phaser`   |
+| Little Muncher  | `libs/games/little-muncher/gameplay`  |
+| Fly Squasher    | `libs/games/fly-squasher/gameplay`    |
 | Dungeon Crawler | `libs/games/dungeon-crawler/gameplay` |
 
 Run `pnpm phaser-editor:check` after changing scenes, prefabs, atlases, or asset packs. The check verifies
@@ -45,14 +50,14 @@ that each editor project can resolve its own asset URLs, atlas frames, and prefa
 
 ## Tech Stack
 
-| Layer              | Technology                        |
-| ------------------ | --------------------------------- |
-| Frontend (web)     | Angular 21, Phaser 4, Bootstrap 5 |
-| Frontend (desktop) | Tauri 2 (wraps the Angular build) |
-| Backend            | NestJS 11, Socket.IO              |
-| Database / Auth    | Supabase (PostgreSQL + OAuth)     |
-| Monorepo           | Nx 23                             |
-| Package manager    | pnpm                              |
+| Layer              | Technology                                  |
+| ------------------ | ------------------------------------------- |
+| Frontend (web)     | Angular 21, Phaser 4, Three.js, Bootstrap 5 |
+| Frontend (desktop) | Tauri 2 (wraps the Angular build)           |
+| Backend            | NestJS 11, Socket.IO                        |
+| Database / Auth    | Supabase (PostgreSQL + OAuth)               |
+| Monorepo           | Nx 23                                       |
+| Package manager    | pnpm                                        |
 
 ---
 
@@ -69,35 +74,37 @@ pnpm start
 
 Client runs at `http://localhost:4200` · API at `http://localhost:3333`
 
-For full setup instructions see the [Getting Started guide](wiki/getting-started.md).
+For full setup instructions see the [Getting Started guide](./wiki/getting-started.md).
+For every package command, see the grouped [package scripts reference](./wiki/scripts.md).
 
 ---
 
 ## Wiki
 
-| Page                                       | Description                                              |
-| ------------------------------------------ | -------------------------------------------------------- |
-| [Getting Started](wiki/getting-started.md) | Prerequisites, install, common commands                  |
-| [Architecture](wiki/architecture.md)       | Monorepo layout, game structure, real-time communication |
-| [Tauri Desktop](wiki/tauri-desktop.md)     | Desktop app prerequisites, dev workflow, build commands  |
-| [Supabase Setup](wiki/supabase.md)         | Auth, type generation, JDBC, local dev                   |
-| [Deployment](wiki/deployment.md)           | Render and GitHub Pages deployment config                |
-| [Releases](wiki/releases.md)               | Version bump rules and automated release flow            |
-| [Troubleshooting](wiki/troubleshooting.md) | Common issues and fixes                                  |
+| Page                                                        | Description                                              |
+| ----------------------------------------------------------- | -------------------------------------------------------- |
+| [Getting Started](./wiki/getting-started.md)                | Prerequisites, install, common commands                  |
+| [Architecture](./wiki/architecture.md)                      | Monorepo layout, game structure, real-time communication |
+| [Probable Waffle AI](./wiki/probable-waffle-skirmish-ai.md) | Skirmish AI architecture, testing and debugging          |
+| [Tauri Desktop](./wiki/tauri-desktop.md)                    | Desktop app prerequisites, dev workflow, build commands  |
+| [Supabase Setup](./wiki/supabase.md)                        | Auth, type generation, JDBC, local dev                   |
+| [Deployment](./wiki/deployment.md)                          | Render and GitHub Pages deployment config                |
+| [Releases](./wiki/releases.md)                              | Version bump rules and automated release flow            |
+| [Troubleshooting](./wiki/troubleshooting.md)                | Common issues and fixes                                  |
 
 ---
 
 ## Contributing
 
 Contributions are welcome — bug fixes, features, and compatibility improvements.
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before opening a PR.
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) before opening a PR.
 
 ---
 
 ## Attribution
 
 Some artwork is publicly available on [Pixilart](https://www.pixilart.com/darkneess10).
-Full attribution list: [attributions.json](apps/portal/src/assets/general/attributions.json) · [Attributions page](https://fuzzy-waddle.onrender.com/attributions)
+Full attribution list: [attributions.json](libs/platform/game-host/src/assets/general/attributions.json) · [Attributions page](https://fuzzy-waddle.onrender.com/attributions)
 
 ---
 

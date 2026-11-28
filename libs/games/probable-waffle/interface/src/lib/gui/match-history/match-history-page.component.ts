@@ -1,5 +1,5 @@
 import type { OnInit } from "@angular/core";
-import { Component, inject, signal } from "@angular/core";
+import { Component, inject, signal, ChangeDetectionStrategy } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import { type MatchHistorySummary, ProbableWaffleLevels } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -11,6 +11,7 @@ import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/se
   selector: "probable-waffle-match-history-page",
   imports: [DatePipe, RouterLink],
   templateUrl: "./match-history-page.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./match-history-page.component.scss"
 })
 export class MatchHistoryPageComponent implements OnInit {

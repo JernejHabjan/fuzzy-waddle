@@ -148,6 +148,11 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
     }
   }
 
+  // payload.encodedGameInstanceData contains the full serialized game/campaign runtime state, so
+  // this request can exceed Express/body-parser's default 100kb limit. The API endpoint
+  // (GameSaveController) relies on a raised JSON body-size limit configured in apps/api/src/main.ts
+  // (app.useBodyParser); if save sizes keep growing, that limit needs to grow (or saves need to be
+  // compressed/diffed) alongside this upload.
   private async uploadWithRetry(payload: object): Promise<void> {
     let failure: unknown;
     for (let attempt = 0; attempt < 3; attempt++) {

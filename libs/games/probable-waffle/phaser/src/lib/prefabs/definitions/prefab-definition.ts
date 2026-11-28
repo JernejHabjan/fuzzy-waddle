@@ -10,7 +10,7 @@ import type { ActorTranslateDefinition } from "@fuzzy-waddle/probable-waffle-gam
 import type { ColliderDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/collider-definition";
 import type { FlightDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/flight-definition";
 import type { NavigableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-definition";
-import type { PawnAiDefinition } from "../ai-agents/pawn-ai-definition";
+import type { PawnAiDefinition } from "../ai-agents/controller/pawn-ai-definition";
 import type { OwnerDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/owner-definition";
 import type { RequirementsDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/requirements-definition";
 import type { SelectableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/selectable-definition";
@@ -20,6 +20,7 @@ import type { HousingCostDefinition } from "@fuzzy-waddle/probable-waffle-gamepl
 import type { AttackDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/attack-definition";
 import type { HealingDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/healing-definition";
 import type { HealthDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/health-definition";
+import type { HealthRegenerationDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/health-regeneration-definition";
 import type { BuilderDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/builder-definition";
 import type { ConstructionSiteDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
 import type { ProductionDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-definition";
@@ -45,8 +46,10 @@ export type ComponentsDefinition = Partial<{
   vision: VisionDefinition;
   /** User-facing name, description, tooltip and icon information. */
   info: InfoDefinition;
-  /** Hit points, regeneration and death-related health configuration. */
+  /** Hit points and death-related health configuration. */
   health: HealthDefinition;
+  /** Passive health restored on deterministic simulation-second boundaries. */
+  healthRegeneration: HealthRegenerationDefinition;
   /** Attack range, damage, cadence, targeting and projectile configuration. */
   attack: AttackDefinition;
   /** Resources charged when this actor is constructed or produced. */

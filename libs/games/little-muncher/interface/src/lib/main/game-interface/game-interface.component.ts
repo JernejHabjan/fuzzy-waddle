@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import type { ModalConfig } from "@fuzzy-waddle/platform-game-host/angular/components/modal/modal-config";
 import type { Subscription } from "rxjs";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
@@ -17,6 +17,7 @@ import { HighScoreService } from "../../high-score/high-score.service";
   selector: "little-muncher-game-interface",
   templateUrl: "./game-interface.component.html",
   styleUrls: ["./game-interface.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FaIconComponent, WrapPipe, LeaveButtonComponent]
 })
 export class GameInterfaceComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import type { OnInit } from "@angular/core";
 import { HighScoreService } from "./high-score.service";
 import { FlySquasherLevelEnum, FlySquasherLevels, ScoreDto } from "@fuzzy-waddle/fly-squasher-protocol";
@@ -16,6 +16,7 @@ import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular
   templateUrl: "./high-score.component.html",
   styleUrls: ["./high-score.component.scss"],
   imports: [FaIconComponent, RouterLink, HomeNavComponent, CenterWrapperComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class HighScoreComponent implements OnInit {

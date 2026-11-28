@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, type OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
 import { PlayerDefinitionComponent } from "./player-definition/player-definition.component";
 import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.component";
@@ -17,6 +17,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
   templateUrl: "./lobby.component.html",
   styleUrls: ["./lobby.component.scss"],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MapDefinitionComponent,
     PlayerDefinitionComponent,

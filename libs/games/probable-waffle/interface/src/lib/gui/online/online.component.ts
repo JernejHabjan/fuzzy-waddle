@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { MatchmakingComponent } from "./matchmaking/matchmaking.component";
@@ -14,6 +14,7 @@ import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
   styleUrls: ["./online.component.scss"],
   standalone: true,
   imports: [MatchmakingComponent, HostComponent, LobbiesComponent, HomeNavComponent, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class OnlineComponent {

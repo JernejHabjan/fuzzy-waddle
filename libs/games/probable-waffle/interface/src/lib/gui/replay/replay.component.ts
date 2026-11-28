@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import type { OnInit } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
@@ -17,6 +17,7 @@ import { DatePipe } from "@angular/common";
   selector: "probable-waffle-replay",
   imports: [RouterLink, GameLengthPipe, DatePipe],
   templateUrl: "./replay.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./replay.component.scss"]
 })
 export class ReplayComponent implements OnInit {

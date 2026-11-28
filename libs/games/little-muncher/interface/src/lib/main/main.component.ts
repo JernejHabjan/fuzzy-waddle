@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import type { OnInit } from "@angular/core";
 import { littleMuncherGameConfig } from "@fuzzy-waddle/little-muncher-gameplay/const/game-config";
 import { type LittleMuncherGameData } from "@fuzzy-waddle/little-muncher-gameplay/little-muncher-game-data";
@@ -16,6 +16,7 @@ import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
   imports: [GameContainerComponent, GameInterfaceComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class MainComponent implements OnInit {

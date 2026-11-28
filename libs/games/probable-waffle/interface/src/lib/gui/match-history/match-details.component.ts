@@ -1,5 +1,5 @@
 import type { OnInit } from "@angular/core";
-import { Component, inject, input, signal } from "@angular/core";
+import { Component, inject, input, signal, ChangeDetectionStrategy } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import {
@@ -17,6 +17,7 @@ import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/se
   selector: "probable-waffle-match-details",
   imports: [DatePipe, ScoreTableComponent, ScoreThroughTimeComponent, RouterLink],
   templateUrl: "./match-details.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./match-details.component.scss"
 })
 export class MatchDetailsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, type OnInit, viewChild } from "@angular/core";
+import { Component, type OnInit, viewChild, ChangeDetectionStrategy } from "@angular/core";
 
 import { HomeBackgroundEffectComponent } from "./home-background-effect/home-background-effect.component";
 import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
@@ -12,6 +12,7 @@ import { type ModalConfig } from "@fuzzy-waddle/platform-game-host/angular/compo
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
   imports: [HomeBackgroundEffectComponent, MainMenuButtonsComponent, TitleComponent, BannerComponent, ModalComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class HomeComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, model, type OnDestroy, type OnInit, output } from "@angular/core";
+import { Component, effect, inject, input, type OnDestroy, type OnInit, output, ChangeDetectionStrategy, linkedSignal } from "@angular/core";
 
 import {
   ProbableWaffleLevels,
@@ -15,12 +15,14 @@ import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.se
   selector: "probable-waffle-map-browser",
   templateUrl: "./map-browser.component.html",
   styleUrls: ["./map-browser.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class MapBrowserComponent implements OnInit, OnDestroy {
   // Using the new input signal approach
   searchQuery = input<string>("");
-  selectedMapId = model<ProbableWaffleMapEnum | null>(null);
+  selectedMapIdInput = input<ProbableWaffleMapEnum | null>(null, {alias: 'selectedMapId'});
+  selectedMapId = linkedSignal(this.selectedMapIdInput);
   readonly selectedMapIdChange = output<ProbableWaffleMapEnum>();
 
   maps: ProbableWaffleMapData[] = [];
@@ -41,7 +43,11 @@ export class MapBrowserComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Using the levels getter from map-selector
-    this.maps = Object.values(ProbableWaffleLevels).filter((level) => (environment.production ? !level.devOnly : true));
+    const aiRuntimeTest = !environment.production && typeof window !== "undefined" &&
+      window.sessionStorage.getItem("fuzzy-waddle:ai-runtime-browser-test") !== null;
+    this.maps = Object.values(ProbableWaffleLevels).filter((level) =>
+      level.testOnly ? aiRuntimeTest : (environment.production ? !level.devOnly : true)
+    );
     this.filterMaps(this.searchQuery());
 
     // Listen for map changes to update the selected map ID

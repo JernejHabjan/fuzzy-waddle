@@ -7,9 +7,10 @@
   "tags": ["scope:probable-waffle", "type:app"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
+      "executor": "@angular/build:application",
       "dependsOn": ["assets-check"],
       "outputs": ["{workspaceRoot}/dist/apps/probable-waffle-desktop"],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": {
           "base": "dist/apps/probable-waffle-desktop",
@@ -59,8 +60,8 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "1.5mb",
-              "maximumError": "2mb"
+              "maximumWarning": "1mb",
+              "maximumError": "1.25mb"
             },
             {
               "type": "anyComponentStyle",
@@ -100,12 +101,17 @@
           "sourceMap": true,
           "namedChunks": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@angular/build:dev-server",
       "dependsOn": ["assets-check"],
+      "defaultConfiguration": "development",
+      "continuous": true,
+      "options": {
+        "port": 4201,
+        "proxyConfig": "apps/probable-waffle-desktop/proxy.conf.json"
+      },
       "configurations": {
         "production": {
           "buildTarget": "probable-waffle-desktop:build:production"
@@ -119,13 +125,7 @@
         "tauri-local": {
           "buildTarget": "probable-waffle-desktop:build:tauri-local"
         }
-      },
-      "defaultConfiguration": "development",
-      "options": {
-        "port": 4201,
-        "proxyConfig": "apps/probable-waffle-desktop/proxy.conf.json"
-      },
-      "continuous": true
+      }
     },
     "assets-check": {
       "executor": "nx:run-commands",
@@ -136,7 +136,7 @@
       }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "@angular/build:extract-i18n",
       "options": {
         "buildTarget": "probable-waffle-desktop:build"
       }

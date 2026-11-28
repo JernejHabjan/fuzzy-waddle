@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 
 import { dungeonCrawlerGameConfig } from "@fuzzy-waddle/dungeon-crawler-gameplay/game-config";
 import { GameContainerComponent } from "@fuzzy-waddle/platform-game-host/game-container/game-container.component";
@@ -9,6 +9,7 @@ import { type BaseGameData } from "@fuzzy-waddle/platform-game-host/phaser/game/
   imports: [GameContainerComponent],
   templateUrl: "./dungeon-crawler.component.html",
   styleUrl: "./dungeon-crawler.component.scss",
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { class: "d-flex flex-column h-100" }
 })
 export class DungeonCrawlerComponent {
