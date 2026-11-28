@@ -6,7 +6,7 @@
     "start": "nx run-many --all --target=serve",
     "start:portal": "nx serve portal --outputStyle=stream",
     "start:api": "nx serve api --outputStyle=stream",
-    "start:portal-open": "nx serve portal --host=0.0.0.0 --disable-host-check",
+    "start:portal-open": "nx serve portal --host=0.0.0.0 --allowed-hosts",
     "start:probable-waffle-desktop": "nx serve probable-waffle-desktop",
     "build": "nx run-many --all --target=build --configuration=production",
     "nx-build-portal": "nx build portal",
@@ -143,10 +143,10 @@
     "zone.js": "0.16.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "22.1.9",
     "@angular-eslint/eslint-plugin": "22.5.0",
     "@angular-eslint/eslint-plugin-template": "22.5.0",
     "@angular-eslint/template-parser": "22.5.0",
+    "@angular/build": "22.1.9",
     "@angular/cli": "22.1.9",
     "@angular/compiler-cli": "22.1.8",
     "@angular/language-service": "22.1.8",

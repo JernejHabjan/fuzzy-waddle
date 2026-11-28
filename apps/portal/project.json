@@ -7,7 +7,7 @@
   "tags": ["scope:portal", "type:app"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
+      "executor": "@angular/build:application",
       "dependsOn": ["assets-check", "trump-defense-lines"],
       "outputs": ["{workspaceRoot}/dist/apps/portal"],
       "defaultConfiguration": "production",
@@ -156,7 +156,7 @@
       }
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@angular/build:dev-server",
       "dependsOn": ["assets-check", "prepare-ai-scenario-browser"],
       "defaultConfiguration": "development",
       "continuous": true,
@@ -194,7 +194,7 @@
       }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "@angular/build:extract-i18n",
       "options": {
         "buildTarget": "portal:build"
       }
