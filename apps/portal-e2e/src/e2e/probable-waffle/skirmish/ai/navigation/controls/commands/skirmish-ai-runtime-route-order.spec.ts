@@ -1,12 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { type GameCommand, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type {
-  AiRuntimeProductionFact
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import {
-  normalizeRuntimeProductionCausality
-} from "../../../production/decisions/skirmish-ai-runtime-production-causality-normalization";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import { normalizeRuntimeProductionCausality } from "../../../production/decisions/skirmish-ai-runtime-production-causality-normalization";
 import { routeOrderFixture } from "./skirmish-ai-runtime-route-order-fixture";
+import { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
+import { RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT } from "../routing/skirmish-ai-runtime-route-history-budget";
 import { runtimeRouteOrderMatchesCommand } from "../routing/skirmish-ai-runtime-route-service-command";
 import {
   runtimeRouteServiceOutcomeActors,
@@ -58,6 +56,98 @@ test("attack order target position may track its actor when the command has no e
   expect(
     runtimeRouteOrderMatchesCommand(order, f.product.actorId ?? "", { ...command, tileVec3: { x: 1, y: 2, z: 0 } })
   ).toBe(false);
+});
+
+test("an attack-move sample can retain the exclusion while acquiring a different local target", () => {
+  const f = routeOrderFixture();
+  const path = f.capture.facts.find(
+    (fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path"
+  );
+  if (path?.kind !== "spatial_authority" || path.spatial.kind !== "producer_path") throw new Error("missing path");
+  const target = { ...f.product, actorId: "nearby-enemy", playerNumber: 1 };
+  const order = {
+    ...f.order,
+    orderType: OrderType.Attack,
+    target,
+    targetTile: { x: 14, y: 19, z: 0 },
+    pursuitReleasedTargetActorId: "fleeing-enemy"
+  };
+  const sample = { ...path, spatial: { ...path.spatial, currentOrder: order } };
+  const validate = (fact: AiRuntimeProductionFact) =>
+    validateRuntimeRouteOrders({ ...f.capture, facts: [fact] }).failures;
+  const invalidOrder = { ...order, target: { ...target, actorId: order.pursuitReleasedTargetActorId } };
+
+  expect(validate(sample)).not.toContain("production_route_order_payload_invalid");
+  expect(validate({ ...sample, spatial: { ...path.spatial, currentOrder: invalidOrder } })).toContain(
+    "production_route_order_payload_invalid"
+  );
+});
+
+test("a detached pursuit movement sample may predate its authoritative AI reissue", () => {
+  const f = routeOrderFixture();
+  const path = f.capture.facts.find(
+    (fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path"
+  );
+  const route = f.capture.facts.find(
+    (fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "route_order"
+  );
+  if (
+    path?.kind !== "spatial_authority" ||
+    path.spatial.kind !== "producer_path" ||
+    route?.kind !== "spatial_authority" ||
+    route.spatial.kind !== "route_order"
+  )
+    throw new Error("missing route fixture facts");
+
+  const releasedOrder = {
+    ...f.order,
+    orderId: route.spatial.order.orderId + 1,
+    orderType: OrderType.Attack,
+    target: null,
+    targetTile: { x: 14, y: 19, z: 0 },
+    commandContext: null,
+    pursuitReleasedTargetActorId: "fleeing-enemy"
+  };
+  const movementSample = {
+    ...path,
+    spatial: { ...path.spatial, currentOrder: releasedOrder }
+  };
+  const aiReissue = {
+    ...route,
+    spatial: {
+      ...route.spatial,
+      order: {
+        ...route.spatial.order,
+        orderType: OrderType.Attack,
+        target: null,
+        targetTile: { x: 14, y: 19, z: 0 },
+        pursuitReleasedTargetActorId: "fleeing-enemy"
+      }
+    }
+  };
+
+  expect(validateRuntimeRouteOrders({ ...f.capture, facts: [movementSample, aiReissue] }).failures).toEqual([]);
+  expect(
+    validateRuntimeRouteOrders({
+      ...f.capture,
+      facts: [
+        movementSample,
+        {
+          ...aiReissue,
+          spatial: {
+            ...aiReissue.spatial,
+            order: {
+              ...aiReissue.spatial.order,
+              commandContext: {
+                ...aiReissue.spatial.order.commandContext!,
+                execution: { ...aiReissue.spatial.order.commandContext!.execution, source: "human" }
+              }
+            }
+          }
+        }
+      ]
+    }).failures
+  ).toContain("production_route_order_payload_invalid");
 });
 
 test("native multi-pawn application preserves exact full command context and separate per-actor outcomes", () => {
@@ -400,7 +490,7 @@ test("order overflow discards the whole route group and still inspects an unquer
       fact.kind !== "spatial_authority" ||
       !["route_order", "route_rally_order", "producer_path"].includes(fact.spatial.kind)
   );
-  const more = Array.from({ length: 257 }, (_, index) =>
+  const more = Array.from({ length: RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT + 1 }, (_, index) =>
     f.fact({ ...f.requested, kind: "route_order", source: f.product, order: { ...f.order, orderId: index + 1 } })
   );
   const capture = { ...f.capture, facts: [...base, ...more].map((fact, index) => ({ ...fact, sequence: index + 1 })) };

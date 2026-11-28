@@ -196,7 +196,7 @@ function armyDemandFailures(branch: string, context: ReturnType<typeof nativeSce
   return failures;
 }
 
-/** One source identity cannot become several enemies; same dated evidence must remain stable under repeated reads. */
+/** One source identity cannot multiply; aging evidence may decay but cannot regain confidence without a new sighting. */
 function informationFailures(branch: string, context: ReturnType<typeof nativeScenarioContext>) {
   const failures: string[] = [],
     target = context.role("contact-group");
@@ -211,21 +211,45 @@ function informationFailures(branch: string, context: ReturnType<typeof nativeSc
       if (
         entry.confidencePermille < 0 ||
         entry.confidencePermille > 1000 ||
-        (prior && entry.observedTick === prior.tick && entry.confidencePermille !== prior.confidence)
+        (prior && entry.observedTick === prior.tick && entry.confidencePermille > prior.confidence)
       )
         failures.push("classic_unchanged_dated_evidence_inflated_confidence");
       seen.set(key, { tick: entry.observedTick, confidence: entry.confidencePermille });
     }
   }
-  if (
-    ["answered", "distinct"].includes(branch) &&
-    (!nativeScoutTrips(context).length ||
-      !context.frames.some((frame) =>
-        frame.decision.missionState?.knowledge.questions.some((question) => question.state === "answered")
-      ) ||
-      !nativeWeaponHits(context, target).length)
-  )
-    failures.push("classic_relevant_scout_answer_has_no_changed_native_decision");
+  if (["answered", "distinct"].includes(branch)) {
+    const discovery = context.frames.find((frame) =>
+      frame.decision.input?.observation?.actors.some(
+        (actor) => actor.actorId === target && actor.visibility === "visible"
+      )
+    );
+    const usedAnswer =
+      discovery &&
+      nativeScoutTrips(context).some((trip) => {
+        if (discovery.tick < trip.movement.startedTick || discovery.tick > trip.arrivalTick + 40) return false;
+        const selected = context.frames.find(({ tick }) => tick === trip.selectedTick)?.decision.missionState;
+        const squadId = trip.intent.planId?.replace(/^plan:/, "");
+        const questionId = selected?.squads.find((squad) => squad.squadId === squadId)?.objectiveId;
+        if (!selected?.knowledge.questions.some((q) => q.questionId === questionId && q.state === "open")) return false;
+        return context.frames.some((frame) => {
+          if (
+            frame.tick < trip.movement.startedTick ||
+            frame.tick > trip.arrivalTick + 40 ||
+            !frame.decision.missionState?.knowledge.questions.some(
+              (q) => q.questionId === questionId && q.state === "answered"
+            )
+          )
+            return false;
+          return nativeAppliedAttackOrder(
+            context,
+            target,
+            Math.max(discovery.tick, frame.tick),
+            trip.arrivalTick + 100
+          );
+        });
+      });
+    if (!usedAnswer) failures.push("classic_relevant_scout_answer_has_no_changed_native_decision");
+  }
   if (
     branch === "repeated" &&
     context.frames.filter((frame) =>
@@ -239,7 +263,7 @@ function informationFailures(branch: string, context: ReturnType<typeof nativeSc
     branch === "distinct" &&
     !context.frames.some(
       (frame) =>
-        frame.tick >= 1200 &&
+        frame.tick >= 400 &&
         [target, context.role("distinct-contact")].every((id) =>
           frame.decision.input?.observation?.actors.some(
             (actor) => actor.actorId === id && actor.visibility === "visible"
@@ -251,6 +275,42 @@ function informationFailures(branch: string, context: ReturnType<typeof nativeSc
   if (branch === "irrelevant" && !nativeWeaponHits(context).length)
     failures.push("classic_irrelevant_control_stopped_useful_work");
   return [...new Set(failures)];
+}
+
+/** The scouting answer must cause a target-specific AI order that the native scene actually applies. */
+function nativeAppliedAttackOrder(
+  context: ReturnType<typeof nativeScenarioContext>,
+  targetId: string,
+  fromTick: number,
+  throughTick: number
+) {
+  return context.frames.some(
+    (frame) =>
+      frame.tick >= fromTick &&
+      frame.tick <= throughTick &&
+      frame.decision.acceptedIntents.some(
+        (intent) =>
+          intent.kind === "attack" &&
+          intent.targetActorId === targetId &&
+          intent.actorIds.some((actorId) =>
+            context.facts.some(
+              (fact) =>
+                fact.kind === "spatial_authority" &&
+                fact.tick === frame.tick &&
+                fact.spatial.kind === "route_order" &&
+                fact.spatial.sceneActive &&
+                !fact.spatial.snapshotRestoreInProgress &&
+                !fact.spatial.gaps.length &&
+                fact.spatial.source.playerNumber === 2 &&
+                fact.spatial.source.actorId === actorId &&
+                fact.spatial.order.orderType === "Attack" &&
+                fact.spatial.order.target?.actorId === targetId &&
+                fact.spatial.order.commandContext?.execution.source === "ai" &&
+                fact.spatial.order.commandContext.execution.effectId === intent.effectId.replace(/^effect:/, "")
+            )
+          )
+      )
+  );
 }
 
 /** A real bait retreat must not drag essential defenders under observed towers; victories need useful follow-up. */
@@ -270,6 +330,31 @@ function pursuitFailures(branch: string, context: ReturnType<typeof nativeScenar
   );
   if (["bait", "valuable"].includes(branch) && !sawDanger)
     failures.push("classic_retreating_target_danger_never_legitimately_seen");
+  if (branch === "valuable") {
+    const contactEvidenceId = `evidence:contact:${target}`;
+    const lastSeenTicks = context.frames.flatMap((frame) => {
+      const contact = frame.decision.input?.observation?.actors.find((actor) => actor.actorId === target);
+      return contact?.visibility === "last_seen"
+        ? [contact.logicalPosition.status === "known" ? contact.logicalPosition.observedTick : contact.observedTick]
+        : [];
+    });
+    const lastSeenTick = lastSeenTicks.at(-1);
+    const stalePursuitContinues =
+      lastSeenTick !== undefined &&
+      context.frames.some(
+        (frame) =>
+          frame.tick > lastSeenTick + 240 &&
+          frame.decision.missionState?.squads.some(
+            (squad) =>
+              squad.role === "attack" &&
+              squad.objectiveId === `hypothesis:${contactEvidenceId}` &&
+              squad.state !== "completed" &&
+              squad.actorIds.length > 0
+          )
+      );
+    if (lastSeenTick === undefined) failures.push("classic_valuable_contact_loss_not_proven");
+    if (stalePursuitContinues) failures.push("classic_stale_mobile_pursuit_not_released");
+  }
   if (
     branch === "bait" &&
     context.frames.some(

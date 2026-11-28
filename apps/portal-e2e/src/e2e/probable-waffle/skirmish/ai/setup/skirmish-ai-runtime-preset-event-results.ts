@@ -76,7 +76,8 @@ export async function collectRuntimePresetEvents(
         };
       }
     ).__fuzzyWaddleAiRuntimeBrowserTest;
-    return host?.presetApplication;
+    const preset = host?.presetApplication;
+    return preset && { eventResults: preset.eventResults, createdActorIds: preset.createdActorIds };
   });
   if (!application) throw new Error("runtime_preset_events_incomplete");
   assertRuntimePresetEvents(variant, application);

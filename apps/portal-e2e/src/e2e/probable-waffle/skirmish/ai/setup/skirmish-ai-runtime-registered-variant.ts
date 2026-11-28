@@ -1,7 +1,5 @@
 import type { Browser } from "@playwright/test";
-import type {
-  AiRuntimeProductionSnapshot
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeFixture } from "../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 import type { RuntimeRequest } from "../runner/skirmish-ai-runtime-request";
@@ -21,9 +19,7 @@ import { runNativeImportVariant } from "../reproduction/import/skirmish-ai-nativ
 import { runNativeSaveVariant } from "../reproduction/save/skirmish-ai-native-save-runner";
 import { runNativeProfileVariant } from "../runner/skirmish-ai-native-profile-runner";
 import { runNativeProfileTransfer } from "../lifecycle/transfer/skirmish-ai-native-profile-transfer";
-import {
-  cancelNativeOriginalProduction
-} from "../production/cancellation/skirmish-ai-native-cancel-original-production";
+import { cancelNativeOriginalProduction } from "../production/cancellation/skirmish-ai-native-cancel-original-production";
 import { runNativeRetentionVariant } from "../reproduction/save/skirmish-ai-native-retention-runner";
 import { runNativeSequenceVariant } from "../runner/skirmish-ai-native-sequence-runner";
 import { runNativeReproVariant } from "../reproduction/incident/skirmish-ai-native-repro-runner";
@@ -61,11 +57,15 @@ export async function runRegisteredRuntimeVariant(
   const importBranch = fixture.assertions["DBG-05"]?.requiredNativeScenario?.branchByVariant[variant.id];
   if (request.scenarioIds.includes("DBG-05") && importBranch)
     return runNativeImportVariant(browser, fixture, variant, request, importBranch);
+  const airDefense = request.scenarioIds.includes("DOMAIN-06") ? fixture.assertions["DOMAIN-06"] : undefined;
   const contract =
     (request.scenarioIds.includes("EXP-02") ? fixture.assertions["EXP-02"]?.requiredExpansionPressure : undefined) ??
     request.scenarioIds
       .map((id) => fixture.assertions[id]?.requiredNativeScenario)
-      .find((binding) => binding !== undefined);
+      .find((binding) => binding !== undefined) ??
+    (airDefense?.maximumTick === undefined || airDefense.requiredDefenseTargetName === undefined
+      ? undefined
+      : { humanPlayerNumber: 1, latestTick: airDefense.maximumTick });
   let opponentCapture: AiRuntimeProductionSnapshot | undefined;
   let otherOpponentCaptures: AiRuntimeProductionSnapshot[] | undefined;
   let nativeDisposal: NativeDisposalEvidence | undefined;
@@ -78,17 +78,34 @@ export async function runRegisteredRuntimeVariant(
   const parityBranch = fixture.assertions["DBG-06"]?.requiredNativeScenario?.branchByVariant[variant.id];
   const id = fixture.scenarioIds.length === 1 ? fixture.scenarioIds[0] : undefined;
   const assertion = id && request.scenarioIds.includes(id) ? fixture.assertions[id] : undefined;
-  const checkpoints = id && assertion ? nativeEvidenceCheckpoints(id, fixture, variant) : [];
+  const checkpoints = id && assertion ? nativeEvidenceCheckpoints(id, fixture, variant) : undefined;
   const nativeEvidence: RuntimeNativeEvidenceProbe | undefined =
-    id && assertion && contract && checkpoints.length
+    id && assertion && contract && checkpoints !== undefined
       ? {
           checkpoints,
-          async accepts(page, candidate) {
+          wallClockBudgetMs: 120_000,
+          async failures(page, candidate) {
             const evidence = await captureRuntimeHumanAuthority(page, contract.humanPlayerNumber);
-            if (evaluateRuntimeVariant(id, assertion, { ...candidate, opponentCapture: evidence }, fixture).length)
-              return false;
-            opponentCapture = evidence;
-            return true;
+            if (
+              [candidate.productionCapture, evidence].some(
+                (capture) => capture && (capture.droppedFactCount || capture.droppedSnapshotCount)
+              )
+            )
+              throw new Error("runtime_focused_capture_overflow:" + variant.id);
+            const failures = evaluateRuntimeVariant(
+              id,
+              assertion,
+              { ...candidate, opponentCapture: evidence },
+              fixture
+            );
+            const ownershipFailure = failures.find((failure) =>
+              ["native_actor_owned_by_multiple_squads", "native_actor_commanded_twice_in_decision"].some(
+                (reason) => failure === variant.id + ":" + reason
+              )
+            );
+            if (ownershipFailure) throw new Error("runtime_focused_irreversible_failure:" + ownershipFailure);
+            if (failures.length === 0) opponentCapture = evidence;
+            return failures;
           }
         }
       : undefined;

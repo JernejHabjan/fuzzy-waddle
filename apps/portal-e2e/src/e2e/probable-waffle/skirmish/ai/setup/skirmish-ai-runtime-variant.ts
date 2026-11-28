@@ -3,7 +3,7 @@ import type { RuntimePerturbation } from "../contracts/skirmish-ai-runtime-pertu
 
 export interface RuntimeVariant {
   readonly id: string;
-  readonly executionKind: "focused_preset" | "focused_natural" | "continuous";
+  readonly executionKind: "focused_preset" | "focused_natural" | "continuous" | "continuous_preset";
   readonly role: "subject" | "control" | "standalone";
   readonly pairId?: string;
   readonly setupRationale?: string;

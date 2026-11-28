@@ -4,15 +4,9 @@ import {
 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type {
-  AiRuntimeProductionSnapshot
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
-import type {
-  AiRuntimeRouteOrder
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-route-order";
-import type {
-  AiRuntimeCreatedActor
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/harness/capture/ai-runtime-created-actor";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type { AiRuntimeRouteOrder } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-route-order";
+import type { AiRuntimeCreatedActor } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/harness/capture/ai-runtime-created-actor";
 import { matchRuntimeRouteServiceLineage } from "../routing/skirmish-ai-runtime-route-service-lineage";
 import { validateRuntimeRouteCallers } from "./skirmish-ai-runtime-route-caller-validation";
 import { RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT } from "../routing/skirmish-ai-runtime-route-history-budget";
@@ -126,6 +120,16 @@ export function validateRuntimeRouteOrders(capture: AiRuntimeProductionSnapshot)
         typeof order.admissionObserved !== "boolean" ||
         (order.originOutputId !== null && !id(order.originOutputId)) ||
         (order.target && !actor(order.target)) ||
+        (order.pursuitReleasedTargetActorId !== undefined &&
+          (typeof order.pursuitReleasedTargetActorId !== "string" ||
+            !order.pursuitReleasedTargetActorId ||
+            order.orderType !== OrderType.Attack ||
+            // Later samples may acquire a new local target while keeping the original pursuit exclusion.
+            (order.target !== null &&
+              (value.kind === "route_order" || order.target.actorId === order.pursuitReleasedTargetActorId)) ||
+            !order.targetTile ||
+            (execution !== undefined && execution.source !== "ai") ||
+            (value.kind === "route_order" && execution?.source !== "ai"))) ||
         (order.targetTile &&
           (!integer(order.targetTile.x) || !integer(order.targetTile.y) || !Number.isFinite(order.targetTile.z))) ||
         (context &&

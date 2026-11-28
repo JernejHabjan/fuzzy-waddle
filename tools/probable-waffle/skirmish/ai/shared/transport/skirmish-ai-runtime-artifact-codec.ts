@@ -1,5 +1,15 @@
 import type { RuntimeArtifactDocument } from "../../contracts/reports/runtime-artifact-document.ts";
-import { closeSync, copyFileSync, existsSync, mkdirSync, openSync, readFileSync, statSync, writeSync } from "node:fs";
+import {
+  closeSync,
+  copyFileSync,
+  existsSync,
+  linkSync,
+  mkdirSync,
+  openSync,
+  readFileSync,
+  statSync,
+  writeSync
+} from "node:fs";
 import { join } from "node:path";
 
 const encoding = "shared-runtime-variants";
@@ -9,6 +19,17 @@ const maxInlineVariantBytes = 8 * 1024 * 1024;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+/** Preserve both artifact paths without duplicating large files when they share a filesystem. */
+function retainVariantFile(source: string, destination: string) {
+  try {
+    linkSync(source, destination);
+  } catch (error) {
+    const code = error && typeof error === "object" && "code" in error ? error.code : undefined;
+    if (!["EXDEV", "EACCES", "EPERM", "ENOTSUP", "EOPNOTSUPP"].includes(String(code))) throw error;
+    copyFileSync(source, destination);
+  }
 }
 
 function summarizeExternalVariant(variant: unknown) {
@@ -176,7 +197,7 @@ export function encodeRuntimeArtifact(report: RuntimeArtifactDocument, artifactP
       const destination = `${artifactPath}.variants`;
       mkdirSync(destination, { recursive: true });
       for (const file of runtime.artifactVariantFiles ?? [])
-        copyFileSync(join(`${runtime.__artifactSourcePath}.variants`, file), join(destination, file));
+        retainVariantFile(join(`${runtime.__artifactSourcePath}.variants`, file), join(destination, file));
       const copy = { ...runtime };
       delete copy.__artifactSourcePath;
       return { ...report, runtime: copy };

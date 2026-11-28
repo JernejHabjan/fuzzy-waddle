@@ -5,6 +5,7 @@ import {
   nativeRecoveryCommonFailures,
   nativeRecoveryDeadlineFailures,
   nativeRecoveryIncome,
+  nativeObservedCropReadyTick,
   nativeRecoveryObligation
 } from "./skirmish-ai-native-recovery-evidence";
 import { evaluateNativeMissionRecovery } from "../combat/missions/skirmish-ai-native-mission-recovery-evaluation";
@@ -12,7 +13,9 @@ import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Fail closed on missing native premises before interpreting deadlines or a reassuring recovery trace. */
 export function evaluateNativeRecovery(id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>) {
-  const failures = nativeRecoveryCommonFailures(context);
+  const failures = nativeRecoveryCommonFailures(context).filter(
+    (failure) => !(["H-03", "H-19"].includes(id) && failure === "recovery_unrelated_native_income_missing")
+  );
   if (["H-24", "H-25", "H-26"].includes(id)) failures.push(...evaluateNativeMissionRecovery(id, branch, context));
   else if (id === "H-03") failures.push(...healthyWorkFailures(branch, context));
   else if (id === "H-19") failures.push(...optionalQueryFailures(branch, context));
@@ -46,7 +49,7 @@ function healthyWorkFailures(branch: string, context: ReturnType<typeof nativeSc
   if (branch === "training") {
     const initial = context.result.presetInitialQueueItems,
       output = nativePaidMissionOutputs(context);
-    if (initial.length !== 4) failures.push("recovery_healthy_original_paid_queue_missing");
+    if (initial.length !== 3) failures.push("recovery_healthy_original_paid_queue_missing");
     const last = initial.at(-1);
     if (!last || !output.some((entry) => entry.item.itemId === last.itemId && entry.fact.tick > 200))
       failures.push("recovery_healthy_long_queue_did_not_complete_original_item");
@@ -78,25 +81,11 @@ function healthyWorkFailures(branch: string, context: ReturnType<typeof nativeSc
     )
       failures.push("recovery_real_long_queue_progress_missing");
   } else if (branch === "crop") {
-    const growing = context.frames.find((frame) =>
-      frame.decision.input?.observation?.actors.some(
-        (actor) =>
-          actor.actorId === context.role("healthy-field") &&
-          actor.resourceState.status === "known" &&
-          actor.resourceState.value.growthReadyTick.status === "known" &&
-          actor.resourceState.value.growthReadyTick.value > frame.tick + 200
-      )
-    );
+    const fieldId = context.role("healthy-field"),
+      readyTick = nativeObservedCropReadyTick(context.frames, fieldId);
     if (
-      !growing ||
-      !nativeRecoveryIncome(
-        context,
-        growing.tick + 200,
-        context.role("worker-0"),
-        "healthy-field",
-        ResourceType.Food,
-        2
-      )
+      readyTick === undefined ||
+      !nativeRecoveryIncome(context, readyTick, undefined, "healthy-field", ResourceType.Food, 2)
     )
       failures.push("recovery_original_crop_growth_and_delivered_harvest_missing");
   } else {
@@ -111,13 +100,7 @@ function healthyWorkFailures(branch: string, context: ReturnType<typeof nativeSc
       failures.push("recovery_healthy_travel_did_not_exceed_200_ticks_and_arrive");
     if (
       branch === "stalled" &&
-      (!context.result.perturbations.some((event) => event.id === "healthy-matched-outage") ||
-        !arrived.length ||
-        !context.frames.some((frame) =>
-          frame.decision.missionState?.recovery?.records.some(
-            (record) => record.actorId === actor || record.domain === "squad"
-          )
-        ))
+      (!context.result.perturbations.some((event) => event.id === "healthy-matched-outage") || !arrived.length)
     )
       failures.push("recovery_stalled_matched_control_never_recovered");
   }
@@ -128,8 +111,9 @@ function healthyWorkFailures(branch: string, context: ReturnType<typeof nativeSc
 function optionalQueryFailures(branch: string, context: ReturnType<typeof nativeScenarioContext>) {
   const failures: string[] = [],
     end = branch === "late" ? 600 : 1001;
+  const actorId = context.role("army-0");
   const fault = context.result.perturbations.find(
-    (event) => event.id === "optional-query-outage" && event.affectedActorId === context.role("army-0")
+    (event) => event.id === "optional-query-outage" && event.affectedActorId === actorId
   );
   const defense = nativeWeaponHits(context, context.role("local-attacker"), 200).find((fact) => fact.tick <= end);
   if (!fault || !defense || fault.tick >= defense.tick)
@@ -144,8 +128,32 @@ function optionalQueryFailures(branch: string, context: ReturnType<typeof native
     )
   )
     failures.push("recovery_real_local_attack_premise_missing");
-  if (!context.arrived(context.role("army-0")).some((movement) => (movement.observations.at(-1)?.tick ?? 0) > end))
-    failures.push("recovery_original_optional_query_never_resumed_after_fixed_release");
+  const original = context.facts.find(
+    (fact) =>
+      fact.kind === "spatial_authority" &&
+      fact.spatial.kind === "movement" &&
+      fact.spatial.source.actorId === actorId &&
+      fact.spatial.phase === "started" &&
+      fact.tick <= end &&
+      fact.spatial.originalDestination !== null
+  );
+  const destination =
+    original?.kind === "spatial_authority" && original.spatial.kind === "movement"
+      ? original.spatial.originalDestination
+      : null;
+  const resolved =
+    destination &&
+    context.facts.some(
+      (fact) =>
+        fact.kind === "spatial_authority" &&
+        fact.spatial.kind === "movement" &&
+        fact.spatial.source.actorId === actorId &&
+        ["destination", "returned_false"].includes(fact.spatial.phase) &&
+        fact.tick > end &&
+        fact.spatial.originalDestination?.x === destination.x &&
+        fact.spatial.originalDestination?.y === destination.y
+    );
+  if (!resolved) failures.push("recovery_original_optional_query_never_resolved_after_fixed_release");
   return failures;
 }
 

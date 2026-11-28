@@ -1,14 +1,71 @@
 {
   "schemaVersion": 1,
   "cases": {
+    "PRO-05": {
+      "latestTick": 1200,
+      "branches": ["loss", "served"],
+      "checkpointTicks": [20, 39, 40, 60, 200, 400, 600, 800, 1000, 1200],
+      "evidenceCheckpoints": [800, 1000],
+      "evidenceCheckpointBranches": ["loss"],
+      "combatCaptureBranches": [],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "Replace one lost producer that is still needed while leaving the other ready producer intact.",
+        "setup": ["Use a matched pair of fulfilled two-producer worlds with real workers and food service"],
+        "actions": ["Lose one bound producer at tick 40 while the initial two-producer demand still applies"],
+        "measurements": [
+          "Observe dated capacity demand, exact native construction and payment, ready replacement and the surviving original producer"
+        ],
+        "required": [
+          "One paid replacement after native loss and a bounded stabilization window",
+          "No additional producer in the served control"
+        ],
+        "forbidden": ["Capacity inferred from selecting construction or from repeated aggregate counts"],
+        "branches": ["Both supported factions", "Single native loss or still served"],
+        "checkpointPolicy": "The pure planner test owns the one-to-three demand transition, repeated callbacks, and 100-decision stress window.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "RAID-02": {
+      "evidenceCheckpoints": [400, 600],
+      "evidenceCheckpointBranches": ["reinforced"],
+      "latestTick": 620,
+      "branches": ["reinforced", "quiet"],
+      "checkpointTicks": [20, 100, 200, 400, 600, 620],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "A native raid withdraws when its target is reinforced, preserving part of the original raiding party.",
+        "setup": [
+          "Stage a stable home economy and a reachable enemy economic objective with an initially clear approach"
+        ],
+        "actions": [
+          "Allow the AI to attack the economic target; move staged enemy defenders into its approach at tick 200 in the reinforced branch"
+        ],
+        "measurements": [
+          "Selected and applied raid orders, physical attack, observed reinforcement, subsequent orders and survival of original raiders"
+        ],
+        "required": [
+          "An original raider reaches the safe fallback through an AI movement order",
+          "A matched quiet branch demonstrates an uncontested raid"
+        ],
+        "forbidden": [
+          "Unrelated home-defense commands, selected-but-unapplied orders, or late attacks by the withdrawn raiders standing in for withdrawal"
+        ],
+        "branches": ["Both AI factions", "Opposing defenders advance or stay out of contact"],
+        "checkpointPolicy": "Seal the preparation, intervention and response on the native fixed-step timeline.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
     "PLACE-01": {
-      "latestTick": 2400,
+      "evidenceCheckpoints": [200, 400, 600, 800],
+      "combatCaptureBranches": [],
+      "latestTick": 1000,
       "branches": ["room", "constrained"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
         "requiredOutcome": "Efficient aligned field layout in safe economic space, valid tending/deposit access; no valuable central/corridor occupation when a suitable alternative exists",
         "setup": [
-          "Create dated food demand requiring several current-definition fields and tending workers",
+          "Create dated food demand requiring two current-definition fields and tending workers",
           "Reserve actual production exit, retreat and main worker corridors; provide safe aligned alternatives"
         ],
         "actions": [
@@ -37,6 +94,9 @@
       }
     },
     "PLACE-02": {
+      "evidenceCheckpoints": [800, 1200, 1600, 2000],
+      "evidenceCheckpointBranches": ["safe", "exposed"],
+      "combatCaptureBranches": [],
       "latestTick": 2400,
       "branches": ["safe", "exposed", "both_exposed"],
       "acceptance": {
@@ -62,14 +122,17 @@
         "branches": [
           "Safe outer",
           "Observed exposed outer",
-          "Both sites exposed requires an explicit constrained decision"
+          "Both sites exposed leaves affordable food demand unmet without selecting an unsafe build"
         ],
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
         "executionStatus": "authored_not_executed"
       }
     },
     "PLACE-03": {
-      "latestTick": 3000,
+      "checkpointTicks": [20, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000],
+      "evidenceCheckpoints": [1600, 1800],
+      "combatCaptureBranches": [],
+      "latestTick": 2000,
       "branches": ["layout", "concurrent", "completion", "loss"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
@@ -80,11 +143,11 @@
         ],
         "actions": [
           "Admit competing builds through the ordinary AI path",
-          "Observe each applied construction prefix, completion and one native transit/spawn at every protected route"
+          "Check clearance after each applied build; after completion, cross the authored worker and army routes with real units and observe the producer exit"
         ],
         "measurements": [
           "Exact occupied footprints and required clearance per unit",
-          "Native path traversal, spawn identity and remaining legal site after each prefix"
+          "Native worker and army crossings after the completed layout, plus producer spawn identity"
         ],
         "required": ["Every applied prefix preserves required service, movement, spawn and future construction access"],
         "forbidden": [
@@ -138,35 +201,40 @@
       }
     },
     "WALL-01": {
-      "latestTick": 3000,
+      "evidenceCheckpoints": [400, 1800, 1920],
+      "evidenceCheckpointBranches": ["terrain", "freestanding", "no_value"],
+      "latestTick": 2000,
+      "checkpointTicks": [400, 1800, 1920, 2000],
       "branches": ["terrain", "freestanding", "no_value"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
         "requiredOutcome": "Useful connected defense exploits terrain, covers assets and reduces required artificial wall length",
         "setup": [
           "Bind actual cliff/water edges, one important hostile ground approach and protected assets",
-          "Use a faction with legal wall/stair definitions and affordable measured defensive demand"
+          "Use the same base, force and resource start in both positive branches; widen only the terrain anchors in the control"
         ],
         "actions": [
-          "Let AI construct a connected defensive prefix against the real approach",
-          "Drive ordinary hostile and friendly traversal and occupy planned defender posts"
+          "Let AI finish the selected defense graph against the real approach, leaving the reserved opening clear",
+          "Order a separate ground approach to the protected asset and record a hit by a tower on the completed line"
         ],
         "measurements": [
-          "Native surface graph, artificial wall length/cost, hostile route detour/exposure and protected assets",
-          "Friendly clearance and reachable occupied firing posts"
+          "Native surface graph, artificial wall length, friendly clearance and actual defensive tower fire"
         ],
         "required": [
           "Terrain-aware defense provides measured restriction/coverage using less artificial wall than a same-purpose freestanding control"
         ],
-        "forbidden": ["Wall node count accepted as defense", "Unoccupied unreachable posts credited as coverage"],
+        "forbidden": [
+          "Wall node count accepted as defense",
+          "An unrelated hit or a shot before completion credited to the defensive line"
+        ],
         "branches": ["Terrain-assisted entrance", "Equivalent freestanding control", "No useful protected assets"],
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
         "executionStatus": "authored_not_executed"
       }
     },
     "WALL-02": {
-      "latestTick": 3000,
-      "checkpointTicks": [100, 199, 200, 399, 400, 600, 800, 1000, 1200, 1600, 2000, 2400, 3000],
+      "latestTick": 2700,
+      "checkpointTicks": [100, 199, 200, 399, 400, 600, 800, 1000, 1200, 1600, 2000, 2400, 2700],
       "branches": ["worker", "army", "concurrent", "enemy_opening"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
@@ -359,10 +427,11 @@
       }
     },
     "SCOUT-01": {
-      "latestTick": 2000,
+      "latestTick": 620,
+      "checkpointTicks": [20, 100, 199, 200, 399, 400, 600, 620],
       "branches": ["hidden_a", "hidden_b"],
       "combatCaptureBranches": [],
-      "evidenceCheckpoints": [600, 1000, 1600],
+      "evidenceCheckpoints": [100, 200, 400, 600],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
         "requiredOutcome": "Assign reachable information objectives; discover legally rather than target hidden IDs",
@@ -430,7 +499,10 @@
       }
     },
     "SCOUT-03": {
-      "latestTick": 2000,
+      "evidenceCheckpoints": [400, 800],
+      "evidenceCheckpointBranches": ["escape", "trapped"],
+      "combatCaptureBranches": [],
+      "latestTick": 1000,
       "branches": ["escape", "trapped"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
@@ -461,7 +533,8 @@
       }
     },
     "SCOUT-04": {
-      "latestTick": 2400,
+      "evidenceCheckpoints": [400, 600, 800],
+      "latestTick": 1000,
       "branches": ["producer", "expansion", "approach"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
@@ -559,7 +632,10 @@
       }
     },
     "STRAT-05": {
-      "latestTick": 2400,
+      "checkpointTicks": [20, 100, 199, 200, 399, 400, 520, 600],
+      "evidenceCheckpoints": [400, 520],
+      "evidenceCheckpointBranches": ["reinforced", "blocked_retreat"],
+      "latestTick": 600,
       "branches": ["reinforced", "quiet", "blocked_retreat"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
@@ -588,7 +664,7 @@
           "No-reinforcement control",
           "No safe retreat requires bounded alternative"
         ],
-        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "checkpointPolicy": "The opening attack must be physically committed before tick 200. Reject counterforce visibility before that move, then sample native response at 400 and 520 under a 600-tick outer bound.",
         "executionStatus": "authored_not_executed"
       }
     },
@@ -624,6 +700,8 @@
       }
     },
     "STRAT-07": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["expansion", "unfinished", "breach"],
       "latestTick": 2400,
       "branches": ["expansion", "unfinished", "breach", "defended"],
       "acceptance": {
@@ -712,6 +790,8 @@
       }
     },
     "STRAT-12": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["denial", "own_threat"],
       "latestTick": 2400,
       "branches": ["denial", "own_threat", "unused"],
       "acceptance": {
@@ -742,6 +822,8 @@
       }
     },
     "STRAT-13": {
+      "evidenceCheckpoints": [1000, 1600, 2000],
+      "evidenceCheckpointBranches": ["equal", "escalated"],
       "latestTick": 2400,
       "branches": ["equal", "escalated", "infeasible"],
       "acceptance": {
@@ -807,7 +889,10 @@
       }
     },
     "FIGHT-01": {
-      "latestTick": 2400,
+      "evidenceCheckpoints": [600, 800, 1000, 1060],
+      "evidenceCheckpointBranches": ["reinforced", "support_loss", "completed"],
+      "latestTick": 1080,
+      "checkpointTicks": [20, 100, 200, 399, 400, 600, 800, 1000, 1020, 1060, 1080],
       "branches": ["reinforced", "support_loss", "completed", "quiet"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
@@ -817,13 +902,17 @@
           "Bind friendly support and an opponent reinforcement group outside legitimate vision"
         ],
         "actions": [
-          "Start actual combat then reveal reinforcements, lose support or complete the mission objective",
-          "Let surviving units retreat or regroup by normal commands"
+          "Start actual combat then let a reinforcement group counterattack and hold its front, lose support, or complete the mission objective",
+          "Observe the surviving actors' withdrawal or practical follow-up by normal commands"
         ],
         "measurements": [
           "Effective native weapons, health/losses, contact tick, last useful purpose and actual escape movement"
         ],
-        "required": ["Changed risk or completed purpose causes bounded reassessment and useful retreat/regroup"],
+        "required": [
+          "Reinforcement pressure causes a useful retreat or regroup by a participant in the original fight",
+          "Completed purpose releases the original target and permits regroup or an effective attack on the next objective",
+          "If the assault remains viable after support is lost, an original surviving attacker can prove useful continuation"
+        ],
         "forbidden": ["Fighting to total destruction to retain old goal", "Retreat label without physical withdrawal"],
         "branches": ["Enemy reinforcement", "Support lost", "Objective completed", "No-change favorable control"],
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
@@ -861,7 +950,9 @@
       }
     },
     "FIGHT-03": {
-      "latestTick": 2400,
+      "evidenceCheckpoints": [800, 1000],
+      "evidenceCheckpointBranches": ["equal", "unequal", "infeasible"],
+      "latestTick": 1200,
       "branches": ["unequal", "equal", "infeasible"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
@@ -1033,6 +1124,7 @@
       }
     },
     "STRAT-08": {
+      "continuousSetup": "Start with a clear finishing opportunity and observe normal victory and its physical outcome.",
       "latestTick": 18000,
       "branches": ["exposed", "defended"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
@@ -1103,9 +1195,9 @@
       }
     },
     "DOMAIN-01": {
-      "latestTick": 2000,
+      "latestTick": 400,
       "branches": ["irrelevant"],
-      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000],
+      "checkpointTicks": [20, 100, 199, 200, 399, 400],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
         "requiredOutcome": "No naval demand solely from water existence",
@@ -1165,6 +1257,8 @@
       ]
     },
     "DOMAIN-05": {
+      "evidenceCheckpoints": [1200, 2000, 2400],
+      "evidenceCheckpointBranches": ["backline"],
       "latestTick": 3000,
       "branches": ["backline", "anti_air", "no_value"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
@@ -1341,9 +1435,11 @@
       }
     },
     "C-04": {
-      "latestTick": 3000,
+      "evidenceCheckpoints": [200, 400, 800],
+      "evidenceCheckpointBranches": ["answered", "repeated", "distinct", "irrelevant"],
+      "latestTick": 1000,
       "branches": ["answered", "repeated", "distinct", "irrelevant"],
-      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
+      "checkpointTicks": [0, 20, 200, 400, 600, 800, 1000],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
         "requiredOutcome": "Question-driven scouting changes a real decision; repeated reading of the same contact does not inflate enemy mass/confidence",
@@ -1375,9 +1471,9 @@
       }
     },
     "C-05": {
-      "latestTick": 3000,
+      "latestTick": 1100,
       "branches": ["bait", "valuable", "won_battle", "unsafe"],
-      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
+      "checkpointTicks": [200, 400, 600, 800, 1000, 1100],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
         "requiredOutcome": "Bait retreat cannot pull asset defenders into a bad pursuit; won battle creates useful follow-up pressure",
@@ -1501,9 +1597,12 @@
       }
     },
     "H-03": {
-      "latestTick": 4000,
+      "evidenceCheckpoints": [600, 800, 1000],
+      "evidenceCheckpointBranches": ["training", "crop", "travel"],
+      "combatCaptureBranches": [],
+      "latestTick": 1600,
       "branches": ["training", "crop", "travel", "stalled"],
-      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000],
+      "checkpointTicks": [0, 20, 200, 400, 600, 800, 1000, 1020, 1200, 1600],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
         "requiredOutcome": "Healthy work is retained with observed progress/expected milestone; watchdog does not repeatedly cancel it",
@@ -1569,9 +1668,10 @@
       }
     },
     "H-19": {
-      "latestTick": 2400,
+      "evidenceCheckpoints": [1020],
+      "latestTick": 1040,
       "branches": ["pending", "late", "error"],
-      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400],
+      "checkpointTicks": [0, 20, 200, 400, 600, 800, 1000, 1020, 1040],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
         "requiredOutcome": "Local permitted defense still executes; query failure cannot freeze the whole brain",
@@ -1584,10 +1684,11 @@
           "Later reject or complete that original query without changing its generation identity"
         ],
         "measurements": [
-          "Pending route identity, complete committed observation generation and native local defense command/effect"
+          "Pending route identity, complete committed observation generation, native local defense command/effect, and the original route query's bounded result after release"
         ],
         "required": [
           "Local permitted defense executes while optional query is pending",
+          "The original query resolves to a native destination or no-route result after release",
           "Query failure stays a bounded technical/recovery case rather than global strategic infeasibility"
         ],
         "forbidden": ["Whole brain waiting for every path Promise", "Hidden state mixed from partial generations"],
@@ -1597,6 +1698,8 @@
       }
     },
     "H-24": {
+      "evidenceCheckpoints": [1200, 1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["information", "raid", "denial"],
       "latestTick": 3000,
       "branches": ["information", "raid", "denial", "unsafe"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
@@ -1657,6 +1760,8 @@
       }
     },
     "H-26": {
+      "evidenceCheckpoints": [1600, 2000, 2400],
+      "evidenceCheckpointBranches": ["grouping", "safe_alternate", "threat_clears"],
       "latestTick": 3000,
       "branches": ["grouping", "safe_alternate", "no_safe_route", "threat_clears"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
@@ -1686,6 +1791,7 @@
       }
     },
     "H-06": {
+      "combatCaptureBranches": [],
       "latestTick": 2000,
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000],
       "branches": ["withheld", "rejected", "late"],
@@ -1722,6 +1828,7 @@
       ]
     },
     "H-07": {
+      "combatCaptureBranches": ["destroyed"],
       "latestTick": 2400,
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400],
       "branches": ["destroyed", "alive"],
@@ -1755,6 +1862,9 @@
       ]
     },
     "H-10": {
+      "combatCaptureBranches": [],
+      "evidenceCheckpoints": [2000, 2400],
+      "evidenceCheckpointBranches": ["resumed"],
       "latestTick": 3000,
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
       "branches": ["below_capacity", "at_capacity", "over_capacity", "resumed"],
@@ -1941,6 +2051,9 @@
       ]
     },
     "H-11": {
+      "combatCaptureBranches": [],
+      "evidenceCheckpoints": [1600, 2000, 2400, 3000],
+      "evidenceCheckpointBranches": ["one_worker", "bootstrap"],
       "latestTick": 4000,
       "branches": ["one_worker", "bootstrap", "infeasible"],
       "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000],
@@ -1980,9 +2093,11 @@
       ]
     },
     "H-12": {
-      "latestTick": 3000,
+      "combatCaptureBranches": [],
+      "evidenceCheckpoints": [1200, 1600],
+      "latestTick": 1800,
       "branches": ["scarce", "paid_neighbor", "permuted", "acyclic"],
-      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000],
+      "checkpointTicks": [0, 20, 200, 400, 800, 1200, 1600, 1800],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
         "requiredOutcome": "Native atomic bundles prevent resource deadlock; pure cycle recovery releases the original lowest-priority reversible bundle deterministically",
@@ -2022,6 +2137,7 @@
       ]
     },
     "D-01": {
+      "combatCaptureBranches": [],
       "latestTick": 2000,
       "checkpointTicks": [40, 200, 400, 800, 1200, 1600, 2000],
       "branches": ["easy", "normal", "hard"],
@@ -2102,6 +2218,7 @@
       }
     },
     "D-04": {
+      "continuousSetup": "Observe multiple linked phases on Easy from legal opening through useful production, countering and recovery.",
       "latestTick": 18000,
       "checkpointTicks": [40, 400, 1200, 2400, 2600, 3000, 3200, 4000, 5000, 6000, 12000, 18000],
       "branches": ["opening_counter_retreat_recovery"],
@@ -2190,6 +2307,7 @@
       }
     },
     "SEQ-03": {
+      "continuousSetup": "Retain the same economy across demand, collection congestion, outage, recovery and useful expansion.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["partial_pack", "congested", "efficient"],
@@ -2220,6 +2338,7 @@
       }
     },
     "SEQ-04": {
+      "continuousSetup": "Retain the same queue and command identities across supply and producer loss, rebuild and useful production.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["immediate_paid", "cancel_race"],
@@ -2252,6 +2371,7 @@
       }
     },
     "SEQ-06": {
+      "continuousSetup": "Retain the finished defensive front across approach, breach, repair and a mobile counterattack.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["wall", "stair", "value_lost", "ground_air"],
@@ -2281,6 +2401,7 @@
       }
     },
     "SEQ-07": {
+      "continuousSetup": "Retain the same force and knowledge across confirmed adaptation, failed assault and renewed pressure.",
       "latestTick": 18000,
       "checkpointTicks": [200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000, 6000, 12000, 18000],
       "branches": ["confirmed", "stale", "alternate"],
@@ -2306,6 +2427,7 @@
       }
     },
     "DBG-04": {
+      "combatCaptureBranches": [],
       "latestTick": 2400,
       "checkpointTicks": [40, 200, 400, 800, 1200, 1600, 2000, 2400],
       "branches": ["identical", "changed_input", "changed_config", "same_input_divergence", "what_if"],
@@ -2634,6 +2756,7 @@
       }
     },
     "SEQ-08": {
+      "continuousSetup": "Carry the source and resumed matches through a normal result, then verify a clean next match. The initial samples only cover the save or transfer boundary.",
       "latestTick": 18000,
       "checkpointTicks": [19, 119, 199, 400, 18000],
       "branches": ["before_apply", "applied_pending", "during_active", "host_transfer"],

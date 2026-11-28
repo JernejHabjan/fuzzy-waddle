@@ -1,18 +1,15 @@
 import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
 import type { RuntimePresetWorld } from "../../setup/skirmish-ai-runtime-preset-world";
 import { ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
-import type {
-  AiRuntimePlacementClearance
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/construction/ai-runtime-placement-clearance";
-import type {
-  AiRuntimeProductionFact
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type { AiRuntimePlacementClearance } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/construction/ai-runtime-placement-clearance";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 
 /** Checks static access at every applied shared-build prefix. Actual unit transit/spawn remains a separate obligation. */
 export function evaluateRuntimePlacementPrefixes(
   preset: RuntimePresetWorld,
   result: Pick<RuntimeVariantResult, "productionPreset" | "productionCapture">,
-  minimumAppliedPrefixes: number
+  minimumAppliedPrefixes: number,
+  maximumAppliedPrefixes?: number
 ): string[] {
   const capture = result.productionCapture,
     application = result.productionPreset;
@@ -24,7 +21,9 @@ export function evaluateRuntimePlacementPrefixes(
     capture.droppedSnapshotCount ||
     application.fixtureId !== preset.fixtureId ||
     !Number.isSafeInteger(minimumAppliedPrefixes) ||
-    minimumAppliedPrefixes < 1
+    minimumAppliedPrefixes < 1 ||
+    (maximumAppliedPrefixes !== undefined &&
+      (!Number.isSafeInteger(maximumAppliedPrefixes) || maximumAppliedPrefixes < minimumAppliedPrefixes))
   ) {
     return ["placement_prefix_capture_or_scope_missing"];
   }
@@ -64,7 +63,7 @@ export function evaluateRuntimePlacementPrefixes(
   );
   if (applied.length < minimumAppliedPrefixes) failures.push("placement_prefix_required_builds_missing");
   const commandIds = new Set<string>();
-  for (const fact of applied) {
+  for (const fact of applied.slice(0, maximumAppliedPrefixes ?? applied.length)) {
     if (fact.kind !== "outcome") continue;
     const outcome = fact.outcome;
     if (!outcome.commandId || commandIds.has(outcome.commandId) || outcome.worldLinkIds.length !== 1) {

@@ -83,25 +83,35 @@ export function nativeCompletedPlacements(context: ReturnType<typeof nativeScena
 }
 
 /** Count native legal, unoccupied, unreserved field footprints across the entire setup map, using its actual field shape. */
-export function nativeInitialFieldSites(context: ReturnType<typeof nativeScenarioContext>) {
+export function nativeInitialFieldSites(
+  context: ReturnType<typeof nativeScenarioContext>,
+  template = nativeCompletedPlacements(context).find(
+    (placement) => placement.value.site.canonicalObjectName === "Field"
+  )?.value,
+  footprintOffsets = template?.footprint?.map((tile) => ({
+    x: tile.x - template.command.tileVec3.x,
+    y: tile.y - template.command.tileVec3.y
+  })) ?? [
+    { x: -1, y: -1 },
+    { x: -1, y: 0 },
+    { x: -1, y: 1 },
+    { x: 0, y: -1 },
+    { x: 0, y: 0 },
+    { x: 0, y: 1 },
+    { x: 1, y: -1 },
+    { x: 1, y: 0 },
+    { x: 1, y: 1 }
+  ]
+) {
   const setup = context.capture?.setup,
     baseline = context.result.productionPreset?.placementBaseline;
-  const field = nativeCompletedPlacements(context).find(
-    (placement) => placement.value.site.canonicalObjectName === "Field"
-  );
   const layer = setup?.topology[0];
-  if (!setup || !layer || !baseline || !field || setup.actors.some((actor) => !actor.footprint)) return null;
-  const footprint = field.value.footprint;
-  if (!footprint) return null;
-  const offsets = footprint.map((tile) => ({
-    x: tile.x - field.value.command.tileVec3.x,
-    y: tile.y - field.value.command.tileVec3.y
-  }));
+  if (!setup || !layer || !footprintOffsets.length || setup.actors.some((actor) => !actor.footprint)) return null;
   const occupied = new Set(
     setup.actors.flatMap((actor) => actor.footprint?.map((tile) => `${tile.x},${tile.y}`) ?? [])
   );
   const reserved = new Set(
-    baseline.routes.flatMap((route) =>
+    (baseline?.routes ?? []).flatMap((route) =>
       (route.path ?? []).flatMap((tile) => {
         const margin = route.declaration.tileMargin,
           cells: string[] = [];
@@ -127,7 +137,7 @@ export function nativeInitialFieldSites(context: ReturnType<typeof nativeScenari
   for (let y = 0; y < layer.height; y++)
     for (let x = 0; x < layer.width; x++) {
       if (
-        offsets.every((offset) => {
+        footprintOffsets.every((offset) => {
           const key = `${x + offset.x},${y + offset.y}`;
           return available.has(key) && !occupied.has(key) && !reserved.has(key);
         })

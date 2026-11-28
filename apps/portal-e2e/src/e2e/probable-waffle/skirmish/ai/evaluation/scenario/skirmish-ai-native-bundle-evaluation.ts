@@ -2,9 +2,7 @@ import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protoco
 import type { nativeScenarioContext } from "../../contracts/skirmish-ai-native-scenario-context";
 import { nativeCompletedPlacements } from "../../construction/evaluation/skirmish-ai-native-construction-evidence";
 import { hasNativeSourceDelivery } from "../../economy/service/skirmish-ai-source-delivery";
-import type {
-  AiRuntimeProductionFact
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 
 /** User-approved H-12: native atomic prevention, with synthetic recovery policy covered separately by pure tests. */
 export function evaluateNativeBundles(branch: string, context: ReturnType<typeof nativeScenarioContext>): string[] {
@@ -138,10 +136,27 @@ export function evaluateNativeBundles(branch: string, context: ReturnType<typeof
     const paid = context.result.productionPreset?.constructionApplications?.find(
       (entry) => entry.fixtureActorId === "paid-neighbor-site"
     );
+    const nativeCharge =
+      paid &&
+      context.facts.find(
+        (fact) =>
+          fact.kind === "construction_authority" &&
+          fact.construction.kind === "resource" &&
+          fact.construction.operation === "start_charge" &&
+          fact.construction.site.actorId === paid.siteActorId &&
+          fact.construction.status === "returned" &&
+          fact.construction.ownerArgument === 2 &&
+          fact.construction.callbackCount === 1 &&
+          fact.construction.balanceMatches &&
+          !fact.construction.nestedEmission &&
+          fact.construction.sceneActive &&
+          !fact.construction.snapshotRestoreInProgress &&
+          sameVector(fact.construction.configuredCost, fact.construction.requested)
+      );
     if (
       !paid ||
       !paid.outcomes.some((outcome) => outcome.kind === "applied" && outcome.worldLinkIds.includes(paid.siteActorId)) ||
-      !resources.some((type) => paid.resourcesBefore[type] > paid.resourcesAfter[type]) ||
+      !nativeCharge ||
       !context.capture?.frontiers?.intervals
         .at(-1)
         ?.actors.some(({ identity }) => identity.actorId === paid.siteActorId && identity.alive && identity.finished) ||

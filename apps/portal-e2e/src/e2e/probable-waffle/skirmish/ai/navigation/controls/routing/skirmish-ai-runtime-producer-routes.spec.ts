@@ -1,5 +1,11 @@
 import { RUNTIME_ROUTE_HISTORY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
-import { ConstructionStateEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ConstructionStateEnum,
+  OrderType,
+  ProbableWaffleGameCommandTypes,
+  type ActorActionCommand
+} from "@fuzzy-waddle/probable-waffle-protocol";
+import { runtimeRouteOrderMatchesCommand } from "./skirmish-ai-runtime-route-service-command";
 import { expect, test } from "@playwright/test";
 // prettier-ignore
 import type {
@@ -7,9 +13,7 @@ import type {
 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { productionSpatialFixture } from "../../../production/world/skirmish-ai-runtime-production-spatial-fixture";
 import { producerRouteFixture } from "./skirmish-ai-runtime-producer-route-fixture";
-import {
-  normalizeRuntimeProductionCausality
-} from "../../../production/decisions/skirmish-ai-runtime-production-causality-normalization";
+import { normalizeRuntimeProductionCausality } from "../../../production/decisions/skirmish-ai-runtime-production-causality-normalization";
 
 /** Synthetic diagnostic contracts, unrun until the final gate; never real useful-effect or production-family evidence. */
 test("output/spawn/query reports retain exact queue completion and accepted demand, independently of useful arrival", () => {
@@ -317,3 +321,46 @@ for (const phase of ["rejected", "threw"] as const) {
     expect(result.gaps).toContain("production_route_native_query_failed");
   });
 }
+
+test("a leashed AI attack retains the exact released command target while moving to its anchor", () => {
+  const execution = {
+    schemaVersion: 1,
+    commandId: "attack-1",
+    commitmentKey: "attack-enemy",
+    source: "ai",
+    authorityEpoch: 0,
+    sequence: 1
+  } as const;
+  const command: ActorActionCommand = {
+    type: ProbableWaffleGameCommandTypes.ActorAction,
+    actorIds: ["soldier"],
+    tick: 40,
+    playerNumber: 2,
+    orderType: OrderType.Attack,
+    targetObjectIds: ["enemy"],
+    queue: false,
+    execution
+  };
+  const returning = {
+    orderId: 1,
+    orderType: OrderType.Attack,
+    target: null,
+    targetTile: { x: 16, y: 26, z: 0 },
+    pursuitReleasedTargetActorId: "enemy",
+    commandContext: { actorIds: ["soldier"], playerNumber: 2, execution },
+    originOutputId: null,
+    admissionObserved: true
+  };
+  expect(runtimeRouteOrderMatchesCommand(returning, "soldier", command)).toBe(true);
+  expect(
+    runtimeRouteOrderMatchesCommand(
+      { ...returning, pursuitReleasedTargetActorId: "different-enemy" },
+      "soldier",
+      command
+    )
+  ).toBe(false);
+  expect(
+    runtimeRouteOrderMatchesCommand({ ...returning, pursuitReleasedTargetActorId: undefined }, "soldier", command)
+  ).toBe(false);
+  expect(runtimeRouteOrderMatchesCommand({ ...returning, targetTile: null }, "soldier", command)).toBe(false);
+});

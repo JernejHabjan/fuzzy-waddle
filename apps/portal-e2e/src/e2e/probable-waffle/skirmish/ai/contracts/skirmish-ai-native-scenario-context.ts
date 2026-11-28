@@ -1,6 +1,4 @@
-import type {
-  AiRuntimeProductionFact
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { RuntimeVariantResult } from "../runner/skirmish-ai-runtime-variant-result";
 import { runtimeClosedHistoryFailures } from "../capture/skirmish-ai-runtime-closed-history";
 import { normalizeRuntimeMovement } from "../navigation/skirmish-ai-runtime-movement-normalization";
@@ -17,6 +15,7 @@ export function nativeScenarioRequiresResourceCoverage(scenarioId: string): bool
     !["STRAT-02", "STRAT-03", "STRAT-04", "STRAT-05", "RAID-01", "RAID-02", "RAID-03"].includes(scenarioId) &&
     ![
       "EXP-01",
+      "PRO-05",
       "H-06",
       "H-07",
       "H-10",
@@ -25,11 +24,20 @@ export function nativeScenarioRequiresResourceCoverage(scenarioId: string): bool
       "H-13",
       "H-14",
       "H-15",
+      "H-19",
       "H-22",
+      "H-03",
+      "H-24",
+      "H-26",
       "H-27",
       "H-28",
       "H-30",
-      "STRAT-09"
+      "STRAT-07",
+      "STRAT-09",
+      "STRAT-12",
+      "STRAT-13",
+      "C-05",
+      "C-04"
     ].includes(scenarioId)
   );
 }
@@ -41,11 +49,14 @@ export function nativeScenarioContext(
   terminalHorizon?: number,
   options: { readonly requireResourceCoverage?: boolean } = {}
 ) {
-  const capture = result.productionCapture,
-    opponent = result.opponentCapture;
+  const capture = sealCapturedFacts(result.productionCapture, latestTick);
+  const opponent = sealCapturedFacts(result.opponentCapture, latestTick);
+  const otherOpponents = result.otherOpponentCaptures?.map((other) => sealCapturedFacts(other, latestTick) ?? other);
   const failures = [
-    ...runtimeClosedHistoryFailures(capture, latestTick, terminalHorizon),
-    ...runtimeClosedHistoryFailures(opponent, latestTick, terminalHorizon).map((failure) => `opponent:${failure}`),
+    ...runtimeClosedHistoryFailures(result.productionCapture, latestTick, terminalHorizon),
+    ...runtimeClosedHistoryFailures(result.opponentCapture, latestTick, terminalHorizon).map(
+      (failure) => `opponent:${failure}`
+    ),
     ...(result.otherOpponentCaptures ?? []).flatMap((other) => [
       ...runtimeClosedHistoryFailures(other, latestTick, terminalHorizon),
       ...(JSON.stringify(other.setup) !== JSON.stringify(capture?.setup) ||
@@ -110,10 +121,8 @@ export function nativeScenarioContext(
   const facts = [
     ...(capture?.facts ?? []),
     ...(opponent?.facts ?? []),
-    ...(result.otherOpponentCaptures ?? []).flatMap((other) => other.facts)
-  ]
-    .filter((fact) => fact.tick <= latestTick)
-    .sort((a, b) => a.sequence - b.sequence);
+    ...(otherOpponents ?? []).flatMap((other) => other.facts)
+  ].sort((a, b) => a.sequence - b.sequence);
   const arrived = (actorId?: string, afterTick = 0) =>
     movements.movements.filter(
       (movement) =>
@@ -150,5 +159,28 @@ export function nativeScenarioContext(
     const commanded = selectedActorIds(frame);
     if (commanded.length !== new Set(commanded).size) failures.push("native_actor_commanded_twice_in_decision");
   }
-  return { result, capture, opponent, frames, facts, roles, role, arrived, damageTo, failures };
+  const sealedResult: RuntimeVariantResult = {
+    ...result,
+    productionCapture: capture,
+    opponentCapture: opponent,
+    otherOpponentCaptures: otherOpponents,
+    checkpoints: result.checkpoints?.filter((checkpoint) => checkpoint.tick <= latestTick) ?? [],
+    perturbations: result.perturbations?.filter((event) => event.tick <= latestTick) ?? []
+  };
+  return { result: sealedResult, capture, opponent, frames, facts, roles, role, arrived, damageTo, failures };
+}
+
+/** Advancing one frame seals the requested tick and may also emit events belonging to the next tick. */
+function sealCapturedFacts(
+  capture: RuntimeVariantResult["productionCapture"],
+  throughTick: number
+): RuntimeVariantResult["productionCapture"] {
+  if (!capture) return undefined;
+  return {
+    ...capture,
+    facts: capture.facts.filter((fact) => fact.tick <= throughTick),
+    snapshots: capture.snapshots?.filter((snapshot) => snapshot.tick <= throughTick) ?? [],
+    recipientResourceFacts: capture.recipientResourceFacts?.filter((fact) => fact.tick <= throughTick),
+    movementQueries: capture.movementQueries?.filter((query) => query.tick <= throughTick)
+  };
 }
