@@ -6,6 +6,7 @@ import { resolvePinnedBaselineSupport } from "../matrix/baseline-adapter.ts";
 import { invokeHarness, invokeSelectedHarness } from "../matrix/skirmish-matrix-execution.ts";
 import { selectDiagnosticVariant } from "../matrix/skirmish-runtime-diagnostic-selection.ts";
 import { buildSkirmishShardIndex } from "../matrix/skirmish-shard-index.ts";
+import { selectedMatrixIds, summarizeMatrixRun } from "../matrix/skirmish-matrix-summary.ts";
 import {
   fixtureReference,
   pureFixtureReference,
@@ -50,6 +51,7 @@ try {
     schemaVersion: 1,
     status: "failed",
     reason: error instanceof Error ? error.message : String(error),
+    rows: selectedMatrixIds(manifest, args),
     workCounts: { scenarios: 0, decisions: 0, ticks: 0 }
   };
   writeReport(report);
@@ -408,4 +410,5 @@ function writeReport(report) {
     writeFileSync(indexPath, `${JSON.stringify(index, null, 2)}\n`);
     process.stdout.write(`${relative(workspaceRoot, indexPath)}\n`);
   }
+  process.stdout.write(`${summarizeMatrixRun(report).join("\n")}\n`);
 }

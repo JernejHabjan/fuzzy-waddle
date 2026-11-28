@@ -24,6 +24,12 @@ It does not separately run the multiplayer CLI, catalog listing or report summar
 Core summaries are written to `tmp/ai-skirmish-regression/latest.json`; full matrix artifacts are written to
 `tmp/ai-skirmish-matrix/`. Inspect a full artifact with `pnpm ai:skirmish:report -- --report <path> --details`.
 
+The matrix prints its selected catalog count and passed/failed/not-run runtime totals at completion.
+Pure coverage is reported separately as proven/unproven; it is not a count of physical runtime outcomes.
+Setup failures retain the requested denominator: a dirty tree prints `0/120 executed; 0 passed; 0 failed; 120 not run`
+for the current full catalog, rather than claiming that scenarios failed. Untracked editor backup files also
+make the source tree dirty. Missing baseline comparisons remain separate from candidate scenario results.
+
 ## Focused AI commands
 
 These replace redundant package aliases:
