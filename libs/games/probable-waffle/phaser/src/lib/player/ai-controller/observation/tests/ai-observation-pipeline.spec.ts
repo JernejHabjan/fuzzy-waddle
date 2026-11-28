@@ -207,7 +207,7 @@ function observation(): AiObservation {
   };
 }
 
-describe("Stage 4 observation generation guards", () => {
+describe("observation generation guards", () => {
   it("allows only the latest generation to commit", () => {
     expect(isCurrentObservationGeneration(8, 8)).toBe(true);
     expect(isCurrentObservationGeneration(8, 7)).toBe(false);

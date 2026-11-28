@@ -1,4 +1,4 @@
-import type { AiObservation } from "../../contracts/observation/ai-observation";
+export type { AiProposalManager } from "./contracts/ai-proposal-manager";
 import type { AiIntent } from "../../contracts/commands/ai-intent";
 import type {
   AiBaseState,
@@ -40,35 +40,29 @@ export interface AiManagerProposal {
     /** Release only forecast/provisional claims. Dispatched, paid and refundable work remains authoritative. */
     releasedOptionalPlanIds?: readonly AiPlanId[];
     opening?: AiOpeningState;
-    /** Stage 14 may change only the opening archetype; Stage 7 remains the plan/progress owner. */
+    /** Adaptation may change only the opening archetype; macro remains the plan/progress owner. */
     openingArchetypeId?: AiOpeningState["archetypeId"];
     economyProduction?: AiEconomyProductionState;
-    /** Stage 14 replaces only its durable adaptation rationale after macro has projected the current ledger. */
+    /** Adaptation replaces only its durable adaptation rationale after macro has projected the current ledger. */
     adaptation?: AiEconomyProductionState["adaptation"];
-    /** Stage 14 replaces only demand rows whose identity starts with `demand:adapt:`. */
+    /** Adaptation replaces only demand rows whose identity starts with `demand:adapt:`. */
     adaptationDemands?: readonly AiDemand[];
-    /** Stage 12 owns durable causal recovery, retry and release facts. */
+    /** Recovery owns durable causal recovery, retry and release facts. */
     recovery?: AiBrainState["recovery"];
     transport?: AiBrainState["transport"];
     /** Appended after the transport owner advances its lifecycle, preventing route-plan races. */
     transportAppend?: readonly AiTransportState[];
     knowledge?: AiBrainState["knowledge"];
     squads?: readonly AiSquadState[];
-    /** Narrow replacements merged by squad identity after Stage 9 mission ownership. */
+    /** Narrow replacements merged by squad identity after skirmish mission ownership. */
     squadUpdates?: readonly AiSquadState[];
-    /** Stage 13 owns caster/healer windows and temporary-support accounting. */
+    /** Tactics owns caster/healer windows and temporary-support accounting. */
     support?: readonly AiSupportState[];
     strategy?: AiStrategyState;
     skirmish?: AiSkirmishState;
-    /** Stage 10 is the only owner of stable base identity and expansion lifecycle. */
+    /** Expansion is the only owner of stable base identity and expansion lifecycle. */
     bases?: readonly AiBaseState[];
-    /** Stage 11 is the sole owner of persistent fortification graphs. */
+    /** Fortification is the sole owner of persistent fortification graphs. */
     fortifications?: readonly AiFortificationState[];
   }>;
-}
-
-/** Read-only manager boundary; managers propose and never mutate the brain or runtime. */
-export interface AiProposalManager {
-  readonly managerId: string;
-  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal;
 }

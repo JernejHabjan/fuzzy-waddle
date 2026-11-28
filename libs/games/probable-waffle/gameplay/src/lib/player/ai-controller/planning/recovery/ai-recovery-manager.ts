@@ -10,7 +10,7 @@ import { observedAiEconomyThreats } from "../economy/service/ai-economy-policy";
 import { compareAiActorsByVisibleGeometry } from "../production/macro/ai-macro-observation";
 import type { AiManagerProposal, AiProposalManager } from "../coordination/ai-manager-proposal";
 
-/** The H1 default is shared by every Stage-12 domain; it is a backoff floor, never a deadline reset. */
+/** The H1 default is shared by every recovery domain; it is a backoff floor, never a deadline reset. */
 export const AI_RECOVERY_NO_PROGRESS_TICKS = 200;
 const AI_RECOVERY_PHASE_DEADLINE_TICKS = 1200;
 const MAX_RECOVERY_RECORDS = 64;
@@ -146,7 +146,7 @@ export class AiRecoveryManager implements AiProposalManager {
     const intents: AiIntent[] = [];
     const reasons: string[] = [];
 
-    // Stage 6 owns the generic progress contract; Stage 12 turns an overdue observed milestone
+    // coordination owns the generic progress contract; recovery turns an overdue observed milestone
     // into one causal recovery episode without considering a repeated command or new plan ID to
     // be evidence. Domain managers retain their own concrete alternate action ownership.
     for (const progress of state.progress.filter((entry) => entry.milestoneDeadline.dueTick <= observation.tick)) {
@@ -180,7 +180,7 @@ export class AiRecoveryManager implements AiProposalManager {
     }
 
     // Outcome-driven expansion retry: rejected sites are recorded by site key and require a new
-    // candidate selected by Stage 10. This avoids same-site spam while preserving shared authority.
+    // candidate selected by expansion. This avoids same-site spam while preserving shared authority.
     let placementChanged = false;
     const bases: AiBaseState[] = state.bases.map((base) => {
       if (!base.reservedSiteKey) return base;

@@ -67,7 +67,7 @@ export function adaptGameCommandOutcomesToBrain(
   );
 }
 
-/** Projects the saved runtime reconciliation cursor into the Stage 2 brain contract. */
+/** Projects the saved runtime reconciliation cursor into the brain contract. */
 export function adaptCommandAuthorityToBrain(input: {
   readonly authorityEpoch: number;
   readonly processedSequenceWatermark: number;

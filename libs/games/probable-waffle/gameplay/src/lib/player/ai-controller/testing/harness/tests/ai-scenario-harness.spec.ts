@@ -81,8 +81,8 @@ function scenario(expectedMinimum = 1): AiScenario {
   });
 }
 
-describe("Stage 5 deterministic scenario harness", () => {
-  it("registers every Stage 5 harness-side debug scenario against a reciprocal control contract", () => {
+describe("deterministic scenario harness", () => {
+  it("registers every harness-side debug scenario against a reciprocal control contract", () => {
     for (const scenarioId of ["DBG-01", "DBG-03", "DBG-04", "DBG-05"]) {
       const subject = { ...scenario(), scenarioId };
       const control = {

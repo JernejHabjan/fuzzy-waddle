@@ -9,9 +9,9 @@ export { AI_PURSUIT_LEASH_TICKS, AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai
 export { AI_CONCESSION_HOPELESS_TICKS } from "./ai-skirmish-finalizer";
 
 /**
- * Owns the first complete strategic loop: player-fair information questions, bounded incidents,
- * durable squad missions, and a mode-safe concession proposal. Tactical target scoring remains
- * intentionally small until Stage 13, but every emitted action already has a persisted purpose.
+ * Owns the strategic loop: player-fair information questions, bounded incidents,
+ * durable squad missions, and a mode-safe concession proposal. The tactics manager refines
+ * target scoring for these missions; every emitted action has a persisted purpose.
  */
 export class AiSkirmishManager implements AiProposalManager {
   readonly managerId = "stage9.skirmish";

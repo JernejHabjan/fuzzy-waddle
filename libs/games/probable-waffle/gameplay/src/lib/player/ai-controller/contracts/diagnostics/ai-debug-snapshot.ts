@@ -78,7 +78,7 @@ export interface AiDebugSnapshot {
     readonly pickupPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
     readonly landingPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
   }[];
-  /** Bounded Stage-9 strategic facts captured at the decision boundary. */
+  /** Bounded skirmish strategic facts captured at the decision boundary. */
   readonly skirmish: Readonly<{
     readonly questions: readonly {
       readonly questionId: string;
@@ -143,7 +143,7 @@ export interface AiDebugSnapshot {
       readonly detail: string;
     }[];
   }>;
-  /** Saved Stage-10 base and placement facts; panel consumers never perform a fresh placement query. */
+  /** Saved base and placement facts; panel consumers never perform a fresh placement query. */
   readonly bases: readonly {
     readonly baseId: string;
     readonly lifecycle: string;
@@ -154,7 +154,7 @@ export interface AiDebugSnapshot {
     readonly rejectedSiteCount: number;
     readonly expansionTrigger: string | null;
   }[];
-  /** Saved Stage-11 graph facts, including the intentionally traversable opening. */
+  /** Saved fortification graph facts, including the intentionally traversable opening. */
   readonly fortifications: readonly {
     readonly planId: string;
     readonly baseId: string | null;
@@ -186,7 +186,7 @@ export interface AiDebugSnapshot {
   }[];
   /** Current fortification proposal outcome; present even when no persistent graph was justified. */
   readonly fortificationPlanningReason: string | null;
-  /** Saved Stage-12 recovery ladder facts; no panel may re-evaluate a live blocker. */
+  /** Saved recovery ladder facts; no panel may re-evaluate a live blocker. */
   readonly recovery: readonly {
     readonly recoveryKey: string;
     readonly domain: string;
@@ -211,7 +211,7 @@ export interface AiDebugSnapshot {
     readonly expiresAtTick: AiSimulationTick | null;
     readonly reason: string;
   }[];
-  /** Stage-14 recorded evidence, role targets and legal technology rationale. */
+  /** Recorded adaptation evidence, role targets and legal technology rationale. */
   readonly adaptation: Readonly<{
     readonly evidence: readonly {
       readonly evidenceId: string;

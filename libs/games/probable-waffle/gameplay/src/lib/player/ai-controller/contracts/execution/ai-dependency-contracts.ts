@@ -31,7 +31,7 @@ export type AiReservationState =
 /** One atomic resource/actor/service claim owned by a plan. */
 export interface AiReservation {
   readonly claimId: AiClaimId;
-  /** Stable physical subject key for cross-decision exclusivity; absent only on migrated pre-Stage-6 saves. */
+  /** Stable physical subject key for cross-decision exclusivity; absent only on migrated legacy saves. */
   readonly subjectKey?: string;
   /** Resource escrow held while an admitted effect is provisional or dispatched. */
   readonly resourceAmount?: number;

@@ -11,7 +11,7 @@ const SYNTHETIC_FLYING_CONTAINER = {
   dropDomain: "ground"
 } as const;
 
-describe("Stage 8 runtime domain fixtures", () => {
+describe("access and transport runtime domain fixtures", () => {
   it("pins the actual CommonBoat as a mobile water container", () => {
     expect(commonBoatDefinition.components.container.capacity).toBeGreaterThan(0);
     expect(commonBoatDefinition.components.translatable.movementTerrainType).toBe(MovementTerrainType.Water);

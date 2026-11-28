@@ -19,7 +19,7 @@ export function findAiWhyNotExplanation(
   );
 }
 
-/** Projects Stage 2 decision facts and honest typed not-ready sections for later owners. */
+/** Projects brain decision facts and honest typed not-ready sections for later owners. */
 export function projectAiDebugSnapshot(
   observation: AiObservation,
   state: AiBrainState,

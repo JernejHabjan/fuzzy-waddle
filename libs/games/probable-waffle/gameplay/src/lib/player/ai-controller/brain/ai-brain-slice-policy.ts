@@ -1,3 +1,5 @@
+import type { AiBrainSlicePolicy } from "./contracts/ai-brain-slice-policy";
+export type { AiBrainSlicePolicy } from "./contracts/ai-brain-slice-policy";
 import type { AiBrainState } from "../contracts/state/ai-state-contracts";
 
 /** Persisted state slice names that require one owner, default, migration and serializer policy. */
@@ -5,15 +7,6 @@ export type AiBrainSliceName = Exclude<
   keyof AiBrainState,
   "schemaVersion" | "playerNumber" | "faction" | "profileVersion" | "lastCommittedTick"
 >;
-
-/** Durable ownership policy for one current state slice. */
-export interface AiBrainSlicePolicy {
-  readonly slice: AiBrainSliceName;
-  readonly reducerOwner: string;
-  readonly defaultOwner: "createAiBrainState";
-  readonly migration: "preserve_current_or_bootstrap_from_current_world";
-  readonly serializer: "canonical_ai";
-}
 
 const policy = (slice: AiBrainSliceName, reducerOwner: string): AiBrainSlicePolicy => ({
   slice,
@@ -29,7 +22,7 @@ export const AI_BRAIN_SLICE_POLICIES: readonly AiBrainSlicePolicy[] = [
   policy("strategy", "strategy reducer"),
   policy("opening", "opening reducer"),
   policy("knowledge", "knowledge reducer"),
-  policy("skirmish", "Stage 9 skirmish reducer"),
+  policy("skirmish", "skirmish reducer"),
   policy("bases", "base reducer"),
   policy("economyProduction", "economy/production reducer"),
   policy("recovery", "recovery reducer"),

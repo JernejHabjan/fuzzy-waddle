@@ -108,7 +108,7 @@ function siteCandidates(anchor: Vector3Simple, profile: AiProfileConfig): Vector
 }
 
 /**
- * Stage 10 maintains stable bases from definition-backed main structures. It deliberately
+ * Expansion maintains stable bases from definition-backed main structures. It deliberately
  * creates only deterministic candidate reservations; the shared construction application
  * remains the authoritative footprint, terrain, collision and builder revalidation owner.
  */
@@ -192,7 +192,7 @@ export class AiBaseManager implements AiProposalManager {
         !hasUnservedResourceNearExpansionSite(prior.anchorPosition, currentResources, owned, catalog)
       )
         continue;
-      // Stage 12 transfers a rejected site's backoff history to the next Stage 10
+      // recovery transfers a rejected site's backoff history to the next expansion
       // decision by clearing its reservation. The primary base now owns that global
       // history, so the terminal shell must not accumulate as a fake reserved base.
       if (prior.lifecycle === "reserved" && !prior.reservedSiteKey) continue;

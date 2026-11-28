@@ -74,7 +74,7 @@ function nearestPassableKey(
   return candidates[0]?.cell.tileKey ?? null;
 }
 
-/** Pure whole-layout check used by the manager and deterministic Stage 11 fixtures. */
+/** Pure whole-layout check used by the manager and deterministic fortification fixtures. */
 export function fortificationPreservesConnectivity(input: {
   readonly cells: readonly ConstructionCell[];
   readonly blockedTileKeys: readonly string[];

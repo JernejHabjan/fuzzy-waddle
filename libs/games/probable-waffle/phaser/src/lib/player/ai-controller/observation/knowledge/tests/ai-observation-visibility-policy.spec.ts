@@ -34,7 +34,7 @@ function scene(policy: "normal" | "revealed" | "omniscient-ai"): Phaser.Scene {
   }) as unknown as Phaser.Scene;
 }
 
-describe("Stage 4 AI visibility policy", () => {
+describe("observation AI visibility policy", () => {
   it("does not grant normal-skirmish visibility when no owned vision source can prove contact", () => {
     const policy = new AiObservationVisibilityPolicy(scene("normal"), 1);
     expect(policy.informationPolicy).toBe("skirmish");
@@ -47,18 +47,30 @@ describe("Stage 4 AI visibility policy", () => {
   });
 
   it("uses the supplied owner scene index when a capture spans an actor with a separate scene context", () => {
-    const captureScene = { baseGameData: { gameInstance: { players: [
-      { playerNumber: 1, playerController: { data: { playerDefinition: { campaignFogPolicy: "normal" } } } }
-    ] } } } as unknown as Phaser.Scene;
+    const captureScene = {
+      baseGameData: {
+        gameInstance: {
+          players: [
+            { playerNumber: 1, playerController: { data: { playerDefinition: { campaignFogPolicy: "normal" } } } }
+          ]
+        }
+      }
+    } as unknown as Phaser.Scene;
     const ownerIndex = { getOwnedActors: () => [] };
     const policy = new AiObservationVisibilityPolicy(captureScene, 1, ownerIndex);
     expect(policy.mayObserve(actor(2))).toBe(false);
   });
 
   it("uses owner navigation for vision-source tiles without looking up the source actor's scene", () => {
-    const captureScene = { baseGameData: { gameInstance: { players: [
-      { playerNumber: 1, playerController: { data: { playerDefinition: { campaignFogPolicy: "normal" } } } }
-    ] } } } as unknown as Phaser.Scene;
+    const captureScene = {
+      baseGameData: {
+        gameInstance: {
+          players: [
+            { playerNumber: 1, playerController: { data: { playerDefinition: { campaignFogPolicy: "normal" } } } }
+          ]
+        }
+      }
+    } as unknown as Phaser.Scene;
     const source = actor(1, captureScene);
     const navigation = { getCenterTileCoordUnderObject: jest.fn(() => ({ x: 0, y: 0 })) };
     const policy = new AiObservationVisibilityPolicy(captureScene, 1, { getOwnedActors: () => [source] }, navigation);
@@ -89,12 +101,16 @@ describe("Stage 4 AI visibility policy", () => {
     const source = {
       active: true,
       scene: captureScene,
-      getData: (key: string) => key === ActorDataKey
-        ? new ActorData(
-            new Map<new (...args: any[]) => any, any>([[VisionComponent, vision], [RepresentableComponent, representable]]),
-            new Map()
-          )
-        : undefined
+      getData: (key: string) =>
+        key === ActorDataKey
+          ? new ActorData(
+              new Map<new (...args: any[]) => any, any>([
+                [VisionComponent, vision],
+                [RepresentableComponent, representable]
+              ]),
+              new Map()
+            )
+          : undefined
     } as unknown as Phaser.GameObjects.GameObject;
     const navigation = { getCenterTileCoordUnderObject: () => ({ x: 0, y: 0 }) };
     const policy = new AiObservationVisibilityPolicy(captureScene, 1, { getOwnedActors: () => [source] }, navigation);

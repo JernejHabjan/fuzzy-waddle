@@ -417,7 +417,7 @@ describe("PureAiBrain", () => {
     });
   });
 
-  it("preserves the current macro ledger while Stage 14 replaces only adaptive demand rows", () => {
+  it("preserves the current macro ledger while adaptation replaces only adaptive demand rows", () => {
     const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
     const state = createAiBrainState({
       playerNumber: 1,

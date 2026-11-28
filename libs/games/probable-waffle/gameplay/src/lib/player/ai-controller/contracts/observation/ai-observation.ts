@@ -31,7 +31,7 @@ export interface AiObservedQueue {
   readonly capacity: number;
   readonly occupied: number;
   readonly itemIds: readonly string[];
-  /** Typed owned queue contents. Optional only for captures made before Stage 15. */
+  /** Typed owned queue contents. Optional for legacy captures without queue details. */
   readonly items?: readonly {
     readonly itemId: string;
     readonly kind: "production" | "research";
@@ -156,7 +156,7 @@ export interface AiObservedActor {
   /** Owned construction percentage; absent only for legacy observations. */
   readonly constructionProgress?: AiKnownValue<number>;
   readonly activeEffectIds: readonly string[];
-  /** Optional only for compatibility with observations captured before Stage 15. */
+  /** Optional for compatibility with legacy observations without these queue facts. */
   readonly activeOrder?: AiKnownValue<AiObservedOrder | null>;
   /** Next owned native order, including intake queued before the pawn starts executing it. */
   readonly pendingOrder?: AiKnownValue<AiObservedOrder | null>;
@@ -164,7 +164,7 @@ export interface AiObservedActor {
   readonly combatProfile?: AiKnownValue<AiObservedCombatProfile>;
   /** Runtime-definition metadata exposed for owned actors; base identity never infers this from position. */
   readonly mainBuilding?: AiKnownValue<boolean>;
-  /** Stable container owner when this actor is physically loaded; absent on pre-Stage-8 observations. */
+  /** Stable container owner when this actor is physically loaded; absent on observations without transport data. */
   readonly containedInActorId?: ActorId | null;
   /** Known only for owned containers; opponent cargo remains private. */
   readonly containerState?: AiKnownValue<AiObservedContainerState>;
@@ -304,6 +304,6 @@ export interface AiObservation {
   readonly modeGoals: readonly AiObservedModeGoal[];
   readonly researchCandidates: readonly AiObservedResearchCandidate[];
   readonly threatSummary: AiObservedThreatSummary;
-  /** Stage 4 map projection; absent only for pre-Stage-4 save compatibility. */
+  /** Observation map projection; absent only for legacy save compatibility. */
   readonly map?: AiObservedMap;
 }

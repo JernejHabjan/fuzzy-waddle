@@ -61,7 +61,7 @@ function normalizePrimarySquadOwnership(squads: AiBrainState["squads"]): AiBrain
 }
 
 /**
- * Minimal deterministic Stage 2 reducer. It collects read-only manager proposals, applies
+ * Deterministic brain reducer. It collects read-only manager proposals, applies
  * observation preconditions and claims, and publishes one immutable decision/debug result.
  */
 export class PureAiBrain implements AiBrain {
@@ -119,10 +119,10 @@ export class PureAiBrain implements AiBrain {
     );
     // A proposer may own a persisted projection (opening/demand state) but never
     // mutates the previous brain directly. Stable manager order makes competing
-    // narrow projections deterministic; Stage 7 is currently the sole owner.
-    // Stage 8 extends that established seam with its non-overlapping transport projection.
-    // Stage 9 appends only newly-created transport children after the owner has advanced them.
-    // Stage 14 merges only its `demand:adapt:` rows and saved rationale after the macro ledger.
+    // narrow projections deterministic; macro owns the economy ledger.
+    // Transport extends that seam with its non-overlapping projection.
+    // Skirmish appends only newly created transport children after the owner has advanced them.
+    // Adaptation merges only its `demand:adapt:` rows and saved rationale after the macro ledger.
     const projectedState = projectAiManagerState(planning.state, proposalBatches);
     const modeIsTerminal = observation.modeGoals.some(
       (goal) => goal.owner === observation.playerNumber && (goal.state === "completed" || goal.state === "failed")

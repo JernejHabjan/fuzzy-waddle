@@ -52,14 +52,22 @@ export class AiCommandReconciliation {
     const currentAuthorityEpoch = authority.authorityEpoch;
     if (currentAuthorityEpoch > this.authorityEpoch) this.synchronizeAuthority();
     // Query the existing authoritative lifecycle checkpoint, not the present output actor. A completed output may be gone.
-    if (tick % this.decisionIntervalTicks === 0 && [...this.pending.values()].some((entry) =>
-      tick - entry.dispatched.tick >= 2 * this.decisionIntervalTicks)) {
+    if (
+      tick % this.decisionIntervalTicks === 0 &&
+      [...this.pending.values()].some((entry) => tick - entry.dispatched.tick >= 2 * this.decisionIntervalTicks)
+    ) {
       const history = readAiCommandOutcomeHistory(this.commandBus, this.playerNumber, authority.outcomes);
       for (const outcome of history ?? []) {
         const pending = this.pending.get(outcome.commandId);
-        if (pending && outcome.playerNumber === this.playerNumber && outcome.authorityEpoch === pending.dispatched.authorityEpoch &&
-            outcome.sequence === pending.dispatched.sequence && outcome.commitmentKey === pending.dispatched.commitmentKey &&
-            outcome.kind !== "dispatched") this.observeOutcome(outcome);
+        if (
+          pending &&
+          outcome.playerNumber === this.playerNumber &&
+          outcome.authorityEpoch === pending.dispatched.authorityEpoch &&
+          outcome.sequence === pending.dispatched.sequence &&
+          outcome.commitmentKey === pending.dispatched.commitmentKey &&
+          outcome.kind !== "dispatched"
+        )
+          this.observeOutcome(outcome);
       }
     }
     const expired = [...this.pending.values()]
@@ -110,12 +118,9 @@ export class AiCommandReconciliation {
     if (!this.destroyed) this.health = "technical_fault";
   }
 
-  /** Supplies the Stage 2 pure brain with canonical, runtime-free command outcomes. */
+  /** Supplies the pure brain with canonical, runtime-free command outcomes. */
   getBrainOutcomes(matchId: GameInstanceId): AiCommandOutcome[] {
-    return adaptGameCommandOutcomesToBrain(
-      this.recentOutcomes,
-      matchId
-    );
+    return adaptGameCommandOutcomesToBrain(this.recentOutcomes, matchId);
   }
 
   /** Supplies the pure brain with the same authority fence used by live application. */
@@ -193,16 +198,32 @@ export class AiCommandReconciliation {
     this.synchronizeAuthority();
     const pendingOriginal = this.pending.get(outcome.commandId)?.dispatched;
     if (outcome.authorityEpoch > this.authorityEpoch) return;
-    if (outcome.authorityEpoch < this.authorityEpoch &&
-        (!pendingOriginal || outcome.kind === "dispatched" || !this.sameIdentity(pendingOriginal, outcome))) return;
+    if (
+      outcome.authorityEpoch < this.authorityEpoch &&
+      (!pendingOriginal || outcome.kind === "dispatched" || !this.sameIdentity(pendingOriginal, outcome))
+    )
+      return;
     if (pendingOriginal && !this.sameIdentity(pendingOriginal, outcome)) return;
-    if (outcome.kind === "dispatched" && !this.pending.has(outcome.commandId) &&
-        outcome.sequence <= this.processedSequenceWatermark) return;
-    if (this.recentOutcomes.some((entry) => entry.commandId === outcome.commandId && entry.kind === outcome.kind &&
-      entry.tick === outcome.tick && entry.authorityEpoch === outcome.authorityEpoch &&
-      entry.sequence === outcome.sequence && entry.reason === outcome.reason &&
-      JSON.stringify(entry.actorIds) === JSON.stringify(outcome.actorIds) &&
-      JSON.stringify(entry.worldLinkIds) === JSON.stringify(outcome.worldLinkIds))) return;
+    if (
+      outcome.kind === "dispatched" &&
+      !this.pending.has(outcome.commandId) &&
+      outcome.sequence <= this.processedSequenceWatermark
+    )
+      return;
+    if (
+      this.recentOutcomes.some(
+        (entry) =>
+          entry.commandId === outcome.commandId &&
+          entry.kind === outcome.kind &&
+          entry.tick === outcome.tick &&
+          entry.authorityEpoch === outcome.authorityEpoch &&
+          entry.sequence === outcome.sequence &&
+          entry.reason === outcome.reason &&
+          JSON.stringify(entry.actorIds) === JSON.stringify(outcome.actorIds) &&
+          JSON.stringify(entry.worldLinkIds) === JSON.stringify(outcome.worldLinkIds)
+      )
+    )
+      return;
     // A repeated admission is not new progress. A malformed duplicate cannot replace the original actor set or
     // reset application/terminal progress by reusing the same command identity with different data.
     if (outcome.kind === "dispatched" && this.pending.has(outcome.commandId)) return;
@@ -253,9 +274,12 @@ export class AiCommandReconciliation {
     const authority = this.commandBus.getAuthorityState();
     const admitted = new Set(Object.values(authority.activeCommitmentsByPlayer?.[this.playerNumber] ?? {}));
     for (const id of this.pending.keys()) if (!admitted.has(id)) this.pending.delete(id);
-    this.recentOutcomes = this.recentOutcomes.filter((outcome) =>
-      outcome.authorityEpoch === authority.authorityEpoch || admitted.has(outcome.commandId) ||
-      outcome.kind === "cancelled" && outcome.detail === "authority_epoch_discarded_unsent");
+    this.recentOutcomes = this.recentOutcomes.filter(
+      (outcome) =>
+        outcome.authorityEpoch === authority.authorityEpoch ||
+        admitted.has(outcome.commandId) ||
+        (outcome.kind === "cancelled" && outcome.detail === "authority_epoch_discarded_unsent")
+    );
     this.authorityEpoch = authority.authorityEpoch;
     this.processedSequenceWatermark = -1;
     if (this.health !== "technical_fault") this.health = this.pending.size ? "reconciling" : "healthy";
@@ -263,19 +287,32 @@ export class AiCommandReconciliation {
 
   /** A matching ID alone cannot authorize a different effect/epoch/sequence to release original ownership. */
   private sameIdentity(left: GameCommandOutcome, right: GameCommandOutcome): boolean {
-    return left.playerNumber === right.playerNumber && left.authorityEpoch === right.authorityEpoch &&
-      left.sequence === right.sequence && left.commitmentKey === right.commitmentKey &&
-      left.effectId === right.effectId && left.intentId === right.intentId;
+    return (
+      left.playerNumber === right.playerNumber &&
+      left.authorityEpoch === right.authorityEpoch &&
+      left.sequence === right.sequence &&
+      left.commitmentKey === right.commitmentKey &&
+      left.effectId === right.effectId &&
+      left.intentId === right.intentId
+    );
   }
 
   private isTerminal(outcome: GameCommandOutcome): boolean {
     // A different newly dispatched request may be rejected because the ORIGINAL commitment still owns the purpose.
     // Close only that never-applied request; replay diagnostics on the original admitted command remain non-terminal.
-    if (outcome.kind === "rejected" && outcome.reason === "duplicate_command" &&
-        outcome.detail?.startsWith("commitment:") && this.pending.get(outcome.commandId)?.applicationObserved === false) {
+    if (
+      outcome.kind === "rejected" &&
+      outcome.reason === "duplicate_command" &&
+      outcome.detail?.startsWith("commitment:") &&
+      this.pending.get(outcome.commandId)?.applicationObserved === false
+    ) {
       const originalId = outcome.detail.slice("commitment:".length);
-      if (originalId !== outcome.commandId &&
-          this.commandBus.getAuthorityState().activeCommitmentsByPlayer?.[outcome.playerNumber]?.[outcome.commitmentKey] === originalId)
+      if (
+        originalId !== outcome.commandId &&
+        this.commandBus.getAuthorityState().activeCommitmentsByPlayer?.[outcome.playerNumber]?.[
+          outcome.commitmentKey
+        ] === originalId
+      )
         return true;
     }
     return isSettlingCommandOutcome(outcome);

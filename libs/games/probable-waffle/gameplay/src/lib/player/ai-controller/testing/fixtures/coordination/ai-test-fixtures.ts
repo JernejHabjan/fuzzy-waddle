@@ -2,7 +2,7 @@ import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 
-/** Creates an explicit unknown value for Stage 2 pure fixtures. */
+/** Creates an explicit unknown value for pure brain fixtures. */
 export const unknownAiValue = { status: "unknown", reason: "not_observed" } as const;
 
 /** Requires an authored fixture slot; absent records must fail the test rather than survive a type assertion. */
@@ -35,7 +35,7 @@ export function createAiTestOwnedActor(actorId: ActorId): AiObservedActor {
   };
 }
 
-/** Creates a canonical Stage 2 observation with one worker and a wood budget. */
+/** Creates a canonical brain observation with one worker and a wood budget. */
 export function createAiTestObservation(): AiObservation {
   return {
     schemaVersion: 1,

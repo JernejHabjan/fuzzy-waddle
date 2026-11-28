@@ -5,7 +5,7 @@ import { createAiTestObservation } from "../../../testing/fixtures/coordination/
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 
-describe("Stage 2 AI invariant guards", () => {
+describe("brain AI invariant guards", () => {
   it("rejects non-finite resource state at the observation boundary", () => {
     const observation = createAiTestObservation();
     const wood = observation.resources[0];

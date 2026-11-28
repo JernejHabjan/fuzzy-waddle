@@ -18,7 +18,7 @@ describe("AI_CAPABILITY_COVERAGE_MANIFEST", () =>
       for (const seam of ["observation", "proposer", "command", "outcome", "save", "debug", "fixture"] as const) {
         const disposition = entry[seam];
         expect(disposition.status).toMatch(/implemented|planned|unsupported|not_applicable/);
-        if (disposition.status === "planned") expect(disposition.stage).toBeGreaterThanOrEqual(3);
+        if (disposition.status === "planned") expect(disposition.owner.trim().length).toBeGreaterThan(0);
         if (disposition.status === "unsupported" || disposition.status === "not_applicable") {
           expect(disposition.reason.length).toBeGreaterThan(0);
         }

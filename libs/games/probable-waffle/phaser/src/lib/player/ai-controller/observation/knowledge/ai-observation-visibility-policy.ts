@@ -1,3 +1,6 @@
+import type { AiObservationInformationPolicy } from "./contracts/ai-observation-information-policy";
+export type { AiObservationInformationPolicy } from "./contracts/ai-observation-information-policy";
+import type { SceneWithAiPlayers } from "./contracts/scene-with-ai-players";
 import type Phaser from "phaser";
 import type { PlayerNumber, Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../../../data/actor-component";
@@ -11,29 +14,7 @@ import { getSceneService } from "../../../../world/services/scene-component-help
 import { getGameObjectCurrentTile } from "../../../../data/game-object-helper";
 import { DistanceHelper } from "../../../../library/distance-helper";
 
-type GameObject = Phaser.GameObjects.GameObject;
-
-/**
- * The information policy used by one host-owned AI. Normal skirmish is always
- * player-scoped; campaign policies are explicit so a scripted exception cannot
- * silently become a multiplayer visibility bypass.
- */
-export type AiObservationInformationPolicy = "skirmish" | "campaign_revealed" | "campaign_omniscient";
-
-type ScenePlayerDefinition = {
-  campaignFogPolicy?: "normal" | "revealed" | "omniscient-ai";
-};
-
-type ScenePlayer = {
-  playerNumber?: PlayerNumber;
-  playerController: { data: { playerDefinition?: ScenePlayerDefinition } };
-};
-
-type SceneWithPlayers = Phaser.Scene & {
-  baseGameData?: { gameInstance?: { players?: ScenePlayer[] } };
-};
-
-/** Resolves and applies the one permitted-knowledge policy for Stage 4 projections. */
+/** Resolves and applies the one permitted-knowledge policy for observation projections. */
 export class AiObservationVisibilityPolicy {
   constructor(
     private readonly scene: Phaser.Scene,
@@ -43,7 +24,7 @@ export class AiObservationVisibilityPolicy {
   ) {}
 
   get informationPolicy(): AiObservationInformationPolicy {
-    const player = (this.scene as SceneWithPlayers).baseGameData?.gameInstance?.players?.find(
+    const player = (this.scene as SceneWithAiPlayers).baseGameData?.gameInstance?.players?.find(
       (candidate) => candidate.playerNumber === this.playerNumber
     );
     switch (player?.playerController.data.playerDefinition?.campaignFogPolicy) {
@@ -56,7 +37,7 @@ export class AiObservationVisibilityPolicy {
     }
   }
 
-  relationTo(actor: GameObject): PlayerRelation {
+  relationTo(actor: Phaser.GameObjects.GameObject): PlayerRelation {
     return getPlayerRelation(this.scene, this.playerNumber, getActorComponent(actor, OwnerComponent)?.getOwner());
   }
 
@@ -64,7 +45,7 @@ export class AiObservationVisibilityPolicy {
    * Own actors are always observable. Scripted reveal/omniscience is intentional;
    * normal skirmish otherwise requires the same owned vision sources as a human.
    */
-  mayObserve(actor: GameObject): boolean {
+  mayObserve(actor: Phaser.GameObjects.GameObject): boolean {
     const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
     if (owner === this.playerNumber) return true;
     if (this.informationPolicy !== "skirmish") return true;
@@ -106,7 +87,11 @@ export class AiObservationVisibilityPolicy {
         : getGameObjectCurrentTile(source);
       const vision = getActorComponent(source, VisionComponent);
       if (!sourceTile || !vision) return false;
-      const distance = Math.hypot(sourceTile.x - tile.x, sourceTile.y - tile.y, DistanceHelper.getFlyingHeightInTiles(source));
+      const distance = Math.hypot(
+        sourceTile.x - tile.x,
+        sourceTile.y - tile.y,
+        DistanceHelper.getFlyingHeightInTiles(source)
+      );
       return Math.floor(distance) <= vision.range;
     });
   }

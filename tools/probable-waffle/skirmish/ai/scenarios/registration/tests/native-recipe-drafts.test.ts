@@ -27,7 +27,8 @@ const readerFixture = {
       branches: ["normal"],
       executionBlockers: ["native_case_binding"],
       reuse: [
-        "tools/probable-waffle/skirmish/ai/testing/fixtures/native/difficulty/d-01-every-lobby-difficulty-selects-the-exact-versioned-profile-and-expected-cadence-runtime.json"
+        "tools/probable-waffle/skirmish/ai/testing/fixtures/native/difficulty/" +
+          "d-01-every-lobby-difficulty-selects-the-exact-versioned-profile-and-expected-cadence-runtime.json"
       ],
       checkpointTicks: [0, 2000],
       checkpointPolicy: "An isolated reader unit control, not a missing runtime registration or executed evidence."

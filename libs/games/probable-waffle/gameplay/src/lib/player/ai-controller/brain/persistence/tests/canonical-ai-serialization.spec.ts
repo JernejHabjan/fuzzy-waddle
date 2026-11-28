@@ -9,7 +9,7 @@ import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 import { AiBrainMigrationError, migrateAiBrainState } from "../migrate-ai-brain-state";
 import { createAiTestObservation } from "../../../testing/fixtures/coordination/ai-test-fixtures";
 
-describe("Stage 2 canonical state and migration", () => {
+describe("brain canonical state and migration", () => {
   const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
   const migrationContext = {
     playerNumber: 1,

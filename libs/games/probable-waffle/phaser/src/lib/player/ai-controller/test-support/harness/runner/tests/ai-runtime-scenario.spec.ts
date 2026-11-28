@@ -11,7 +11,7 @@ import type { AiRuntimeScenarioBoundary } from "../../../reproduction/ai-runtime
 
 const controllerState = { blackboard: {} } as AIBehaviorTreeStateData;
 
-describe("Stage 5 real runtime scenario bootstrap", () => {
+describe("runtime scenario bootstrap", () => {
   it("restores the captured controller boundary before continuing later checkpoints", async () => {
     const restored: number[] = [];
     const bridge: AiRuntimeScenarioBridgePort = {

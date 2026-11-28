@@ -1,24 +1,19 @@
+import type { AiDecisionReproPayload } from "./contracts/ai-decision-repro-payload";
+export type { AiDecisionReproPayload } from "./contracts/ai-decision-repro-payload";
+import type { AiDecisionReproArtifact } from "./contracts/ai-decision-repro-artifact";
+export type { AiDecisionReproArtifact } from "./contracts/ai-decision-repro-artifact";
+export type { AiReplayBlocker } from "./contracts/ai-replay-blocker";
+import type { AiDecisionReplayResult } from "./contracts/ai-decision-replay-result";
+export type { AiDecisionReplayResult } from "./contracts/ai-decision-replay-result";
+import type { AiReproComparison } from "./contracts/ai-repro-comparison";
+export type { AiReproComparison } from "./contracts/ai-repro-comparison";
+import type { AiOfflineBreakpoint } from "./contracts/ai-offline-breakpoint";
+export type { AiOfflineBreakpoint } from "./contracts/ai-offline-breakpoint";
 import type { AiBrain, AiBrainStepResult } from "../../brain/ai-brain";
 import { digestCanonicalAiValue } from "../../brain/persistence/canonical-ai-serialization";
-import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
-import type { AiCommandOutcome } from "../../contracts/commands/ai-command-contracts";
-import type { AiObservation } from "../../contracts/observation/ai-observation";
-import type { AiReproBundle, AiReproInputs } from "../../contracts/diagnostics/ai-repro-bundle";
+
+import type { AiReproInputs } from "../../contracts/diagnostics/ai-repro-bundle";
 import { type AiFirstDifference, findFirstAiDifference } from "./ai-first-difference";
-
-/** Inline data payload stored beside an AiReproBundle manifest by test/developer tooling. */
-export interface AiDecisionReproPayload {
-  readonly observation: AiObservation;
-  readonly priorState: AiBrainState;
-  readonly outcomes: readonly AiCommandOutcome[];
-  readonly expectedResult?: AiBrainStepResult;
-}
-
-/** Complete decision artifact. Runtime artifacts use the same manifest with external safe snapshot/input references. */
-export interface AiDecisionReproArtifact {
-  readonly manifest: AiReproBundle & { readonly kind: "decision" };
-  readonly payload: AiDecisionReproPayload;
-}
 
 /** Creates an exact permitted-data decision capture at a completed pure boundary. */
 export function captureAiDecisionBundle(
@@ -54,20 +49,6 @@ export function captureAiDecisionBundle(
     payload: structuredClone(payload)
   };
 }
-
-export type AiReplayBlocker =
-  | "missing_observation_history"
-  | "missing_prior_state"
-  | "missing_outcome_history"
-  | "incompatible_source"
-  | "incompatible_config"
-  | "incompatible_content"
-  | "broken_digest";
-
-/** Replay result never labels incomplete or changed-input data as exact reproduction. */
-export type AiDecisionReplayResult =
-  | { readonly status: "reproduced"; readonly result: AiBrainStepResult; readonly digest: string }
-  | { readonly status: "blocked"; readonly blocker: AiReplayBlocker };
 
 /** Rejects corrupted or incomplete decision data before offline execution can inspect it. */
 export function assertAiDecisionArtifactIntegrity(artifact: AiDecisionReproArtifact): void {
@@ -127,12 +108,6 @@ export function replayAiDecisionBundle(
   return { status: "reproduced", result, digest: digestCanonicalAiValue(result) };
 }
 
-/** First divergence plus an explicit changed-input label for DBG-04. */
-export interface AiReproComparison {
-  readonly classification: "same" | "changed_input" | "same_input_divergence";
-  readonly firstDifference: AiFirstDifference | null;
-}
-
 /** Compares provenance first, then canonical decision output at its first stable field. */
 export function compareAiDecisionBundles(
   original: AiDecisionReproArtifact,
@@ -149,14 +124,6 @@ export function compareAiDecisionBundles(
     firstDifference: outputDifference
   };
 }
-
-/** Allowed offline breakpoints; arbitrary expressions are intentionally unsupported. */
-export type AiOfflineBreakpoint =
-  | "duplicate_effect"
-  | "progress_overdue"
-  | "mission_cancelled"
-  | "command_rejected"
-  | "decision_complete";
 
 /** Tests only recorded result/state facts; named breakpoints never evaluate imported code. */
 export function matchesAiOfflineBreakpoint(breakpoint: AiOfflineBreakpoint, result: AiBrainStepResult): boolean {
@@ -178,7 +145,7 @@ export function matchesAiOfflineBreakpoint(breakpoint: AiOfflineBreakpoint, resu
   }
 }
 
-/** Bounded pure stepping cursor used by the Stage 13 workbench, never by a live match. */
+/** Bounded pure stepping cursor used by the tactics workbench, never by a live match. */
 export class AiOfflineDecisionStepper {
   private consumed = false;
 

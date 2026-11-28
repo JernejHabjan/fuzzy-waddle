@@ -10,7 +10,7 @@ export interface AiHardeningCoverageEntry {
 }
 
 /**
- * Coverage authority for H1–H9. Stage 2 defines the shared contracts; the listed owning
+ * Coverage authority for H1–H9. The brain defines the shared contracts; the listed owning
  * stages add runtime behavior while preserving these persistence/debug/test identities.
  */
 export const AI_HARDENING_COVERAGE: readonly AiHardeningCoverageEntry[] = [

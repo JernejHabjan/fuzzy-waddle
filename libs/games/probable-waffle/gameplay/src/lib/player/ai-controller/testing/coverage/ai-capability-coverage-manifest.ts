@@ -1,9 +1,5 @@
-/** Coverage state for one capability seam. Planned entries name their owning stage explicitly. */
-export type AiCapabilityCoverageDisposition =
-  | { readonly status: "implemented"; readonly symbol: string }
-  | { readonly status: "planned"; readonly stage: number; readonly symbol: string }
-  | { readonly status: "unsupported"; readonly reason: string }
-  | { readonly status: "not_applicable"; readonly reason: string };
+import type { AiCapabilityCoverageDisposition } from "./contracts/ai-capability-coverage-disposition";
+export type { AiCapabilityCoverageDisposition } from "./contracts/ai-capability-coverage-disposition";
 
 /** One researched component family traced through every end-to-end AI seam. */
 export interface AiCapabilityCoverageEntry {
@@ -19,36 +15,31 @@ export interface AiCapabilityCoverageEntry {
 }
 
 const implemented = (symbol: string): AiCapabilityCoverageDisposition => ({ status: "implemented", symbol });
-const planned = (stage: number, symbol: string): AiCapabilityCoverageDisposition => ({
+const planned = (owner: string, symbol: string): AiCapabilityCoverageDisposition => ({
   status: "planned",
-  stage,
+  owner,
   symbol
 });
 const notApplicable = (reason: string): AiCapabilityCoverageDisposition => ({ status: "not_applicable", reason });
 
-function gameplayFamily(
-  family: string,
-  source: string,
-  proposerStage: number,
-  fixtureStage: number
-): AiCapabilityCoverageEntry {
+function gameplayFamily(family: string, source: string): AiCapabilityCoverageEntry {
   return {
     family,
     source,
     observation: implemented("AiObservedActor/AiCapabilityCatalogEntry"),
-    proposer: implemented(`${family} proposer (Stage ${proposerStage})`),
+    proposer: implemented(`${family} proposer`),
     command: implemented("GameCommand + CommandBusService shared application"),
     outcome: implemented("adaptGameCommandOutcomeToBrain"),
     save: implemented("command authority/effect save and recovery adapters"),
-    debug: implemented(`${family} debug projection (Stage ${Math.max(6, proposerStage)})`),
+    debug: implemented(`${family} debug projection`),
     fixture: planned(
-      15,
-      `${family} runtime fixture; authored Stage ${fixtureStage} coverage is deferred to final execution`
+      "native scenario evidence",
+      `${family} runtime fixture; authored coverage requires native execution`
     )
   };
 }
 
-function stage13CombatFamily(family: string, source: string, proposer: string): AiCapabilityCoverageEntry {
+function combatFamily(family: string, source: string, proposer: string): AiCapabilityCoverageEntry {
   return {
     family,
     source,
@@ -58,17 +49,17 @@ function stage13CombatFamily(family: string, source: string, proposer: string): 
     outcome: implemented("AiCommandOutcome reconciliation and persisted effect identity"),
     save: implemented("AiBrainState.squads.tactics/support canonical state"),
     debug: implemented("AiDebugSnapshot.skirmish.squads/support and Squads & Support panel"),
-    fixture: planned(15, `ai-tactics-manager.spec.ts plus real ${family} runtime scenario`)
+    fixture: planned("native scenario evidence", `ai-tactics-manager.spec.ts plus real ${family} runtime scenario`)
   };
 }
 
 /**
- * Stage 2 coverage authority. It inventories prefab component/system families and explicit
- * scenario/editor injection so later stages cannot silently omit a mechanic.
+ * Capability coverage authority. It inventories prefab component/system families and explicit
+ * scenario/editor injection so later owners cannot silently omit a mechanic.
  */
 export const AI_CAPABILITY_COVERAGE_MANIFEST: readonly AiCapabilityCoverageEntry[] = [
-  gameplayFamily("ownership_diplomacy", "owner + player/team rules", 4, 4),
-  gameplayFamily("logical_position_clearance", "representable + collider", 10, 10),
+  gameplayFamily("ownership_diplomacy", "owner + player/team rules"),
+  gameplayFamily("logical_position_clearance", "representable + collider"),
   {
     family: "base_identity_expansion_placement",
     source: "main-building definition metadata + shared construction footprint authority",
@@ -78,7 +69,7 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST: readonly AiCapabilityCoverageEntry
     outcome: implemented("shared construction outcome reconciliation"),
     save: implemented("AiBrainState.bases canonical lifecycle and site cooldowns"),
     debug: implemented("AiDebugSnapshot.bases and Bases & Placement panel"),
-    fixture: planned(15, "PLACE-01..03, EXP-01..02 and multi-base runtime fixture")
+    fixture: planned("native scenario evidence", "PLACE-01..03, EXP-01..02 and multi-base runtime fixture")
   },
   {
     family: "fortification_topology",
@@ -89,7 +80,7 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST: readonly AiCapabilityCoverageEntry
     outcome: implemented("stable node effect reconciliation and observed finished actor matching"),
     save: implemented("AiBrainState.fortifications canonical graph/budget/breach state"),
     debug: implemented("AiDebugSnapshot.fortifications and saved Bases & Placement overlay"),
-    fixture: planned(15, "WALL-01..05, H-27/H-28 and real height-topology runtime fixtures")
+    fixture: planned("native scenario evidence", "WALL-01..05, H-27/H-28 and real height-topology runtime fixtures")
   },
   {
     family: "causal_recovery_and_anti_blocking",
@@ -100,23 +91,23 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST: readonly AiCapabilityCoverageEntry
     outcome: implemented("AiCommandOutcome terminal outcome site backoff"),
     save: implemented("AiBrainState.recovery canonical records"),
     debug: implemented("AiDebugSnapshot.recovery and Logistics & Workers panel"),
-    fixture: planned(15, "WALL-04, DOMAIN-04, FIGHT-05, H-01..05 and H-16..18 runtime fixtures")
+    fixture: planned("native scenario evidence", "WALL-04, DOMAIN-04, FIGHT-05, H-01..05 and H-16..18 runtime fixtures")
   },
-  gameplayFamily("vision_visibility", "vision + visibility systems", 4, 4),
-  stage13CombatFamily("health_regeneration", "health + healthRegeneration", "estimateAiEngagement passive sustain"),
-  stage13CombatFamily(
+  gameplayFamily("vision_visibility", "vision + visibility systems"),
+  combatFamily("health_regeneration", "health + healthRegeneration", "estimateAiEngagement passive sustain"),
+  combatFamily(
     "attack_target_domains",
     "attack + effective level overrides",
     "AiTacticsManager domain-compatible focus and damage reservations"
   ),
-  stage13CombatFamily("healing", "healing", "AiTacticsManager capped missing-health reservation"),
-  stage13CombatFamily(
+  combatFamily("healing", "healing", "AiTacticsManager capped missing-health reservation"),
+  combatFamily(
     "spell_status_zone",
     "spell + spellCasting + active effects",
     "AiTacticsManager cooldown/research/autocast/zone-aware support"
   ),
-  gameplayFamily("construction", "builder + constructable + prerequisites", 7, 7),
-  gameplayFamily("production_queue", "production + queue + productionCost", 7, 7),
+  gameplayFamily("construction", "builder + constructable + prerequisites"),
+  gameplayFamily("production_queue", "production + queue + productionCost"),
   {
     family: "research",
     source: "researchDefinitions + ResearchComponent + TechTreeService shared queue",
@@ -126,16 +117,16 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST: readonly AiCapabilityCoverageEntry
     outcome: implemented("AiCommandOutcome reconciliation plus TechTreeService resolved runtime level"),
     save: implemented("AiBrainState.economyProduction.adaptation and existing research queue/save"),
     debug: implemented("AiDebugSnapshot.adaptation and Production & Tech panel"),
-    fixture: planned(15, "stage-14-adaptation authored cases plus TECH-01..06 runtime matrix")
+    fixture: planned("native scenario evidence", "stage-14-adaptation authored cases plus TECH-01..06 runtime matrix")
   },
-  gameplayFamily("housing", "housing + housingCost + spawn clearance", 7, 7),
-  gameplayFamily("gathering", "gatherer + resourceSource", 7, 7),
-  gameplayFamily("resource_drain", "resourceDrain", 7, 7),
-  gameplayFamily("growth_tending", "tendable + crop growth state", 7, 7),
-  gameplayFamily("ground_navigation", "navigable + translatable + movement", 8, 8),
-  gameplayFamily("water_navigation", "shipAnimatable + water navigation", 8, 8),
-  gameplayFamily("flight", "flying + air navigation", 8, 8),
-  gameplayFamily("container_transport", "container + containable", 8, 8),
+  gameplayFamily("housing", "housing + housingCost + spawn clearance"),
+  gameplayFamily("gathering", "gatherer + resourceSource"),
+  gameplayFamily("resource_drain", "resourceDrain"),
+  gameplayFamily("growth_tending", "tendable + crop growth state"),
+  gameplayFamily("ground_navigation", "navigable + translatable + movement"),
+  gameplayFamily("water_navigation", "shipAnimatable + water navigation"),
+  gameplayFamily("flight", "flying + air navigation"),
+  gameplayFamily("container_transport", "container + containable"),
   {
     family: "level_overrides",
     source: "actor-level-utils + TechTreeService resolved unit levels",
@@ -145,9 +136,9 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST: readonly AiCapabilityCoverageEntry
     outcome: implemented("ResearchComponent upgrades existing actors; observation resolves new effective levels"),
     save: implemented("existing TechTreeService/research queue save plus adaptation rationale"),
     debug: implemented("AiDebugSnapshot.adaptation selected research rationale"),
-    fixture: planned(15, "TECH-01/06 applied-level runtime counterpart")
+    fixture: planned("native scenario evidence", "TECH-01/06 applied-level runtime counterpart")
   },
-  gameplayFamily("conversion", "convertible runtime component", 4, 4),
+  gameplayFamily("conversion", "convertible runtime component"),
   {
     family: "mode_goals_results",
     source: "GameModeConditionChecker",
@@ -157,18 +148,18 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST: readonly AiCapabilityCoverageEntry
     outcome: implemented("shared command outcome reconciliation"),
     save: implemented("AiBrainState.skirmish.mode canonical state"),
     debug: implemented("AiDebugSnapshot.skirmish.mode"),
-    fixture: planned(15, "Stage 9 runtime score/concession fixture")
+    fixture: planned("native scenario evidence", "skirmish runtime score/concession fixture")
   },
   {
     family: "scenario_editor_injected_conversion",
     source: "scenario/editor actor conversion and ownership events",
     observation: implemented("AiObservation evidence/ownership contract"),
-    proposer: implemented("knowledge/diplomacy reducer (Stage 4)"),
+    proposer: implemented("knowledge/diplomacy reducer (observation)"),
     command: notApplicable("conversion is caused by ordinary runtime proximity, never an AI ownership command"),
     outcome: implemented("ConvertibleComponent.ConvertedEvent"),
     save: implemented("ConvertibleComponentData accumulatedTime/converted"),
-    debug: implemented("conversion evidence projection (Stage 4)"),
-    fixture: planned(15, "scenario/editor injected conversion runtime bridge")
+    debug: implemented("conversion evidence projection (observation)"),
+    fixture: planned("native scenario evidence", "scenario/editor injected conversion runtime bridge")
   },
   {
     family: "presentation_audio_animation",
@@ -179,6 +170,6 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST: readonly AiCapabilityCoverageEntry
     outcome: notApplicable("presentation completion is not a gameplay outcome"),
     save: notApplicable("presentation is reconstructed from canonical world state"),
     debug: implemented("AI debug panels render source-provided labels only as Phaser text"),
-    fixture: planned(15, "debug label/render isolation")
+    fixture: planned("native scenario evidence", "debug label/render isolation")
   }
 ];

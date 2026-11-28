@@ -9,7 +9,7 @@ import type { AiProfileConfig } from "../../contracts/ai-profile-config";
 import type { AiManagerProposal } from "./ai-manager-proposal";
 import { reconcileAiCommandReservations } from "./reconcile-ai-command-reservations";
 
-/** The shared, deterministic Stage 6 reducer result. It owns only durable planning state. */
+/** The shared, deterministic coordination reducer result. It owns only durable planning state. */
 export interface AiDecisionPlanningResult {
   readonly state: AiBrainState;
   readonly proposals: readonly AiIntent[];
@@ -85,8 +85,8 @@ export function reconcileAiDecisionReservations(
 }
 
 /**
- * Applies the Stage 6 fair-lane, stance, reservation and progress-supervision invariants before arbitration.
- * It deliberately does not invent domain actions: Stage 7+ managers supply those proposals through this boundary.
+ * Applies the coordination fair-lane, stance, reservation and progress-supervision invariants before arbitration.
+ * It deliberately does not invent domain actions: domain managers supply those proposals through this boundary.
  */
 export function planAiDecisions(
   observation: AiObservation,

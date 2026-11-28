@@ -1,15 +1,6 @@
+import type { AiResourceDemandInput } from "./contracts/ai-resource-demand-input";
+export type { AiResourceDemandInput } from "./contracts/ai-resource-demand-input";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-
-/**
- * Represents the resource information that may influence the legacy controller's
- * immediate worker assignment. Stage 2 replaces this narrow compatibility view
- * with a versioned observation and demand ledger.
- */
-export interface AiResourceDemandInput {
-  readonly resources: Readonly<Record<ResourceType, number>>;
-  readonly reserved: Readonly<Record<ResourceType, number>>;
-  readonly incomeSmoothed: Readonly<Record<ResourceType, number>>;
-}
 
 /** A deterministic legacy resource-demand recommendation. */
 export interface AiResourceDemand {

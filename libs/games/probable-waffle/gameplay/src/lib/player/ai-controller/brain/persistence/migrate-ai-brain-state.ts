@@ -1,14 +1,8 @@
+import type { AiLegacyMigrationContext } from "./contracts/ai-legacy-migration-context";
+export type { AiLegacyMigrationContext } from "./contracts/ai-legacy-migration-context";
 import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
-import type { AiPlanStepId } from "../../contracts/ai-core-types";
 import { assertAiBrainState, isAiBrainState } from "../../contracts/validation/validate-ai-contracts";
-import { createAiBrainState, type CreateAiBrainStateInput } from "../state/create-ai-brain-state";
-
-/** Explicit context derived from the current world when upgrading a legacy save. */
-export interface AiLegacyMigrationContext extends CreateAiBrainStateInput {
-  readonly satisfiedOpeningStepIds: readonly AiPlanStepId[];
-  /** Existing runtime saves have already crossed their legacy opening boundary. */
-  readonly legacyOpeningLifecycle?: "active" | "completed";
-}
+import { createAiBrainState } from "../state/create-ai-brain-state";
 
 /** Typed migration failure suitable for save/load diagnostics. */
 export class AiBrainMigrationError extends Error {
@@ -26,7 +20,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function validateCurrentState(value: Record<string, unknown>): AiBrainState {
-  const stage9Compatible =
+  const withSkirmishState =
     "skirmish" in value
       ? value
       : {
@@ -37,15 +31,15 @@ function validateCurrentState(value: Record<string, unknown>): AiBrainState {
             timeline: []
           }
         };
-  const stage12Compatible =
-    "recovery" in stage9Compatible ? stage9Compatible : { ...stage9Compatible, recovery: { records: [] } };
-  const stage14Compatible =
-    isRecord(stage12Compatible.economyProduction) && "adaptation" in stage12Compatible.economyProduction
-      ? stage12Compatible
+  const withRecoveryState =
+    "recovery" in withSkirmishState ? withSkirmishState : { ...withSkirmishState, recovery: { records: [] } };
+  const withAdaptationState =
+    isRecord(withRecoveryState.economyProduction) && "adaptation" in withRecoveryState.economyProduction
+      ? withRecoveryState
       : {
-          ...stage12Compatible,
+          ...withRecoveryState,
           economyProduction: {
-            ...(stage12Compatible.economyProduction as Record<string, unknown>),
+            ...(withRecoveryState.economyProduction as Record<string, unknown>),
             adaptation: {
               evidence: [],
               activeRoleTargets: [],
@@ -57,15 +51,15 @@ function validateCurrentState(value: Record<string, unknown>): AiBrainState {
             }
           }
         };
-  if (!isAiBrainState(stage14Compatible)) {
+  if (!isAiBrainState(withAdaptationState)) {
     throw new AiBrainMigrationError("malformed_state", "missing_required_slices");
   }
   try {
-    assertAiBrainState(stage14Compatible);
+    assertAiBrainState(withAdaptationState);
   } catch (error) {
     throw new AiBrainMigrationError("malformed_state", error instanceof Error ? error.message : "invalid_number");
   }
-  return stage14Compatible;
+  return withAdaptationState;
 }
 
 /**

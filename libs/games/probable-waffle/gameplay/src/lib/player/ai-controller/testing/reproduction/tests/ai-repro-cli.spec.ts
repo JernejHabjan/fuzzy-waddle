@@ -49,7 +49,7 @@ function artifact(sourceRevision = "source-a"): AiDecisionReproArtifact {
   );
 }
 
-describe("Stage 5 reproduction runner / DBG-01,03,04,05", () => {
+describe("reproduction runner / DBG-01,03,04,05", () => {
   const brain = new PureAiBrain(profile, []);
 
   it("blocks incomplete history and incompatible source instead of claiming exact replay", () => {

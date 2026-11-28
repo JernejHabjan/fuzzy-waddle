@@ -71,7 +71,7 @@ test("reports a fatal preset setup error and tears down the waiting context", as
       undefined,
       async () => {
         page.emit("pageerror", new Error(failure));
-        await new Promise<void>(() => {});
+        await new Promise<void>(() => undefined);
       }
     )
   ).rejects.toThrow(failure);

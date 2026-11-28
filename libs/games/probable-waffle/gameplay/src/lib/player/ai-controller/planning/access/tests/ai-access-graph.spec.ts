@@ -45,7 +45,7 @@ const build = (inputCells: readonly AiAccessCell[]) =>
     cells: inputCells
   });
 
-describe("Stage 8 access graph", () => {
+describe("AI access graph", () => {
   it("produces identical stable regions and shore transfers for permuted map input", () =>
     expect(build(cells).graph).toEqual(build([...cells].reverse()).graph));
 

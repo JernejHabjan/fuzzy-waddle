@@ -63,7 +63,7 @@ export function hasUnmetMacroFloor(state: AiBrainState): boolean {
   });
 }
 
-/** Legacy `safe` saves retain the same defensive intent as the Stage-14 `turtle` profile. */
+/** Legacy `safe` saves retain the same defensive intent as the adaptation `turtle` profile. */
 export function isDefensiveArchetype(archetypeId: string): boolean {
   return archetypeId.endsWith(":safe") || archetypeId.endsWith(":turtle") || archetypeId.endsWith(":turtle_air");
 }

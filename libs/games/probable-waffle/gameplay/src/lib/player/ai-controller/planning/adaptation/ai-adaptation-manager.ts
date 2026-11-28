@@ -165,7 +165,7 @@ function archetypeFallback(
 }
 
 /**
- * Stage-14 pure adaptation owner. It consumes only recorded visible evidence and
+ * Pure adaptation owner. It consumes only recorded visible evidence and
  * runtime-legal tech candidates, preserving useful production commitments while
  * adding bounded counter roles or a demonstrably valuable upgrade.
  */
