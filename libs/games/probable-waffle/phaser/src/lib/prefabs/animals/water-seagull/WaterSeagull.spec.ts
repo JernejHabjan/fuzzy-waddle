@@ -54,7 +54,7 @@ describe("WaterSeagull lifecycle", () => {
     game.bird.destroy();
   });
 
-  it("filters actor type, activity and distance before taking off once away from the shark", () => {
+  it("filters activity and distance before taking off once away from an approaching actor", () => {
     const state = setup();
     const shark = Object.assign(
       new Phaser.GameObjects.Sprite(state.scene as unknown as Phaser.Scene, 200, 100, "animals"),
@@ -68,8 +68,6 @@ describe("WaterSeagull lifecycle", () => {
     state.poll();
     shark.active = true;
     shark.name = ObjectNames.TivaraWorker;
-    state.poll();
-    shark.name = ObjectNames.Shark;
     shark.x = 500;
     state.poll();
     expect(state.delayedCall).not.toHaveBeenCalled();
@@ -91,7 +89,9 @@ describe("WaterSeagull lifecycle", () => {
 
   it("cleans up idle polling on scene shutdown", () => {
     const state = setup();
-    const shutdown = state.scene.events.once.mock.calls[0];
+    const shutdown = state.scene.events.once.mock.calls.at(-1);
+    expect(shutdown).toBeDefined();
+    if (!shutdown) return;
     shutdown[1].call(shutdown[2]);
     expect(state.reaction.remove).toHaveBeenCalledTimes(1);
     expect(state.scene.events.off).toHaveBeenCalledTimes(1);
