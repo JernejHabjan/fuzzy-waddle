@@ -9,6 +9,8 @@ export interface AiRuntimeRouteOrder {
   readonly orderType: OrderType;
   readonly target: AiRuntimeCreatedActor | null;
   readonly targetTile: Vector3Simple | null;
+  /** A released AI pursuit keeps its original target identity while the pawn returns to the anchor. */
+  readonly pursuitReleasedTargetActorId?: string;
   readonly commandContext: NonNullable<OrderData["data"]["commandContext"]> | null;
   readonly originOutputId: number | null;
   readonly admissionObserved: boolean;

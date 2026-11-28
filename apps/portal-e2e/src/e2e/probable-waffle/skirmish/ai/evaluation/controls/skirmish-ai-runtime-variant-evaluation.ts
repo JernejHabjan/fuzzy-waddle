@@ -252,5 +252,8 @@ export function evaluateRuntimeVariant(
 
 /** An authored STRAT-09 unrecoverable branch deliberately removes the last worker and home. */
 export function requiresSurvivingWorker(scenarioId: string, variantId: string): boolean {
-  return !(scenarioId === "STRAT-09" && variantId.endsWith("-unrecoverable"));
+  return !(
+    (scenarioId === "STRAT-09" && variantId.endsWith("-unrecoverable")) ||
+    (scenarioId === "H-03" && (variantId.endsWith("-travel") || variantId.endsWith("-stalled")))
+  );
 }

@@ -8,4 +8,7 @@ test.describe("runtime worker survival oracle", () =>
     expect(requiresSurvivingWorker("STRAT-09", "strat-09-tivara-denial")).toBe(true);
     expect(requiresSurvivingWorker("STRAT-09", "strat-09-tivara-raid")).toBe(true);
     expect(requiresSurvivingWorker("STRAT-10", "strat-10-tivara-unrecoverable")).toBe(true);
+    expect(requiresSurvivingWorker("H-03", "h-03-tivara-travel")).toBe(false);
+    expect(requiresSurvivingWorker("H-03", "h-03-skaduwee-stalled")).toBe(false);
+    expect(requiresSurvivingWorker("H-03", "h-03-tivara-training")).toBe(true);
   }));

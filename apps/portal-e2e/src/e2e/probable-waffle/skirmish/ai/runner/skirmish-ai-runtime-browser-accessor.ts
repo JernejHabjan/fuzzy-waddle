@@ -9,18 +9,52 @@ declare global {
   }
 }
 
-export async function installRuntimeAccessor(page: Page): Promise<void> {
-  await page.waitForFunction(
-    () => {
-      const realm = window as unknown as {
-        __fuzzyWaddleAiRuntimeBrowserTest?: unknown;
-        __fuzzyWaddleAiMultiplayerBrowserTest?: unknown;
-      };
-      return !!(realm.__fuzzyWaddleAiRuntimeBrowserTest ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest);
-    },
-    undefined,
-    { timeout: 120_000 }
-  );
+export async function installRuntimeAccessor(page: Page, hostTimeoutMs = 120_000): Promise<void> {
+  try {
+    await page.waitForFunction(
+      () => {
+        const realm = window as unknown as {
+          __fuzzyWaddleAiRuntimeBrowserTest?: unknown;
+          __fuzzyWaddleAiMultiplayerBrowserTest?: unknown;
+        };
+        return !!(realm.__fuzzyWaddleAiRuntimeBrowserTest ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest);
+      },
+      undefined,
+      { timeout: hostTimeoutMs }
+    );
+  } catch (error) {
+    const state = await page
+      .evaluate(() => {
+        const rawConfig = sessionStorage.getItem("fuzzy-waddle:ai-runtime-browser-test");
+        let config: { enabled?: unknown; presetWorld?: { fixtureId?: unknown; queues?: unknown[] } } | null = null;
+        try {
+          config = rawConfig ? JSON.parse(rawConfig) : null;
+        } catch {
+          // The length and parse status distinguish absent, valid, and malformed setup data.
+        }
+        return {
+          url: location.href,
+          title: document.title,
+          runtimeConfig: rawConfig
+            ? {
+                present: true,
+                parseable: config !== null,
+                enabled: config?.enabled ?? null,
+                fixtureId: config?.presetWorld?.fixtureId ?? null,
+                queueCount: config?.presetWorld?.queues?.length ?? null
+              }
+            : { present: false },
+          runtimeHostPresent: !!(window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: unknown })
+            .__fuzzyWaddleAiRuntimeBrowserTest,
+          body: document.body.innerText.slice(0, 800)
+        };
+      })
+      .catch(() => null);
+    throw new Error(
+      `runtime_test_host_not_ready:${error instanceof Error ? error.message : String(error)}; ` +
+        `browserState=${JSON.stringify(state)}`
+    );
+  }
   await page.evaluate(() => {
     window.__fuzzyWaddleAiRuntimeParts = (playerNumber: number) => {
       type Host = {

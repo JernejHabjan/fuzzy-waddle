@@ -26,6 +26,9 @@ test("placement evidence can rely on its complete transaction facts without unre
 });
 
 test("exact native transaction, strategy and combat proof do not require unrelated broad resource coverage", () => {
+  expect(nativeScenarioRequiresResourceCoverage("H-03")).toBe(false);
+  expect(nativeScenarioRequiresResourceCoverage("C-05")).toBe(false);
+  expect(nativeScenarioRequiresResourceCoverage("C-04")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("DOMAIN-01")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("DOMAIN-05")).toBe(false);
   for (const id of ["FIGHT-01", "FIGHT-02", "FIGHT-03", "FIGHT-04", "FIGHT-05"])
@@ -34,6 +37,10 @@ test("exact native transaction, strategy and combat proof do not require unrelat
   expect(nativeScenarioRequiresResourceCoverage("STRAT-03")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-04")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-05")).toBe(false);
+  expect(nativeScenarioRequiresResourceCoverage("STRAT-07")).toBe(false);
+  for (const id of ["STRAT-12", "STRAT-13", "H-24", "H-26"]) {
+    expect(nativeScenarioRequiresResourceCoverage(id)).toBe(false);
+  }
   expect(nativeScenarioRequiresResourceCoverage("H-11")).toBe(false);
   for (const id of ["RAID-01", "RAID-02", "RAID-03"]) expect(nativeScenarioRequiresResourceCoverage(id)).toBe(false);
 });
@@ -41,17 +48,26 @@ test("exact native transaction, strategy and combat proof do not require unrelat
 test("STRAT-09 comeback proof uses exact native attack effects instead of broad resource coverage", () =>
   expect(nativeScenarioRequiresResourceCoverage("STRAT-09")).toBe(false));
 
-test("H-10 backlog recovery uses exact income events instead of the invalidated broad resource ledger", () => expect(nativeScenarioRequiresResourceCoverage("H-10")).toBe(false));
+test("H-10 backlog recovery uses exact income events instead of the invalidated broad resource ledger", () =>
+  expect(nativeScenarioRequiresResourceCoverage("H-10")).toBe(false));
 
-test("H-12 atomic bundles use exact cost, payment, delivery and foreign-bank evidence", () => expect(nativeScenarioRequiresResourceCoverage("H-12")).toBe(false));
+test("H-12 atomic bundles use exact cost, payment, delivery and foreign-bank evidence", () =>
+  expect(nativeScenarioRequiresResourceCoverage("H-12")).toBe(false));
 
-test("H-13 optional-budget evidence uses exact waiting exposure and paid physical outcomes", () => expect(nativeScenarioRequiresResourceCoverage("H-13")).toBe(false));
+test("H-13 optional-budget evidence uses exact waiting exposure and paid physical outcomes", () =>
+  expect(nativeScenarioRequiresResourceCoverage("H-13")).toBe(false));
 
-test("H-14 lane-priority evidence uses exact native consideration, service and outcome events", () => expect(nativeScenarioRequiresResourceCoverage("H-14")).toBe(false));
+test("H-14 lane-priority evidence uses exact native consideration, service and outcome events", () =>
+  expect(nativeScenarioRequiresResourceCoverage("H-14")).toBe(false));
 
-test("H-15 emergency evidence uses exact damage, defense and delayed-receipt events", () => expect(nativeScenarioRequiresResourceCoverage("H-15")).toBe(false));
+test("H-15 emergency evidence uses exact damage, defense and delayed-receipt events", () =>
+  expect(nativeScenarioRequiresResourceCoverage("H-15")).toBe(false));
 
-test("H-30 fault isolation uses exact injection, recovery and reconciliation events", () => expect(nativeScenarioRequiresResourceCoverage("H-30")).toBe(false));
+test("H-19 route availability uses exact income, local defense and resumed-arrival evidence", () =>
+  expect(nativeScenarioRequiresResourceCoverage("H-19")).toBe(false));
+
+test("H-30 fault isolation uses exact injection, recovery and reconciliation events", () =>
+  expect(nativeScenarioRequiresResourceCoverage("H-30")).toBe(false));
 
 test("authority fault evidence relies on exact native output transactions instead of broad resource coverage", () => {
   expect(nativeScenarioRequiresResourceCoverage("H-06")).toBe(false);
@@ -71,4 +87,22 @@ test("domain evidence does not reject an additional native opponent for broad re
   expect(nativeScenarioContext(result, 100, undefined, { requireResourceCoverage: false }).failures).not.toContain(
     "native_other_opponent_capture_invalid"
   );
+});
+
+test("native proof readers cannot use effects emitted on the frame that seals the window", () => {
+  const visible = { tick: 100, sequence: 1, kind: "actor_unregistered" };
+  const unsealed = { tick: 101, sequence: 2, kind: "actor_unregistered" };
+  const capture = { facts: [visible, unsealed], snapshots: [], recipientResourceFacts: [visible, unsealed] };
+  const result = {
+    presetCreatedActorIds: {},
+    productionCapture: capture,
+    opponentCapture: capture,
+    checkpoints: [],
+    perturbations: []
+  } as unknown as RuntimeVariantResult;
+
+  const context = nativeScenarioContext(result, 100, 400);
+  expect(context.capture?.facts).toEqual([visible]);
+  expect(context.result.opponentCapture?.recipientResourceFacts).toEqual([visible]);
+  expect(result.productionCapture?.facts).toEqual([visible, unsealed]);
 });

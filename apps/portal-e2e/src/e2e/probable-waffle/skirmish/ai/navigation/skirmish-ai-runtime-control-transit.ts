@@ -10,7 +10,8 @@ export function runtimeControlTransitFailures(
   capture: AiRuntimeProductionSnapshot,
   controlId: string,
   latestTick: number,
-  expected: "arrive" | "blocked"
+  expected: "arrive" | "blocked",
+  expectedStart?: { readonly x: number; readonly y: number }
 ): string[] {
   const controls = capture.facts.filter(
     (fact) => fact.kind === "preset_control" && fact.control.id === controlId && fact.control.phase === "applied"
@@ -62,12 +63,14 @@ export function runtimeControlTransitFailures(
     ];
   const attempts = normalized.movements.filter((movement) => {
     const start = movement.observations[0];
+    const actualStart = start?.spatial.actualTile;
     // Shared application can begin synchronously before dispatchDeterministic returns its receipt.
     return (
       start?.spatial.source.actorId === actorId &&
       start.sequence > request.sequence &&
       start.tick >= control.tick &&
       start.tick <= latestTick &&
+      (!expectedStart || (actualStart?.x === expectedStart.x && actualStart.y === expectedStart.y)) &&
       start.spatial.caller?.order?.commandContext?.execution.commandId === command.execution?.commandId
     );
   });
@@ -100,4 +103,43 @@ export function runtimeControlTransitFailures(
       (movement.observations.at(-1)?.tick ?? Infinity) <= latestTick
   );
   return !arrived && !touchedTarget && terminated ? [] : [`native_transit_blocked_control_unproved:${controlId}`];
+}
+
+/** Return the tick of the proven native arrival for a control, if it reached its original endpoint. */
+export function runtimeControlTransitArrivalTick(
+  capture: AiRuntimeProductionSnapshot,
+  controlId: string,
+  latestTick: number
+): number | undefined {
+  if (runtimeControlTransitFailures(capture, controlId, latestTick, "arrive").length) return undefined;
+  const control = capture.facts.find(
+      (fact) => fact.kind === "preset_control" && fact.control.id === controlId && fact.control.phase === "applied"
+    ),
+    command = control?.kind === "preset_control" ? control.control.command : undefined;
+  if (control?.kind !== "preset_control" || command?.type !== ProbableWaffleGameCommandTypes.Move || !command.execution)
+    return undefined;
+  const normalized = normalizeRuntimeMovement(capture);
+  return normalized.movements
+    .filter(
+      (movement) =>
+        movement.callerAttributed &&
+        !movement.gaps.length &&
+        movement.arrival === "original_destination" &&
+        movement.returned === "true" &&
+        movement.started.spatial.kind === "movement" &&
+        movement.started.spatial.source.actorId === control.control.actorId &&
+        movement.started.spatial.caller?.order?.commandContext?.execution.commandId === command.execution?.commandId
+    )
+    .flatMap((movement) =>
+      movement.observations
+        .filter(
+          (entry) =>
+            entry.spatial.phase === "arrived" &&
+            entry.tick <= latestTick &&
+            entry.spatial.actualTile?.x === command.tileVec3.x &&
+            entry.spatial.actualTile?.y === command.tileVec3.y
+        )
+        .map((entry) => entry.tick)
+    )
+    .sort((left, right) => left - right)[0];
 }

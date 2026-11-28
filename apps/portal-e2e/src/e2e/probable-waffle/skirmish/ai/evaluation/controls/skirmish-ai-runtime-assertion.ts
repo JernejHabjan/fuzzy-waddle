@@ -58,7 +58,6 @@ export interface RuntimeAssertion {
   readonly requiredGroundRouteVariantIds?: readonly string[];
   readonly requireRaidDefenseRecovery?: boolean;
   readonly requiredPresetFixtureId?: string;
-  readonly requireProducerReplacementAfterLoss?: boolean;
   readonly requiredSupplyPrebuild?: {
     readonly minimumBuffer: number;
     readonly latestTick: number;
@@ -100,7 +99,6 @@ export interface RuntimeAssertion {
   };
   readonly requiredDefenseTargetName?: string;
   readonly requiredDefenseActorName?: string;
-  readonly requireMissionRedirectionAfterRaid?: boolean;
   readonly requireHiddenStateParity?: boolean;
   readonly requiredHiddenActorName?: string;
   readonly requireWaterTopology?: boolean;

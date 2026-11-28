@@ -21,6 +21,7 @@ import {
   buildRuntimeProductionReport,
   compactRuntimeProductionReport
 } from "../production/evidence/skirmish-ai-runtime-production-report";
+import { nativeEvidenceInterventionsPending } from "../evaluation/scenario/skirmish-ai-native-proof-window";
 import { advanceRuntimeFrames } from "./skirmish-ai-runtime-frame-driver";
 
 const runtimeProgressStartedAt = performance.now();
@@ -52,9 +53,24 @@ export async function runVariant(
   let perturbationMs = 0;
   const aiErrors: string[] = [];
   const effectiveSeed = requestedSeed ?? variant.seed;
-
-  try {
+  let lastProgressTick = 0;
+  let currentPhase = "variant_setup";
+  let lastProof: { tick: number; failures: readonly string[] } | undefined;
+  let failSetup: (error: Error) => void;
+  const fatalSetup = new Promise<never>((_, reject) => {
+    failSetup = reject;
+  });
+  const checkForFatalAiError = (tick: number) => {
+    lastProgressTick = tick;
+    if (nativeEvidence && aiErrors.length)
+      throw new Error("runtime_focused_ai_error:" + variant.id + ":tick=" + tick + ":" + aiErrors[0]);
+  };
+  const run = async () => {
     const page = await context.newPage();
+    const onSetupError = (error: Error) => {
+      if (/\bruntime_(?:preset_|construction_not_applied:)/.test(error.message)) failSetup(error);
+    };
+    page.on("pageerror", onSetupError);
     page.on("console", (message) => {
       if (message.text().startsWith("[AI_SKIRMISH_PRODUCTION_CAPTURE]")) process.stdout.write(`${message.text()}\n`);
     });
@@ -68,12 +84,23 @@ export async function runVariant(
       fixtureDigest,
       profiling,
       aiErrors,
-      debugProbe
+      debugProbe,
+      false,
+      (phase) => {
+        currentPhase = phase;
+      }
     );
+    page.off("pageerror", onSetupError);
+    checkForFatalAiError(0);
+    const advanceTo = (tick: number, index: number) => {
+      currentPhase = `advance_to_tick_${tick}`;
+      return advanceRuntimeToTick(page, fixture, tick, index, nativeEvidence ? checkForFatalAiError : undefined);
+    };
     const setupMs = Math.round(performance.now() - variantStartedAt);
     const variantStart = projectRuntimeVariantStart(variant, initialBoundary, effectiveSeed, fixture.recipe.mapLabel);
     const checkpoints: RuntimeCheckpoint[] = [];
     const perturbations: { id: string; tick: number; dispatchedActors: number; subjectName: string | null }[] = [];
+    let acceptedPresetEvents: RuntimeVariantResult["perturbations"] | undefined;
     const pendingPerturbations = [...(variant.perturbations ?? [])].sort(
       (left, right) => left.tick - right.tick || left.id.localeCompare(right.id)
     );
@@ -123,7 +150,7 @@ export async function runVariant(
         const perturbation = pendingPerturbations.shift();
         if (!perturbation) break;
         const perturbationStartedAt = performance.now();
-        await advanceRuntimeToTick(page, fixture, perturbation.tick, index);
+        await advanceTo(perturbation.tick, index);
         await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
         await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
         perturbations.push(await applyRuntimePerturbation(page, perturbation, fixture.recipe.aiPlayerNumber));
@@ -139,7 +166,8 @@ export async function runVariant(
         : closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
           ? closedProductionHorizon + 1
           : targetTick;
-      await advanceRuntimeToTick(page, fixture, stopAtTick, index);
+      await advanceTo(stopAtTick, index);
+      currentPhase = `settle_at_tick_${stopAtTick}`;
       if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
         process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=advance complete\n`);
       const settleStartedAt = performance.now();
@@ -148,6 +176,7 @@ export async function runVariant(
       if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
         process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=settle complete\n`);
       const captureStartedAt = performance.now();
+      currentPhase = `capture_checkpoint_${targetTick}`;
       if (await beforeCheckpoint?.(page, index, targetTick)) {
         if (profiling)
           checkpointPhases.push({
@@ -166,28 +195,32 @@ export async function runVariant(
       );
       if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
         process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=checkpoint complete\n`);
+      checkForFatalAiError(checkpoint.tick);
       checkpoints.push(checkpoint);
       const pendingEventTicks = [
         ...pendingPerturbations.map((event) => event.tick),
         ...(variant.presetWorld?.events ?? []).map((event) => event.tick),
         // The request can precede its command's application by many ticks. Keep the whole authored intervention.
-        ...(variant.presetWorld?.controls ?? []).map((control) => Math.max(control.requestTick, control.applicationTick))
+        ...(variant.presetWorld?.controls ?? []).map((control) =>
+          Math.max(control.requestTick, control.applicationTick)
+        )
       ];
       const terminal = canStopAfterTerminal(fixture.assertions, applicableScenarioIds, checkpoint, pendingEventTicks);
       const probe =
         captureProduction &&
         checkpoint.tick === targetTick &&
         nativeEvidence?.checkpoints.includes(targetTick) === true &&
-        pendingEventTicks.every((tick) => tick <= checkpoint.tick);
+        !nativeEvidenceInterventionsPending(variant, checkpoint.tick);
       // A terminal score does not seal its own native tick. Close that tick before reading early-terminal proof.
       // An ordinary evidence checkpoint also needs the next native frame to seal its prefix.
       if (
         captureProduction &&
         productionClosedThrough < checkpoint.tick &&
         (probe ||
-          (checkpoint.gameResult === "win" && applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory)))
+          (checkpoint.gameResult === "win" &&
+            applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory)))
       ) {
-        await advanceRuntimeToTick(page, fixture, checkpoint.tick + 1, index);
+        await advanceTo(checkpoint.tick + 1, index);
         if (probe) await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
       }
       if (captureProduction) {
@@ -222,22 +255,27 @@ export async function runVariant(
         stopReason = "terminal_result";
         break;
       }
-      if (
-        probe &&
-        nativeEvidence &&
-        productionCapture &&
-        (await nativeEvidence.accepts(page, {
+      if (probe && nativeEvidence && productionCapture) {
+        const presetEvents = await collectRuntimePresetEvents(page, variant);
+        const failures = await nativeEvidence.failures(page, {
           ...variantStart,
           stopReason: "native_evidence_satisfied",
           outcomeDigest: "",
           productionCapture,
           checkpoints,
-          perturbations,
+          perturbations: [...perturbations, ...presetEvents],
           aiErrors: [...aiErrors]
-        }))
-      ) {
-        stopReason = "native_evidence_satisfied";
-        break;
+        });
+        if (failures.length === 0) {
+          acceptedPresetEvents = presetEvents;
+          stopReason = "native_evidence_satisfied";
+          break;
+        }
+        lastProof = { tick: checkpoint.tick, failures };
+        if (process.env.AI_SKIRMISH_DIAGNOSTIC_PROOF_TRACE === "1")
+          process.stdout.write(
+            `[AI_SKIRMISH_PROOF] ${variant.id} tick=${checkpoint.tick} failures=${failures.join("|")}\n`
+          );
       }
       if (variant.evidenceStop) {
         const next = evaluateEvidenceStopAtCheckpoint({
@@ -260,7 +298,7 @@ export async function runVariant(
       }
     }
     await beforeFinalize?.(page);
-    perturbations.push(...(await collectRuntimePresetEvents(page, variant)));
+    perturbations.push(...(acceptedPresetEvents ?? (await collectRuntimePresetEvents(page, variant))));
 
     const outcomeDigest = digestRuntimeValue({
       checkpoints: projectRuntimeOutcomeDigestInput(
@@ -305,7 +343,34 @@ export async function runVariant(
     // Lifecycle controls act only after the original match's native history, event facts and result have been detached.
     await afterVariant?.(page, result);
     return result;
+  };
+  let watchdog: ReturnType<typeof setTimeout> | undefined;
+  try {
+    if (!nativeEvidence) return await Promise.race([run(), fatalSetup]);
+    const wallClockBudgetMs =
+      process.env.AI_SKIRMISH_DIAGNOSTIC_SHORT_TIMEOUT === "1"
+        ? Math.min(nativeEvidence.wallClockBudgetMs, 30_000)
+        : nativeEvidence.wallClockBudgetMs;
+    const deadline = new Promise<never>((_, reject) => {
+      watchdog = setTimeout(() => {
+        reject(
+          new Error(
+            "runtime_focused_variant_timeout:" +
+              variant.id +
+              ":phase=" +
+              currentPhase +
+              ":tick=" +
+              lastProgressTick +
+              ":budget_ms=" +
+              wallClockBudgetMs +
+              (lastProof ? ":proof_tick=" + lastProof.tick + ":" + lastProof.failures.slice(0, 3).join("|") : "")
+          )
+        );
+      }, wallClockBudgetMs);
+    });
+    return await Promise.race([run(), fatalSetup, deadline]);
   } finally {
+    clearTimeout(watchdog);
     await context.close();
   }
 }
@@ -346,9 +411,16 @@ async function captureRuntimeProductionAuthorityWithDiagnostics(page: Page, play
   }
 }
 
-async function advanceRuntimeToTick(page: Page, fixture: RuntimeFixture, targetTick: number, checkpointIndex: number) {
+async function advanceRuntimeToTick(
+  page: Page,
+  fixture: RuntimeFixture,
+  targetTick: number,
+  checkpointIndex: number,
+  onProgress?: (tick: number) => void
+) {
   if (fixture.recipe.fixedStepFrames)
     return advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, targetTick, 1, false, (tick) => {
+      onProgress?.(tick);
       if (tick % 500 === 0)
         process.stdout.write(
           `[AI_SKIRMISH_PROGRESS] ${fixture.scenarioIds.join(",")} ${tick}/${targetTick} elapsedMs=${Math.round(

@@ -1,11 +1,7 @@
 import { isDeepStrictEqual } from "node:util";
 import { type GameCommand, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type {
-  AiRuntimeProductionFact
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type {
-  AiRuntimeRouteOrder
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-route-order";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type { AiRuntimeRouteOrder } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-route-order";
 
 /** Complete shared movement/service payload and all eight stamp fields; no target-only command matching. */
 export function sameRuntimeRouteServiceCommand(left: GameCommand, right: GameCommand | undefined): boolean {
@@ -151,6 +147,16 @@ export function runtimeRouteOrderMatchesCommand(
   command: GameCommand
 ): boolean {
   if (!runtimeRouteOrderHasCommandContext(order, actorId, command)) return false;
+  if (order.pursuitReleasedTargetActorId)
+    return (
+      command.type === "ACTOR_ACTION" &&
+      command.execution?.source === "ai" &&
+      command.orderType === OrderType.Attack &&
+      order.orderType === OrderType.Attack &&
+      order.target === null &&
+      order.targetTile !== null &&
+      isDeepStrictEqual(command.targetObjectIds, [order.pursuitReleasedTargetActorId])
+    );
   if (command.type === "MOVE")
     return order.orderType === OrderType.Move && !order.target && isDeepStrictEqual(order.targetTile, command.tileVec3);
   return (

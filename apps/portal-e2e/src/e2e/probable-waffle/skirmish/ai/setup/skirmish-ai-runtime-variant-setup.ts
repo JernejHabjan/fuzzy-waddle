@@ -22,7 +22,8 @@ export async function prepareRuntimeVariant(
   profiling: boolean,
   aiErrors: string[],
   debugProbe?: (page: Page, checkpointIndex: number) => Promise<void>,
-  sameRealm = false
+  sameRealm = false,
+  onPhase?: (phase: string) => void
 ) {
   if (profiling) {
     await page.addInitScript(() => {
@@ -40,6 +41,7 @@ export async function prepareRuntimeVariant(
       }).observe({ entryTypes: ["longtask"] });
     });
   }
+  onPhase?.("install_native_runtime_inputs");
   installRuntimeErrorListeners(page, aiErrors);
   const captureProduction =
     process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1" ||
@@ -65,8 +67,6 @@ export async function prepareRuntimeVariant(
     },
     sameRealm
   );
-  await configureLobby(page, fixture, variant, sameRealm);
-  await installRuntimeAccessor(page);
   const browserErrors: string[] = [];
   const collectConsoleError = (message: import("@playwright/test").ConsoleMessage) => {
     if (message.type() === "error") browserErrors.push(message.text());
@@ -74,11 +74,21 @@ export async function prepareRuntimeVariant(
   const collectPageError = (error: Error) => browserErrors.push(error.message);
   page.on("console", collectConsoleError);
   page.on("pageerror", collectPageError);
+  await configureLobby(page, fixture, variant, sameRealm, onPhase);
+  onPhase?.("install_runtime_accessor");
+  try {
+    await installRuntimeAccessor(page, process.env.AI_SKIRMISH_DIAGNOSTIC_SHORT_TIMEOUT === "1" ? 8_000 : 120_000);
+  } catch (error) {
+    throw new Error(
+      `${error instanceof Error ? error.message : String(error)}; browserErrors=${JSON.stringify(browserErrors.slice(-20))}`
+    );
+  }
+  onPhase?.("wait_for_runtime_parts");
   try {
     await page.waitForFunction(
       (playerNumber) => !!window.__fuzzyWaddleAiRuntimeParts?.(playerNumber),
       fixture.recipe.aiPlayerNumber,
-      { timeout: 120_000 }
+      { timeout: 30_000 }
     );
   } catch (error) {
     const browserState = await page
@@ -96,8 +106,10 @@ export async function prepareRuntimeVariant(
     page.off("console", collectConsoleError);
     page.off("pageerror", collectPageError);
   }
+  onPhase?.("probe_initial_runtime_parts");
   await debugProbe?.(page, -1);
   if (variant.presetWorld?.constructionOrders?.length) {
+    onPhase?.("wait_for_native_construction");
     const constructionErrors: string[] = [];
     const collectConstructionError = (message: import("@playwright/test").ConsoleMessage) => {
       if (message.type() === "error") constructionErrors.push(message.text());
@@ -167,6 +179,7 @@ export async function prepareRuntimeVariant(
     }
   }
   if (variant.presetWorld?.queues?.length || variant.presetWorld?.researchQueues?.length) {
+    onPhase?.("wait_for_native_queues");
     const expected =
       (variant.presetWorld.queues ?? []).reduce((count, queue) => count + queue.count, 0) +
       (variant.presetWorld.researchQueues?.length ?? 0);
@@ -183,6 +196,7 @@ export async function prepareRuntimeVariant(
       { timeout: 30_000 }
     );
   }
+  onPhase?.("capture_initial_boundary");
   const initialBoundary = await page.evaluate((playerNumber) => {
     const host = (
       window as unknown as {
@@ -299,24 +313,37 @@ export async function configureLobby(
   page: Page,
   fixture: RuntimeFixture,
   variant: RuntimeVariant,
-  sameRealm: boolean
+  sameRealm: boolean,
+  onPhase?: (phase: string) => void
 ): Promise<void> {
+  onPhase?.("lobby_open_skirmish");
   if (sameRealm) await page.getByRole("button", { name: /Skirmish.*Custom battles/ }).click();
   else await page.goto("/aota/skirmish");
-  await page.getByText(variant.mapLabel ?? fixture.recipe.mapLabel, { exact: true }).click();
+  onPhase?.("lobby_select_map");
+  const mapLabel = variant.mapLabel ?? fixture.recipe.mapLabel;
+  await page.getByText(mapLabel, { exact: true }).click();
+  // The map card updates before the lobby applies the map change.
+  await page.locator("probable-waffle-map-definition").getByText(mapLabel, { exact: true }).waitFor();
+  onPhase?.("lobby_dismiss_hint");
   const dismissHint = page.getByRole("button", { name: "Got it" });
   if (await dismissHint.isVisible()) await dismissHint.click();
   for (const player of variant.additionalAiPlayers ?? []) {
+    onPhase?.(`lobby_add_ai_player_${player.playerNumber}`);
     await page.getByRole("button", { name: /Add A\.I\. player/ }).click();
     await page.locator(`#faction-${player.playerNumber}`).selectOption({ label: player.faction });
     await page.locator(`#difficulty-${player.playerNumber}`).selectOption({ label: player.difficulty });
   }
-  for (const player of variant.lobbyTeams ?? [])
+  for (const player of variant.lobbyTeams ?? []) {
+    onPhase?.(`lobby_set_team_${player.playerNumber}`);
     await page.locator(`#team-${player.playerNumber}`).selectOption({ label: String(player.team) });
+  }
+  onPhase?.("lobby_set_factions_and_difficulty");
   await page.locator("#faction-1").selectOption({ label: variant.humanFaction });
   await page.locator(`#faction-${fixture.recipe.aiPlayerNumber}`).selectOption({ label: variant.aiFaction });
   await page.locator(`#difficulty-${fixture.recipe.aiPlayerNumber}`).selectOption({ label: variant.difficulty });
   await page.waitForTimeout(150);
+  onPhase?.("lobby_start_game");
   await page.getByRole("button", { name: "Start Game" }).click();
+  onPhase?.("lobby_wait_for_game_url");
   await page.waitForURL(/\/aota\/game$/);
 }

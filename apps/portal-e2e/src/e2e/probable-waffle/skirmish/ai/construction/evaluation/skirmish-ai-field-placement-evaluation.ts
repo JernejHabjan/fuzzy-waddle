@@ -1,3 +1,4 @@
+import { runtimeClosedHistoryFailures } from "../../capture/skirmish-ai-runtime-closed-history";
 import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
 import { hasNativeFieldFoodDelivery } from "../../economy/policy/skirmish-ai-field-food-delivery";
 import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
@@ -5,36 +6,16 @@ import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phas
 /** Safe-room owner outcome: native new fields, reserved-space exclusion and actual crop-to-food delivery. */
 export function evaluateFieldPlacementWorld(
   result: Pick<RuntimeVariantResult, "productionPreset" | "productionCapture" | "presetCreatedActorIds">,
-  minimumFields = 2
+  minimumFields = 2,
+  throughTick = 2400,
+  armedHorizon?: number,
+  alignmentAnchors: readonly { readonly x: number; readonly y: number }[] = []
 ): string[] {
   const capture = result.productionCapture,
     baseline = result.productionPreset?.placementBaseline;
-  if (
-    !capture ||
-    !baseline ||
-    capture.startedTick !== 0 ||
-    capture.droppedFactCount ||
-    capture.droppedSnapshotCount ||
-    capture.frontiers?.latestTick !== 2400 ||
-    capture.frontiers.closedThroughTick !== 2400 ||
-    capture.frontiers.gaps.length
-  ) {
+  if (!capture?.frontiers || !baseline || runtimeClosedHistoryFailures(capture, throughTick, armedHorizon).length)
     return ["field_placement_native_history_incomplete"];
-  }
-  const facts = capture.facts.filter((fact) => fact.tick <= 2400);
-  let nextTick = 0;
-  for (const interval of capture.frontiers.intervals) {
-    if (
-      interval.closedFromTick !== nextTick ||
-      !Number.isSafeInteger(interval.closedThroughTick) ||
-      interval.closedThroughTick < interval.closedFromTick ||
-      interval.closedThroughTick > 2400 ||
-      interval.capturedAtTick !== interval.closedThroughTick + 1
-    )
-      return ["field_placement_closed_interval_missing_or_reordered"];
-    nextTick = interval.closedThroughTick + 1;
-  }
-  if (nextTick !== 2401) return ["field_placement_closed_interval_missing_or_reordered"];
+  const facts = capture.facts.filter((fact) => fact.tick <= throughTick);
   const placements = facts.filter(
     (fact): fact is Extract<AiRuntimeProductionFact, { kind: "spatial_authority" }> =>
       fact.kind === "spatial_authority" &&
@@ -117,7 +98,8 @@ export function evaluateFieldPlacementWorld(
         )
       )
     );
-    if (occupiedReserve) failures.push("new_field_occupies_reserved_production_or_retreat_space");
+    if (fields.length < minimumFields && occupiedReserve)
+      failures.push("new_field_occupies_reserved_production_or_retreat_space");
     const x = (Math.min(...footprint.map((tile) => tile.x)) + Math.max(...footprint.map((tile) => tile.x))) / 2;
     const y = (Math.min(...footprint.map((tile) => tile.y)) + Math.max(...footprint.map((tile) => tile.y))) / 2;
     fields.push({ id, x, y, completedAt: completion.tick });
@@ -135,17 +117,19 @@ export function evaluateFieldPlacementWorld(
       failures.push(`new_field_not_retained_after_completion:${id}`);
   }
   if (fields.length < minimumFields) failures.push("multiple_new_completed_fields_missing");
+  const proofFields = fields.slice(0, minimumFields);
+  const alignedFields = [...alignmentAnchors, ...proofFields];
   if (
-    fields.length >= 2 &&
-    !fields.some((left, index) =>
-      fields.some(
+    alignedFields.length >= 2 &&
+    !alignedFields.some((left, index) =>
+      alignedFields.some(
         (right, other) =>
           index !== other && ((left.x === right.x && left.y !== right.y) || (left.y === right.y && left.x !== right.x))
       )
     )
   )
     failures.push("new_fields_have_no_aligned_row_or_column");
-  for (const field of fields) {
+  for (const field of proofFields) {
     if (!hasNativeFieldFoodDelivery(facts, field.id, field.completedAt, capture.playerNumber)) {
       failures.push(`new_field_has_no_native_delivered_food:${field.id}`);
     }

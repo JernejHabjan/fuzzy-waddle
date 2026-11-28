@@ -28,6 +28,28 @@ export function nativeRecoveryIncome(
   );
 }
 
+/** A crop is observed ready when the same native field changes from empty to available food. */
+export function nativeObservedCropReadyTick(
+  frames: ReturnType<typeof nativeScenarioContext>["frames"],
+  fieldActorId: string
+): number | undefined {
+  let emptyObservedTick: number | undefined;
+  for (const frame of frames) {
+    const field = frame.decision.input?.observation?.actors.find((actor) => actor.actorId === fieldActorId),
+      state = field?.resourceState;
+    if (
+      state?.status !== "known" ||
+      state.value.resourceType !== ResourceType.Food ||
+      state.value.available.status !== "known"
+    )
+      continue;
+    const available = state.value.available.value;
+    if (emptyObservedTick === undefined && available === 0) emptyObservedTick = frame.tick;
+    else if (emptyObservedTick !== undefined && frame.tick > emptyObservedTick && available > 0) return frame.tick;
+  }
+  return undefined;
+}
+
 /** H-30 accepts any authored worker's exact native source-to-deposit transaction after the fault boundary. */
 export function nativeAuthoredWorkerRecoveryIncome(
   context: Pick<ReturnType<typeof nativeScenarioContext>, "capture" | "frames" | "roles">,

@@ -1,7 +1,5 @@
 import type { nativeScenarioContext } from "../../contracts/skirmish-ai-native-scenario-context";
-import type {
-  AiRuntimeProductionFact
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 
 /** Exact, positive native damage by a selected actor, optionally scoped to one target. */
 export function nativePhysicalDamageFromActor(
@@ -131,15 +129,21 @@ export function nativeRetainedActor(context: ReturnType<typeof nativeScenarioCon
 }
 
 /** An actual selected retreat order must physically complete, followed by a living owned unit at the horizon. */
-export function nativeRetreats(context: ReturnType<typeof nativeScenarioContext>, afterTick: number) {
+export function nativeRetreats(
+  context: ReturnType<typeof nativeScenarioContext>,
+  afterTick: number,
+  allowIndividualFallback = false
+) {
   return context.frames.flatMap((frame) =>
     (frame.decision.missionState?.squads ?? []).flatMap((squad) => {
-      if (
-        frame.tick < afterTick ||
-        !["retreat", "retreating", "regroup", "recover", "recovering"].includes(squad.state)
-      )
-        return [];
-      return squad.actorIds.flatMap((id) =>
+      if (frame.tick < afterTick) return [];
+      const squadRetreat = ["retreat", "retreating", "regroup", "recover", "recovering"].includes(squad.state);
+      const retreatingActors = squadRetreat
+        ? squad.actorIds
+        : allowIndividualFallback
+          ? (squad.tactics?.individualFallbackActorIds ?? [])
+          : [];
+      return retreatingActors.flatMap((id) =>
         nativeRetainedActor(context, id)
           ? context
               .arrived(id, frame.tick)
@@ -148,6 +152,7 @@ export function nativeRetreats(context: ReturnType<typeof nativeScenarioContext>
                   (intent) =>
                     (intent.kind === "move" || intent.kind === "scout") &&
                     intent.actorIds.includes(id) &&
+                    (squadRetreat || intent.reasonCode === `stage13:protected_member:${id}`) &&
                     intent.effectId.replace(/^effect:/, "") ===
                       movement.observations[0]?.spatial.caller?.order?.commandContext?.execution.effectId
                 )

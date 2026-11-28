@@ -184,6 +184,9 @@ export class AiRuntimeRouteOrderCapture {
     return structuredClone({ orderId: identity.orderId, orderType: order.orderType,
       target: order.data.targetGameObject ? captureAiRuntimeCreatedActor(order.data.targetGameObject) : null,
       targetTile: order.data.targetTileLocation ?? null, commandContext: order.data.commandContext ?? null,
+      ...(order.data.pursuitReleasedTargetActorId
+        ? { pursuitReleasedTargetActorId: order.data.pursuitReleasedTargetActorId }
+        : {}),
       originOutputId: identity.outputId, admissionObserved: identity.admissionObserved });
   }
 
