@@ -1,0 +1,43 @@
+import type { AiCommandOutcome } from "../../contracts/commands/ai-command-contracts";
+import type { AiReservation } from "../../contracts/execution/ai-dependency-contracts";
+
+/** Advances accepted intent claims from actual outcomes; terminal authority releases the complete claim bundle. */
+export function reconcileAiCommandReservations(
+  reservations: readonly AiReservation[],
+  outcomes: readonly AiCommandOutcome[]
+): readonly AiReservation[] {
+  return outcomes.reduce<readonly AiReservation[]>((current, outcome) => {
+    const effectKey = `effect:${outcome.identity.effectId}`;
+    const ownedEffects = current.filter((reservation) => reservation.subjectKey?.startsWith("effect:"));
+    const matches = ownedEffects.filter(
+      (reservation) =>
+        reservation.subjectKey?.slice("effect:".length).replace(/^effect:/, "") ===
+        outcome.identity.effectId.replace(/^effect:/, "")
+    );
+    const effect =
+      ownedEffects.find((reservation) => reservation.subjectKey === effectKey) ??
+      (matches.length === 1 ? matches[0] : undefined);
+    const subject = effect?.subjectKey;
+    if (!effect || !subject) return current;
+    const claimStem = subject.slice("effect:".length).replace(":effect:", ":claim:");
+    return current.flatMap((reservation) => {
+      if (
+        reservation.ownerPlanId !== effect.ownerPlanId ||
+        (reservation.claimId !== claimStem && !reservation.claimId.startsWith(`${claimStem}:`))
+      )
+        return [reservation];
+      if (["completed", "rejected", "cancelled", "failed"].includes(outcome.kind)) return [];
+      if (reservation.state.kind === "applied_spending" || reservation.state.kind === "refundable_work")
+        return [reservation];
+      if (outcome.kind === "dispatched") {
+        return [
+          {
+            ...reservation,
+            state: { kind: "dispatched" as const, commandId: outcome.identity.commandId }
+          }
+        ];
+      }
+      return [{ ...reservation, state: { kind: "applied_spending" as const, appliedTick: outcome.tick } }];
+    });
+  }, reservations);
+}

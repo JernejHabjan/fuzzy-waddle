@@ -19,3 +19,15 @@ export * from "./lib/player/ai-controller/contracts/diagnostics/ai-debug-snapsho
 export * from "./lib/player/ai-controller/contracts/diagnostics/ai-strategic-intent-summary";
 export * from "./lib/player/ai-controller/contracts/diagnostics/ai-repro-bundle";
 export * from "./lib/player/ai-controller/contracts/validation/validate-ai-contracts";
+export * from "./lib/player/ai-controller/planning/coordination/ai-manager-proposal";
+export * from "./lib/player/ai-controller/planning/coordination/ai-decision-planner";
+export * from "./lib/player/ai-controller/brain/state/create-ai-brain-state";
+export * from "./lib/player/ai-controller/brain/persistence/canonical-ai-serialization";
+export * from "./lib/player/ai-controller/brain/persistence/migrate-ai-brain-state";
+export * from "./lib/player/ai-controller/brain/persistence/legacy-ai-adapter";
+export * from "./lib/player/ai-controller/brain/ai-brain";
+export * from "./lib/player/ai-controller/brain/ai-brain-slice-policy";
+export * from "./lib/player/ai-controller/debug/project-ai-debug-snapshot";
+export * from "./lib/player/ai-controller/debug/project-ai-strategic-intent-summary";
+export * from "./lib/player/ai-controller/debug/parse-ai-repro-bundle";
+export * from "./lib/player/ai-controller/debug/ai-incident-capture-store";
