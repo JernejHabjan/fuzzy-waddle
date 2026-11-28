@@ -3,7 +3,8 @@ import type {
   CampaignContentStatus,
   CampaignFaction,
   CampaignMissionId,
-  ProbableWaffleMapKey
+  ProbableWaffleMapKey,
+  ScenarioPresentationPolicy
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { MissionCheckpointDefinition } from "./mission-checkpoint-definition";
 import type { MissionDifficultyDefinition } from "./mission-difficulty-definition";
@@ -187,6 +188,12 @@ export interface CampaignMissionContent {
    * content.
    */
   readonly implementation: MissionImplementationBrief;
+  /**
+   * Optional scenario-level HUD policy copied into authoritative game-mode data when
+   * this mission launches. It remains independent of campaign runtime state so the
+   * shared policy can also be authored by non-campaign scenarios.
+   */
+  readonly scenarioPresentation?: ScenarioPresentationPolicy;
   /** Documents the participants member and its declared contract at this boundary. */
   readonly participants: readonly MissionParticipantDefinition[];
   /** Documents the coop member and its declared contract at this boundary. */

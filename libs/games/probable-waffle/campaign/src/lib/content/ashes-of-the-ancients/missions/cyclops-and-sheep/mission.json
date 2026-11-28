@@ -18,6 +18,12 @@
       "Craft a sheep disguise and fool the Cyclops"
     ]
   },
+  "scenarioPresentation": {
+    "resourceHud": {
+      "visibleResources": [],
+      "showHousing": false
+    }
+  },
   "participants": [
     {
       "slotId": "tivara-player",
