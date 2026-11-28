@@ -18,24 +18,24 @@ export const researchDefinitions: Record<ResearchType, ResearchData> = {
   [ResearchType.FirestormSpell]: {
     type: ResearchType.FirestormSpell,
     name: "Firestorm",
-    description: "Unlocks the Firestorm spell for Magicians",
+    description: "Unlocks the Firestorm spell for Tivara slingshot units",
     unlocksSpell: SpellType.Firestorm,
     cost: { [ResourceType.Minerals]: 150, [ResourceType.Wood]: 75 },
     researchTime: 45000,
     icon: { key: "factions", frame: "spell_icons/firestorm.png" },
-    requiredBuilding: ObjectNames.InfantryInn,
+    requiredBuilding: ObjectNames.AnkGuard,
     refundFactor: 0.5
   },
 
   [ResearchType.FrostNovaSpell]: {
     type: ResearchType.FrostNovaSpell,
     name: "Frost Nova",
-    description: "Unlocks the Frost Nova slow spell for Magicians",
+    description: "Unlocks the Frost Nova slow spell for Tivara slingshot units",
     unlocksSpell: SpellType.FrostNova,
     cost: { [ResourceType.Minerals]: 75, [ResourceType.Wood]: 25 },
     researchTime: 20000,
     icon: { key: "factions", frame: "spell_icons/frost_nova.png" },
-    requiredBuilding: ObjectNames.InfantryInn,
+    requiredBuilding: ObjectNames.AnkGuard,
     refundFactor: 0.5
   },
 
@@ -78,12 +78,12 @@ export const researchDefinitions: Record<ResearchType, ResearchData> = {
   [ResearchType.HealingRainSpell]: {
     type: ResearchType.HealingRainSpell,
     name: "Healing Rain",
-    description: "Unlocks AOE healing zone spell for Healers",
+    description: "Unlocks the Healing Rain zone for Tivara slingshot units",
     unlocksSpell: SpellType.HealingRain,
     cost: { [ResourceType.Minerals]: 125, [ResourceType.Stone]: 50 },
     researchTime: 40000,
     icon: { key: "factions", frame: "spell_icons/healing_rain.png" },
-    requiredBuilding: ObjectNames.InfantryInn,
+    requiredBuilding: ObjectNames.AnkGuard,
     refundFactor: 0.5
   },
 
