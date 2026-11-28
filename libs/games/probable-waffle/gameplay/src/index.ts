@@ -25,6 +25,9 @@ export * from "./lib/player/ai-controller/planning/production/macro/ai-macro-man
 export * from "./lib/player/ai-controller/planning/access/ai-access-graph";
 export * from "./lib/player/ai-controller/planning/transport/coordination/ai-transport-manager";
 export * from "./lib/player/ai-controller/planning/strategy/missions/ai-skirmish-manager";
+export * from "./lib/player/ai-controller/planning/expansion/ai-base-manager";
+export * from "./lib/player/ai-controller/planning/fortification/ai-fortification-manager";
+export * from "./lib/player/ai-controller/planning/recovery/ai-recovery-manager";
 export * from "./lib/player/ai-controller/planning/tactics/orders/ai-tactics-manager";
 export * from "./lib/player/ai-controller/profiles/ai-profile-defaults";
 export * from "./lib/player/ai-controller/profiles/ai-opening-archetypes";
