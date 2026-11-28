@@ -3,6 +3,13 @@
 Tracks [#628](https://github.com/JernejHabjan/fuzzy-waddle/issues/628). Related dependency:
 [#575](https://github.com/JernejHabjan/fuzzy-waddle/issues/575).
 
+## Follow-up behavior
+
+The shark and seagull follow-up supersedes the one-shot, shark-only behavior described below. Water seagulls
+now react to nearby mobile actors and respawn after a random delay. The shark uses water movement, pursues
+nearby birds, and avoids water vehicles; the host relays shark moves while birds remain local presentation.
+The earlier decisions and implementation update are retained as historical context for #802.
+
 ## Implementation update — 2026-11-01
 
 - Implemented paired WaterSeagull prefab and River Crossing placement using the existing bird atlas.

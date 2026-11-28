@@ -1,9 +1,11 @@
 import Phaser from "phaser";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { getActorComponent } from "../../../data/actor-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import WaterSeagull from "./WaterSeagull";
 
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../core/probable-waffle.scene", () => ({ ProbableWaffleScene: class {} }));
 jest.mock("../../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
@@ -41,7 +43,10 @@ describe("WaterSeagull lifecycle", () => {
     return { bird, scene, poll, complete, reaction, timeout, tween, delayedCall, addTween };
   }
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.mocked(getActorComponent).mockReturnValue({} as never);
+  });
 
   it("idles safely without a game scene or actor index", () => {
     const preview = setup(false);
@@ -67,6 +72,9 @@ describe("WaterSeagull lifecycle", () => {
     shark.active = false;
     state.poll();
     shark.active = true;
+    jest.mocked(getActorComponent).mockReturnValue(undefined);
+    state.poll();
+    jest.mocked(getActorComponent).mockReturnValue({} as never);
     shark.name = ObjectNames.TivaraWorker;
     shark.x = 500;
     state.poll();
@@ -79,7 +87,8 @@ describe("WaterSeagull lifecycle", () => {
     state.complete();
     state.complete();
     expect(state.addTween).toHaveBeenCalledTimes(1);
-    expect(state.addTween.mock.calls[0][0]).toMatchObject({ x: -380, y: -60 });
+    expect(state.addTween.mock.calls[0][0]).toMatchObject({ x: -380, y: -60, alpha: 0 });
+    expect(state.timeout.remove).toHaveBeenCalledTimes(1);
     state.bird.destroy();
     state.bird.destroy();
     expect(state.timeout.remove).toHaveBeenCalledTimes(1);

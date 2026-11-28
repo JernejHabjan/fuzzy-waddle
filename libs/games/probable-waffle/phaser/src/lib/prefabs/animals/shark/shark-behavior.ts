@@ -2,9 +2,10 @@ import Phaser from "phaser";
 import { BehaviourTree, State } from "mistreevous";
 import { Subscription } from "rxjs";
 import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { ShipAnimationComponent } from "../../../entity/components/animation/ship-animation-component";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { NavigationService } from "../../../world/services/navigation.service";
@@ -14,6 +15,8 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { getAmbientTargets } from "../behavior/ambient-targets";
 import { nearestActor } from "../behavior/nearest-actor";
+import { escapePoint } from "../behavior/escape-point";
+import { isPositionedActor } from "../behavior/positioned-actor";
 import { reactToNearby } from "../behavior/proximity-behavior";
 
 const SHARK_TREE = `root { selector { action [AvoidBoat] action [ChasePrey] action [Wander] } }`;
@@ -53,18 +56,17 @@ export class SharkBehavior {
 
   AvoidBoat(): State {
     const actors = getSceneService(this.shark.scene, ActorIndexSystem)?.getAllIdActors() ?? [];
-    const boats = actors.filter((actor): actor is Phaser.GameObjects.Image | Phaser.GameObjects.Sprite =>
-      (actor instanceof Phaser.GameObjects.Image || actor instanceof Phaser.GameObjects.Sprite) && actor.active &&
-      !!getActorComponent(actor, ShipAnimationComponent)
+    const boats = actors.filter(isPositionedActor).filter((actor) =>
+      actor.active &&
+      actor.name !== ObjectNames.Shark &&
+      getActorComponent(actor, ActorTranslateComponent)?.actorTranslateDefinition.movementTerrainType ===
+        MovementTerrainType.Water
     );
     return reactToNearby(
       () => nearestActor(this.shark, boats, BOAT_RADIUS, () => true),
       (boat) => {
-        const dx = this.shark.x - boat.x;
-        const dy = this.shark.y - boat.y;
-        const length = Math.hypot(dx, dy) || 1;
-        this.moveToWorld("avoid", this.shark.x + (dx || length) / length * BOAT_RADIUS,
-          this.shark.y + dy / length * BOAT_RADIUS);
+        const point = escapePoint(this.shark, boat, BOAT_RADIUS);
+        this.moveToWorld("avoid", point.x, point.y);
       }
     );
   }
@@ -102,7 +104,9 @@ export class SharkBehavior {
     const scene = this.shark.scene;
     if (!(scene instanceof ProbableWaffleScene) || !scene.isHost) return;
     const tilemap = getSceneComponent(scene, TilemapComponent)?.tilemap;
-    const rawTile = tilemap?.getTileAtWorldXY(x, y);
+    // Convert even out-of-bounds points: getTileAtWorldXY returns null at the map edge,
+    // preventing the water search from finding a nearby in-bounds destination.
+    const rawTile = tilemap?.worldToTileXY(x, y);
     const navigation = getSceneService(scene, NavigationService);
     const tile = rawTile && navigation?.isTileNavigable(rawTile, MovementTerrainType.Water)
       ? rawTile : rawTile && navigation?.findNearestWaterTile(rawTile, 4);

@@ -3,27 +3,42 @@ import { AmbientRespawner } from "./ambient-respawner";
 
 describe("AmbientRespawner", () => {
   it("respawns after destruction and cancels the next spawn on shutdown", () => {
-    let shutdown: (() => void) | undefined;
-    let destroyed: (() => void) | undefined;
-    let spawnCallback: (() => void) | undefined;
+    const originalEvents = Phaser.GameObjects.Events;
+    Object.assign(Phaser.GameObjects, { Events: { DESTROY: "destroy" } });
+    const handlers = new Map<string, () => void>();
     const timer = { remove: jest.fn() };
     const scene = {
-      events: { once: jest.fn((_event: string, callback: () => void, context: unknown) => { shutdown = () => callback.call(context); }) },
-      time: { delayedCall: jest.fn((_delay: number, callback: () => void) => { spawnCallback = callback; return timer; }) }
+      events: {
+        once: jest.fn((_event: string, callback: () => void, context: unknown) => {
+          handlers.set("shutdown", () => callback.call(context));
+        })
+      },
+      time: {
+        delayedCall: jest.fn((_delay: number, callback: () => void) => {
+          handlers.set("spawn", callback);
+          return timer;
+        })
+      }
     };
-    const object = { once: jest.fn((_event: string, callback: () => void) => { destroyed = callback; }) };
+    const object = {
+      once: jest.fn((_event: string, callback: () => void) => handlers.set("destroy", callback))
+    };
     const spawn = jest.fn(() => object);
     jest.spyOn(Phaser.Math, "Between").mockReturnValue(100);
-    new AmbientRespawner(scene as unknown as Phaser.Scene, object as never, spawn as never, 100, 200);
-    destroyed?.();
-    expect(scene.time.delayedCall).toHaveBeenCalledWith(100, expect.any(Function));
-    spawnCallback?.();
-    expect(spawn).toHaveBeenCalledTimes(1);
-    destroyed?.();
-    shutdown?.();
-    expect(timer.remove).toHaveBeenCalledWith(false);
-    spawnCallback?.();
-    expect(spawn).toHaveBeenCalledTimes(1);
-    jest.restoreAllMocks();
+    try {
+      new AmbientRespawner(scene as unknown as Phaser.Scene, object as never, spawn as never, 100, 200);
+      handlers.get("destroy")?.();
+      expect(scene.time.delayedCall).toHaveBeenCalledWith(100, expect.any(Function));
+      handlers.get("spawn")?.();
+      expect(spawn).toHaveBeenCalledTimes(1);
+      handlers.get("destroy")?.();
+      handlers.get("shutdown")?.();
+      expect(timer.remove).toHaveBeenCalledWith(false);
+      handlers.get("spawn")?.();
+      expect(spawn).toHaveBeenCalledTimes(1);
+    } finally {
+      Object.assign(Phaser.GameObjects, { Events: originalEvents });
+      jest.restoreAllMocks();
+    }
   });
 });

@@ -1,10 +1,13 @@
 import Phaser from "phaser";
 import { BehaviourTree, State } from "mistreevous";
+import { getActorComponent } from "../../../data/actor-component";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { DepthHelper } from "../../../world/services/depth.helper";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { nearestActor } from "../behavior/nearest-actor";
+import { isPositionedActor, type PositionedActor } from "../behavior/positioned-actor";
 import { registerAmbientTarget, unregisterAmbientTarget } from "../behavior/ambient-targets";
 import { reactToNearby } from "../behavior/proximity-behavior";
 import { AmbientRespawner } from "../behavior/ambient-respawner";
@@ -112,19 +115,20 @@ export default class WaterSeagull extends Phaser.GameObjects.Sprite {
   }
 
   /** Find the closest active actor, so escape direction reflects the most immediate threat. */
-  private findNearbyThreat(): Phaser.GameObjects.Sprite | Phaser.GameObjects.Image | undefined {
+  private findNearbyThreat(): PositionedActor | undefined {
     if (this.lifecycleState !== WaterSeagullState.Idle || !(this.scene instanceof ProbableWaffleScene))
       return undefined;
 
     const actors = getSceneService(this.scene, ActorIndexSystem)?.getAllIdActors() ?? [];
-    const sprites = actors.filter((actor): actor is Phaser.GameObjects.Sprite | Phaser.GameObjects.Image =>
-      actor instanceof Phaser.GameObjects.Sprite || actor instanceof Phaser.GameObjects.Image
+    const sprites = actors.filter(isPositionedActor);
+    return nearestActor(
+      this, sprites, WATER_SEAGULL_REACTION_RADIUS_PX,
+      (actor) => actor.active && actor !== this && !!getActorComponent(actor, ActorTranslateComponent)
     );
-    return nearestActor(this, sprites, WATER_SEAGULL_REACTION_RADIUS_PX, (actor) => actor.active && actor !== this);
   }
 
   /** Stops idle work and begins the one-shot escape away from the approaching actor. */
-  private takeOffFrom(threat: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image): void {
+  private takeOffFrom(threat: PositionedActor): void {
     if (this.lifecycleState !== WaterSeagullState.Idle) return;
 
     this.lifecycleState = WaterSeagullState.TakingOff;
@@ -137,11 +141,14 @@ export default class WaterSeagull extends Phaser.GameObjects.Sprite {
     this.setFlipX(getWaterSeagullFlightDirection(this.x, threat.x) < 0);
   }
 
-  /** Flies until leaving the padded camera view; the takeoff timeout also bounds stalled animations. */
+  /** Fades throughout flight; an offscreen bird can be cleaned up before its tween completes. */
   private startFlying(): void {
     if (this.lifecycleState !== WaterSeagullState.TakingOff || !this.active) return;
 
     this.lifecycleState = WaterSeagullState.Flying;
+    // The takeoff timeout covers a stalled animation; it must not truncate the flight fade.
+    this.flightTimeout?.remove(false);
+    this.flightTimeout = undefined;
     this.play(ANIM_BIRD_FLY);
     const direction = this.flipX ? -1 : 1;
     this.flightTween = this.scene.tweens.add({
