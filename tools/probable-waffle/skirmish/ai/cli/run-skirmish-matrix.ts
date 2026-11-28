@@ -44,7 +44,7 @@ const matrixContext = { manifest, workspaceRoot, fixtureDirectory };
 
 try {
   validateManifest(manifest, fixtureDirectory);
-  const result = dispatch(args);
+  const result = await dispatch(args);
   if (result) writeReport(result);
 } catch (error) {
   const report = {
@@ -59,7 +59,7 @@ try {
   process.exitCode = 1;
 }
 
-function dispatch(options) {
+async function dispatch(options) {
   if (options.variant !== undefined || options.repetition !== undefined) {
     if (
       !options.scenario ||
@@ -84,7 +84,7 @@ function dispatch(options) {
   );
 }
 
-function runSuite(options) {
+async function runSuite(options) {
   const suite = requireEnum(options.suite, ["stage-smoke", "release"], "suite");
   if (suite === "stage-smoke") {
     const stage = requireInteger(options.stage, "stage", 0, 15);
@@ -121,7 +121,7 @@ function runSuite(options) {
   }));
   if (readHead() !== candidate) throw new Error(`candidate_source_not_checked_out:${candidate}`);
   if (readWorkingTreeSource().length > 0) throw new Error("candidate_source_is_dirty");
-  const report = invokeSelectedHarness(
+  const report = await invokeSelectedHarness(
     {
       suite,
       mode: "both",

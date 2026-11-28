@@ -135,6 +135,10 @@ if (!runtimeRequestText) {
       });
 
       const partReport = buildPartReport(request, scenarioResults, executed);
+      for (const scenario of scenarioResults) {
+        const detail = scenario.passed ? "" : ` -> ${(scenario.failures[0] ?? "failed").slice(0, 140)}`;
+        process.stdout.write(`  [${scenario.passed ? "PASS" : "FAIL"}] ${scenario.scenarioId}${detail}\n`);
+      }
       if (resultArtifactPath) {
         writeRuntimePart(resultArtifactPath, partIndex, partReport);
       } else {

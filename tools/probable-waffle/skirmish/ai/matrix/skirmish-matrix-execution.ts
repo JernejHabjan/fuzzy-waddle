@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { runPureJestWithScenarioEvidence } from "./pure-scenario-evidence.ts";
@@ -12,7 +12,7 @@ import { readNativeScenarioFixture } from "../scenarios/registration/read-native
 import { assembleRuntimeParts } from "../shared/transport/skirmish-ai-runtime-parts.ts";
 import { mergeRuntimeShardReports, planRuntimeExecutionShards } from "./skirmish-runtime-shards.ts";
 
-export function invokeSelectedHarness(input, context) {
+export async function invokeSelectedHarness(input, context) {
   const { manifest, fixtureDirectory } = context;
   const requestedPure = input.mode !== "runtime";
   const requestedRuntime = input.mode !== "pure";
@@ -24,7 +24,9 @@ export function invokeSelectedHarness(input, context) {
     : [];
   const pure = pureRows.length > 0 ? invokeHarness({ ...input, rows: pureRows, mode: "pure" }, context) : null;
   const runtime =
-    runtimeRows.length > 0 ? invokeRuntimeHarness({ ...input, rows: runtimeRows, mode: "runtime" }, context) : null;
+    runtimeRows.length > 0
+      ? await invokeRuntimeHarness({ ...input, rows: runtimeRows, mode: "runtime" }, context)
+      : null;
   if (!pure) return runtime;
   if (!runtime) return pure;
   return {
@@ -183,7 +185,7 @@ export function invokeHarness(input, context) {
   return report;
 }
 
-function invokeRuntimeHarness(input, context) {
+async function invokeRuntimeHarness(input, context) {
   const { fixtureDirectory } = context;
   const runId = input.options?.["run-id"] ?? process.env.AI_SKIRMISH_MATRIX_RUN_ID ?? null;
   if (runId !== null && (typeof runId !== "string" || !/^[A-Za-z0-9._-]{1,100}$/.test(runId))) {
@@ -202,7 +204,7 @@ function invokeRuntimeHarness(input, context) {
     process.stdout.write(
       `[AI runtime ${index + 1}/${shards.length}] ${shard.group} (${modeLabel}, ${shard.rows.length}: ${idList})\n`
     );
-    const shardReport = invokeSingleRuntimeShard({ ...input, rows: shard.rows }, context, runId);
+    const shardReport = await invokeSingleRuntimeShard({ ...input, rows: shard.rows }, context, runId);
     shardEntries.push({ shard, report: shardReport });
     const scenarios = shardReport.runtime?.scenarios ?? [];
     const passed = scenarios.filter((entry) => entry.passed).length;
@@ -221,7 +223,7 @@ function invokeRuntimeHarness(input, context) {
   return merged;
 }
 
-function invokeSingleRuntimeShard(input, context, runId) {
+async function invokeSingleRuntimeShard(input, context, runId) {
   const { manifest, workspaceRoot, fixtureDirectory } = context;
   const startedAt = performance.now();
   const fixtures = [
@@ -286,10 +288,9 @@ function invokeSingleRuntimeShard(input, context, runId) {
     "--workers=1"
   ];
   const invocation = pnpmInvocation(playwrightArgs);
-  const command = spawnSync(invocation.command, invocation.args, {
+  const command = await spawnStreamingRuntime(invocation.command, invocation.args, {
     cwd: workspaceRoot,
     env: environment,
-    encoding: "utf8",
     maxBuffer: 32 * 1024 * 1024,
     timeout: 30 * 60 * 1000
   });
@@ -365,4 +366,65 @@ export function requiresMultiplayerForRuntime(fixtures, diagnosticSelection) {
   return (
     diagnosticSelection?.requiresMultiplayer ?? fixtures.some((fixture) => fixture.recipe.requiresMultiplayer === true)
   );
+}
+
+/** Stream Playwright per-test lines live while capturing bounded stdout/stderr for the retained report. */
+function spawnStreamingRuntime(command, args, options) {
+  return new Promise<{
+    status: number | null;
+    signal: NodeJS.Signals | null;
+    stdout: string;
+    stderr: string;
+    error?: Error;
+  }>((resolveResult) => {
+    const child = spawn(command, args, {
+      cwd: options.cwd,
+      env: options.env,
+      stdio: ["ignore", "pipe", "pipe"],
+      windowsHide: true
+    });
+    let stdout = "";
+    let stderr = "";
+    let lineBuffer = "";
+    let timedOut = false;
+    const timer = setTimeout(() => {
+      timedOut = true;
+      if (process.platform === "win32" && child.pid) {
+        spawn("taskkill.exe", ["/PID", String(child.pid), "/T", "/F"], { stdio: "ignore", windowsHide: true });
+      } else {
+        child.kill("SIGTERM");
+      }
+    }, options.timeout);
+    const appendBounded = (current, chunk) =>
+      current.length >= options.maxBuffer ? current : current + chunk.slice(0, options.maxBuffer - current.length);
+    child.stdout.on("data", (chunk) => {
+      const text = chunk.toString("utf8");
+      stdout = appendBounded(stdout, text);
+      lineBuffer += text;
+      const lines = lineBuffer.split(/\r?\n/);
+      lineBuffer = lines.pop() ?? "";
+      for (const line of lines) {
+        if (!line.startsWith("[WebServer]")) process.stdout.write(`${line}\n`);
+      }
+    });
+    child.stderr.on("data", (chunk) => {
+      const text = chunk.toString("utf8");
+      stderr = appendBounded(stderr, text);
+    });
+    child.once("error", (error) => {
+      clearTimeout(timer);
+      resolveResult({ status: null, signal: null, stdout, stderr, error });
+    });
+    child.once("close", (status, signal) => {
+      clearTimeout(timer);
+      if (lineBuffer && !lineBuffer.startsWith("[WebServer]")) process.stdout.write(`${lineBuffer}\n`);
+      resolveResult({
+        status,
+        signal,
+        stdout,
+        stderr,
+        ...(timedOut ? { error: new Error(`runtime_shard_timeout:${options.timeout}ms`) } : {})
+      });
+    });
+  });
 }
