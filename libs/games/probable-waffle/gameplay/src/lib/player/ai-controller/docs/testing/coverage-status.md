@@ -62,6 +62,6 @@ These are separately tracked follow-ups to the single-player delivery. Their bro
 
 ## Execution policy
 
-The AI regression workflow is stored under `.github/disabled-workflows/`; both its manual and tag triggers are commented out. Local `pnpm ai:regression` and its scout profile remain usable; the strict `RUN_AI_REGRESSION=true` E2E hook is documented in [testing commands](./README.md#periodic-regression-profiles). Do not re-enable the workflow without a new request.
+The AI regression workflow is stored under `.github/disabled-workflows/`; both its manual and tag triggers are commented out. Local `pnpm ai:regression` and its scout profile remain usable; the explicit `pnpm e2e:ai` and `pnpm e2e:ai-full` commands are documented in [testing commands](./README.md#periodic-regression-profiles). Do not re-enable the workflow without a new request.
 
 Use focused causal checks before affected native confirmation. Keep one local native runner and each invocation at or below 30 minutes. Retain valid evidence and avoid unchanged full-family reruns. Missing or infrastructure-only results are not gameplay passes. PR review/readiness is separate from broader matrix certification; merging remains a user-controlled action.

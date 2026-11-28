@@ -11,7 +11,7 @@ for gameplay architecture and operating guidance.
 | -------------------- | -------------------------------------------------------------------------------- |
 | `cli/`               | Direct Node entry points and catalog generation                                  |
 | `matrix/`            | Pure/native dispatch, provenance, work accounting and shard selection            |
-| `regression/`        | Bounded periodic profiles and the explicit E2E opt-in hook                       |
+| `regression/`        | Bounded periodic core/scout profiles                                             |
 | `scenarios/`         | World authoring, recipe validation and registration                              |
 | `testing/fixtures/`  | Manifests, pure controls, native recipes, map contracts and pinned baseline data |
 | `testing/bindings/`  | Stable native branch/acceptance bindings                                         |
@@ -35,7 +35,7 @@ deadlines and positive/negative predicates explicit. Move data together with its
 
 ```sh
 pnpm ai:tools:typecheck
-pnpm ai:tools:test
+pnpm tools:test
 pnpm ai:skirmish:catalog
 pnpm ai:regression -- --list
 pnpm ai:regression
@@ -48,6 +48,7 @@ ESM package does not change the repository's module mode. Type checking is separ
 source nor runtime JSON. All tool source/tests participate in the dedicated compiler configuration. Former JavaScript
 helpers are incrementally typed; this is not a full strict-mode migration.
 
-Automatic AI CI jobs remain disabled. Set the exact value `RUN_AI_REGRESSION=true` using your shell's environment
-syntax to opt `pnpm e2e` into the extended regression after ordinary E2E succeeds. Native invocations retain the
-30-minute limit.
+Automatic AI CI jobs remain disabled. E2E entry points are documented in
+[the generic E2E guide](../../../e2e/README.md). `pnpm e2e` runs ordinary E2E;
+`pnpm e2e:ai` adds the core regression and `pnpm e2e:ai-full` adds the full release matrix.
+Native invocations retain the 30-minute limit.

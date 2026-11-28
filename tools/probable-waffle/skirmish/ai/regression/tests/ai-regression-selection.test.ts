@@ -4,7 +4,6 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { executeAiRegressionCases } from "../ai-regression-execution.ts";
-import { parseAiRegressionFlag, runE2eWithAiRegression } from "../ai-regression-hook.ts";
 import { resolveAiRegressionSelection } from "../ai-regression-selection.ts";
 import { readNativeScenarioFixture } from "../../scenarios/registration/read-native-scenario-fixture.ts";
 
@@ -20,9 +19,7 @@ test("AI regression selection binds exact manifest variants and reports every om
     resolved.selected.reduce((sum, entry) => sum + entry.estimatedWallMs, 0),
     1_347_418
   );
-  assert.ok(
-    resolved.omissions.some((entry) => entry.scenarioId === "H-32" && entry.reason.includes("#819"))
-  );
+  assert.ok(resolved.omissions.some((entry) => entry.scenarioId === "H-32" && entry.reason.includes("#819")));
   assert.ok(
     resolved.omissions.some((entry) => entry.scenarioId === "SCOUT-02" && entry.reason.includes("Not selected"))
   );
@@ -97,63 +94,6 @@ test("regression orchestration accounts for budget exhaustion without dropping c
     results.map((entry) => entry.status),
     ["diagnostic_passed", "diagnostic_passed", "not_run_budget_exhausted"]
   );
-});
-
-test("extended E2E hook is strict, opt-in and runs once only after ordinary E2E succeeds", async () => {
-  assert.equal(parseAiRegressionFlag(undefined), false);
-  assert.equal(parseAiRegressionFlag("false"), false);
-  assert.equal(parseAiRegressionFlag("true"), true);
-  for (const invalid of ["", "TRUE", "1", "yes"])
-    assert.throws(() => parseAiRegressionFlag(invalid), /invalid_RUN_AI_REGRESSION/);
-
-  const calls = [];
-  assert.equal(
-    await runE2eWithAiRegression({
-      flag: "false",
-      runOrdinaryE2e: async () => {
-        calls.push("ordinary");
-        return 0;
-      },
-      runRegression: async () => {
-        calls.push("regression");
-        return 0;
-      }
-    }),
-    0
-  );
-  assert.deepEqual(calls, ["ordinary"]);
-  calls.length = 0;
-  assert.equal(
-    await runE2eWithAiRegression({
-      flag: "true",
-      runOrdinaryE2e: async () => {
-        calls.push("ordinary");
-        return 0;
-      },
-      runRegression: async () => {
-        calls.push("regression");
-        return 0;
-      }
-    }),
-    0
-  );
-  assert.deepEqual(calls, ["ordinary", "regression"]);
-  calls.length = 0;
-  assert.equal(
-    await runE2eWithAiRegression({
-      flag: "true",
-      runOrdinaryE2e: async () => {
-        calls.push("ordinary");
-        return 7;
-      },
-      runRegression: async () => {
-        calls.push("regression");
-        return 0;
-      }
-    }),
-    7
-  );
-  assert.deepEqual(calls, ["ordinary"]);
 });
 
 function readJson(name) {

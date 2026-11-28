@@ -21,7 +21,7 @@ and flag overbroad or likely over-budget selections to the user. [#865](https://
 owns this improvement across focused scenario families.
 
 ```sh
-pnpm ai:tools:test
+pnpm tools:test
 pnpm ai:tools:typecheck
 pnpm ai:skirmish:catalog -- --inventory
 pnpm ai:skirmish-matrix -- --scenario PLACE-03 --mode runtime
@@ -99,5 +99,7 @@ Normal configuration, persistence and fairness checks remain. Difficulty strengt
 
 Local core/scout profiles are opt-in selections from the manifest; inspect `--list` before execution. Profiles do not
 cover every registered scenario. Each selected runtime test shares the three-minute budget, including all its worlds.
-Set exactly `RUN_AI_REGRESSION=true` to include the extended regression after ordinary `pnpm e2e` succeeds.
+`pnpm e2e` runs ordinary E2E. Use `pnpm e2e:ai` to add the core regression or `pnpm e2e:ai-full`
+to add the full release matrix. The full matrix requires a clean source tree and retains deferred content and
+pinned-baseline limitations; see `tools/e2e/README.md`. `RUN_AI_REGRESSION` no longer changes `pnpm e2e`.
 Automatic CI remains disabled under `.github/disabled-workflows/`; do not re-enable it without a request.

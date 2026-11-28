@@ -5,7 +5,7 @@ The opponent uses a deterministic planner connecting economic needs, information
 ## Gameplay capabilities
 
 | Responsibility          | What the controller does                                                                                                                                                |
-|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Opening and workforce   | Starts from legal faction resources, establishes essential workers/services, and restores the workforce after losses.                                                   |
 | Economy and food        | Assigns useful gathering/tending work, considers delivered income and service capacity, and builds renewable food.                                                      |
 | Supply and production   | Anticipates housing and useful military capacity, accounts for queues/unfinished buildings, and adds duplicate assets when demand justifies them.                       |
@@ -45,7 +45,7 @@ Persistent state holds goals, knowledge, squads, demand, bases, reservations, tr
 ## Tests and regression
 
 | Layer                        | What it establishes                                                                                                                                       |
-|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Pure decision/contract tests | Sensible choices under controlled facts, deterministic arbitration, budgets, claim ownership, migration and negative controls.                            |
 | Phaser integration tests     | Actual adapter, resource, queue, construction, command and lifecycle contracts, including registered preset validation.                                   |
 | Native Playwright scenarios  | Ordinary lobby/game startup, real definitions/components, native commands, and independently measured payment, delivery, movement, combat and completion. |
@@ -62,12 +62,12 @@ pnpm ai:skirmish-matrix -- --scenario SCOUT-02 --mode runtime
 pnpm ai:skirmish:report -- --failures-only --details
 ```
 
-Ordinary `pnpm e2e` has an extended AI hook enabled by the exact value `RUN_AI_REGRESSION=true`. Automatic AI CI jobs are currently commented out; local commands and manual dispatch remain. Native invocations are bounded to 30 minutes.
+Ordinary `pnpm e2e` runs the generic E2E suite. Use `pnpm e2e:ai` to add the core AI regression, or `pnpm e2e:ai-full` to add the full release matrix with its clean-tree requirement and documented coverage limitations. Automatic AI CI jobs are currently commented out; local commands and manual dispatch remain. Native invocations are bounded to 30 minutes.
 
 ## Source layout
 
 | Area                                          | Entry point                                                                        |
-|-----------------------------------------------|------------------------------------------------------------------------------------|
+| --------------------------------------------- | ---------------------------------------------------------------------------------- |
 | Pure brain, planners and contracts            | [Gameplay AI](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller) |
 | Phaser adapter and game-side test support     | [Runtime AI](../libs/games/probable-waffle/phaser/src/lib/player/ai-controller)    |
 | Browser scenarios and outcome readers         | [Skirmish E2E](../apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai)             |
