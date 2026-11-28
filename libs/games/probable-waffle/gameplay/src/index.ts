@@ -23,6 +23,7 @@ export * from "./lib/player/ai-controller/planning/coordination/ai-manager-propo
 export * from "./lib/player/ai-controller/planning/coordination/ai-decision-planner";
 export * from "./lib/player/ai-controller/planning/production/macro/ai-macro-manager";
 export * from "./lib/player/ai-controller/planning/access/ai-access-graph";
+export * from "./lib/player/ai-controller/planning/transport/coordination/ai-transport-manager";
 export * from "./lib/player/ai-controller/profiles/ai-profile-defaults";
 export * from "./lib/player/ai-controller/profiles/ai-opening-archetypes";
 export * from "./lib/player/ai-controller/brain/state/create-ai-brain-state";
