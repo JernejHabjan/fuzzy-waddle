@@ -3,7 +3,7 @@ import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
-import { AiType } from "../../../ai-agents/ai-type";
+import { AiType } from "../../../ai-agents/controller/ai-type";
 
 export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
   components: {

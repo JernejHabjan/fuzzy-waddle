@@ -324,11 +324,12 @@ export class CameraMovementHandler {
   }
 
   private centerCameraOnSpawnPoint() {
-    // try to find current player
     if (!(this.scene instanceof GameProbableWaffleScene)) return;
     const gameScene = this.scene as GameProbableWaffleScene;
+    const player = gameScene.playerOrNull;
+    if (!player) return;
     const initialWorldSpawnPosition =
-      gameScene.player.playerController.data.playerDefinition?.initialWorldLogicalSpawnPosition;
+      player.playerController.data.playerDefinition?.initialWorldLogicalSpawnPosition;
     if (initialWorldSpawnPosition) {
       this.mainCamera.scrollX = initialWorldSpawnPosition.x - this.mainCamera.width / 2;
       this.mainCamera.scrollY = initialWorldSpawnPosition.y - this.mainCamera.height / 2;
