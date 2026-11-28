@@ -30,7 +30,10 @@ test("neither AI mode runs after ordinary E2E fails", async () => {
           calls++;
           return 4;
         },
-        resolveRelease: () => assert.fail("failed E2E must short circuit release resolution")
+        resolveRelease: () => {
+          assert.equal(calls, 0);
+          return { candidate: "a".repeat(40), baseline: "b".repeat(40) };
+        }
       }),
       4
     );
@@ -47,7 +50,7 @@ test("full selects the release catalog and preserves a blocked runner exit", asy
       return calls.length === 1 ? 0 : 1;
     },
     resolveRelease: () => {
-      assert.equal(calls.length, 1);
+      assert.equal(calls.length, 0);
       return { candidate: "a".repeat(40), baseline: "b".repeat(40) };
     }
   });
@@ -67,15 +70,15 @@ test("invalid modes fail before launching E2E", async () => {
   await assert.rejects(runE2eWithAi({ mode: "all", run: () => assert.fail("must not spawn") }), /invalid_e2e_ai_mode/);
 });
 
-test("release resolution errors are propagated", async () => {
+test("release preflight errors stop full mode before starting any tests", async () => {
   await assert.rejects(
     runE2eWithAi({
       mode: "full",
-      run: async () => 0,
+      run: () => assert.fail("ordinary E2E must not start when release preflight fails"),
       resolveRelease: () => {
-        throw new Error("missing baseline");
+        throw new Error("candidate_source_is_dirty");
       }
     }),
-    /missing baseline/
+    /candidate_source_is_dirty/
   );
 });

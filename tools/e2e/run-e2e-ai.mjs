@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runE2eWithAi } from "./e2e-ai-runner.mjs";
+import { readWorkingTreeSource } from "../probable-waffle/skirmish/ai/matrix/skirmish-matrix-io.ts";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const [mode, ...forwardedArgs] = process.argv.slice(2);
@@ -16,8 +17,14 @@ try {
   process.exitCode = 1;
 }
 
-/** Resolve release provenance from the checked-out revision and the matrix's pinned baseline authority. */
+/** Reuse the matrix's clean-source authority before spending time on ordinary E2E, then pin release provenance. */
 function resolveRelease() {
+  if (readWorkingTreeSource().length > 0) {
+    throw new Error(
+      "candidate_source_is_dirty: full AI preflight stopped before E2E. " +
+        "Commit tracked changes and move or commit untracked files; inspect git status --short."
+    );
+  }
   const candidate = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   const fixtures = join(root, "tools/probable-waffle/skirmish/ai/testing/fixtures");
   const manifest = JSON.parse(readFileSync(join(fixtures, "skirmish-scenario-manifest.json"), "utf8"));

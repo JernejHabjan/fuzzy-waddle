@@ -44,7 +44,7 @@ This page describes command definitions; it is not evidence that every command h
 | `test:ci`     | Run all Nx test targets with their CI configuration.                                                                                                                                                  |
 | `e2e`         | Run ordinary portal Playwright E2E tests.                                                                                                                                                             |
 | `e2e:ai`      | Run ordinary E2E, then the AI unit-test preflight and seven-case core regression; stop if ordinary E2E fails.                                                                                         |
-| `e2e:ai-full` | Run ordinary E2E, then the full AI release matrix with automatically resolved candidate and pinned baseline. Requires a clean source tree; deferred content and baseline limitations remain explicit. |
+| `e2e:ai-full` | Check the clean source tree and resolve candidate/pinned baseline before ordinary E2E, then run the full AI release matrix. Deferred content and baseline limitations remain explicit. |
 | `tools:test`  | Run Node tests for AI tooling, the custom ESLint plugin, skill tooling and E2E orchestration. Does not run browser matches.                                                                           |
 
 ## Linting, formatting and repository checks
