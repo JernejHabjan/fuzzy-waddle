@@ -1,0 +1,15 @@
+{
+  "id": "77a42a5d-8b5e-4a66-9d6c-4c04b2f419ce",
+  "sceneType": "PREFAB",
+  "settings": { "compilerInsertSpaces": true, "compilerTabSize": 2, "exportClass": true, "compilerOutputLanguage": "TYPE_SCRIPT", "borderWidth": 760, "borderHeight": 560 },
+  "displayList": [
+    { "type": "Container", "id": "94a27815-0d95-4309-a211-d1f794f0ce61", "label": "campaignQuestLog", "scope": "CLASS", "visible": false,
+      "list": [
+        { "type": "NineSlice", "id": "c22b8916-226c-415f-b2d1-8b74f1751677", "label": "surface", "texture": { "key": "gui", "frame": "cryos_mini_gui/surfaces/surface_dark.png" }, "width": 20, "height": 25, "leftWidth": 1, "rightWidth": 1, "topHeight": 1, "bottomHeight": 1 },
+        { "type": "NineSlice", "id": "a3edb51e-0c0f-45de-9f1b-8a65f3d920ce", "label": "doneBackground", "texture": { "key": "gui", "frame": "cryos_mini_gui/buttons/button_small.png" }, "width": 40, "height": 20, "leftWidth": 3, "rightWidth": 3, "topHeight": 3, "bottomHeight": 3 }
+      ]
+    }
+  ],
+  "plainObjects": [],
+  "meta": { "app": "Phaser Editor - Scene Editor", "url": "https://phaser.io/editor", "contentType": "phasereditor2d.core.scene.SceneContentType", "version": 5 }
+}
