@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import {
   isProbableWafflePlayerPreferences,
   type ProbableWafflePlayerPreferences
@@ -27,11 +27,14 @@ export class PlayerPreferencesService implements PlayerPreferencesServiceInterfa
       throw new BadRequestException("Invalid Probable Waffle preferences");
     }
     const persistedPreferences = { ...preferences } satisfies ProbableWafflePlayerPreferences;
-    const { error } = await this.supabaseProviderService.supabaseClient
+    const { data, error } = await this.supabaseProviderService.supabaseClient
       .from("user_profiles")
       .update({ probable_waffle_preferences: persistedPreferences })
-      .eq("id", userId);
+      .eq("id", userId)
+      .select("id")
+      .maybeSingle();
     if (error) throw error;
+    if (!data) throw new NotFoundException("User profile not found");
     return preferences;
   }
 }

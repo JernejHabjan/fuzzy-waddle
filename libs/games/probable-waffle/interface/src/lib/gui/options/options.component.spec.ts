@@ -6,6 +6,8 @@ import { FormsModule } from "@angular/forms";
 import { provideHttpClient } from "@angular/common/http";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { BehaviorSubject } from "rxjs";
+import { OptionsService } from "./options.service";
+import { GameSettings } from "@fuzzy-waddle/probable-waffle-phaser/core/gameSettings";
 
 describe("OptionsComponent", () => {
   let component: OptionsComponent;
@@ -41,6 +43,17 @@ describe("OptionsComponent", () => {
     expect(element.querySelector("#defaultCameraDistance")).not.toBeNull();
     expect(element.querySelector("#defaultSinglePlayerSpeed")).not.toBeNull();
     expect(element.textContent).toContain("Show actions per minute");
+  });
+
+  it("refreshes the OnPush view when synchronized preferences arrive", async () => {
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
+    const settings = new GameSettings();
+    settings.defaultCameraDistance = 2;
+    TestBed.inject(OptionsService).applyGameSettings(settings);
+    await fixture.whenStable();
+    const select = fixture.nativeElement.querySelector("#defaultCameraDistance") as HTMLSelectElement;
+    expect(select.selectedOptions[0]?.textContent?.trim()).toBe("Near");
   });
 
   it("should create", () => {

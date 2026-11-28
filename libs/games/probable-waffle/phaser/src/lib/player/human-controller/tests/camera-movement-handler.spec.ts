@@ -24,6 +24,19 @@ describe("CameraMovementHandler", () => {
     expect(clamp).not.toHaveBeenCalled();
   });
 
+  it("preserves a zoom-only restored camera instead of applying the fresh-game default", () => {
+    const { handler, camera } = createCameraHandler(null);
+    const center = jest.fn();
+    Object.assign(handler, {
+      config: { defaultCameraDistance: 1, maximumCameraDistance: 0.5 },
+      centerCameraOnSpawnPoint: center
+    });
+    handler.setCameraState({ zoom: 2 });
+    Reflect.get(handler, "create").call(handler);
+    expect(camera).toMatchObject({ zoom: 2 });
+    expect(center).not.toHaveBeenCalled();
+  });
+
   it("centers on the local player's spawn point when one exists", () => {
     const player = {
       playerController: {

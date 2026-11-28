@@ -15,18 +15,19 @@ import type { ChatMessage } from "@fuzzy-waddle/platform-chat";
   providedIn: "root"
 })
 export class OptionsService extends GameOptionsService {
+  private static readonly pendingSyncKey = "probable-waffle-game-settings-pending-sync";
   private readonly httpClient = inject(HttpClient);
   private readonly authService = inject(AuthService);
   private initialized = false;
   private sessionSubscription?: Subscription;
   private synchronization?: Promise<void>;
   private initialization?: Promise<void>;
-  private localChangesPendingSync = false;
+  private localChangesPendingSync = localStorage.getItem(OptionsService.pendingSyncKey) === "true";
 
   /** Hydrates local fallback immediately, then reconciles with the database when authentication is available. */
   override init(): Promise<void> {
-    super.init();
     if (this.initialized) return this.initialization ?? Promise.resolve();
+    super.init();
     this.initialized = true;
     this.sessionSubscription = this.authService.sessionChanges.subscribe((session) => {
       if (session) void this.synchronize();
@@ -39,13 +40,14 @@ export class OptionsService extends GameOptionsService {
     super.saveChanges(type);
     if (type === "game") {
       this.localChangesPendingSync = true;
-      void this.persistRemote();
+      localStorage.setItem(OptionsService.pendingSyncKey, "true");
+      void this.synchronize();
     }
   }
 
   /** Selects filtered presentation without mutating the original transport message. */
   presentChatMessage(message: ChatMessage): ChatMessage {
-    return this.gameSettings.profanityFilter && message.filteredText
+    return this.gameSettings.profanityFilter && message.filteredText !== undefined
       ? { ...message, text: message.filteredText }
       : { ...message };
   }
@@ -58,38 +60,40 @@ export class OptionsService extends GameOptionsService {
     return this.synchronization;
   }
 
-  /** Remote data wins after sign-in; a missing document is initialized from the local fallback. */
+  /** Remote data wins only when no local edit is awaiting synchronization. */
   private async loadRemoteOrUploadFallback(): Promise<void> {
-    await this.authService.ensureAuthReady();
-    if (!this.authService.isAuthenticated) return;
     try {
-      if (this.localChangesPendingSync) {
-        await this.persistRemote();
-        return;
+      await this.authService.ensureAuthReady();
+      if (!this.authService.isAuthenticated) return;
+      if (!this.localChangesPendingSync) {
+        const url = `${environment.api}api/probable-waffle/preferences`;
+        const remote = await firstValueFrom(this.httpClient.get<ProbableWafflePlayerPreferences | null>(url));
+        if (!this.authService.isAuthenticated) return;
+        if (!this.localChangesPendingSync && remote) {
+          this.applyGameSettings(GameSettings.fromUnknown(remote));
+          return;
+        }
       }
-      const url = `${environment.api}api/probable-waffle/preferences`;
-      const remote = await firstValueFrom(this.httpClient.get<ProbableWafflePlayerPreferences | null>(url));
-      if (remote) {
-        this.applyGameSettings(GameSettings.fromUnknown(remote));
-      } else {
-        await this.persistRemote();
-      }
+      await this.persistRemote();
     } catch (error) {
       console.warn("[OptionsService] Preference synchronization failed; keeping local fallback.", error);
     }
   }
 
+  /** Serializes uploads and keeps the durable dirty marker until the latest local snapshot is saved. */
   private async persistRemote(): Promise<void> {
-    if (!this.authService.isAuthenticated) return;
-    const body = { preferences: { ...this.gameSettings } } satisfies UpdateProbableWafflePlayerPreferencesDto;
-    try {
+    while (this.authService.isAuthenticated) {
+      const preferences = { ...this.gameSettings };
+      const snapshot = JSON.stringify(preferences);
+      const body = { preferences } satisfies UpdateProbableWafflePlayerPreferencesDto;
       await firstValueFrom(
         this.httpClient.put<ProbableWafflePlayerPreferences>(`${environment.api}api/probable-waffle/preferences`, body)
       );
-      this.localChangesPendingSync = false;
-    } catch (error) {
-      // Local storage remains the retry source; the next authenticated initialization reconciles it.
-      console.warn("[OptionsService] Preference upload failed; retaining local fallback.", error);
+      if (snapshot === JSON.stringify(this.gameSettings)) {
+        this.localChangesPendingSync = false;
+        localStorage.removeItem(OptionsService.pendingSyncKey);
+        return;
+      }
     }
   }
 }

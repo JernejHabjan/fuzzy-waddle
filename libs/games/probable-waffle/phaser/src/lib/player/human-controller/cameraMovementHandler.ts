@@ -343,8 +343,7 @@ export class CameraMovementHandler {
     const gameScene = this.scene as GameProbableWaffleScene;
     const player = gameScene.playerOrNull;
     if (!player) return;
-    const initialWorldSpawnPosition =
-      player.playerController.data.playerDefinition?.initialWorldLogicalSpawnPosition;
+    const initialWorldSpawnPosition = player.playerController.data.playerDefinition?.initialWorldLogicalSpawnPosition;
     if (initialWorldSpawnPosition) {
       this.mainCamera.scrollX = initialWorldSpawnPosition.x - this.mainCamera.width / 2;
       this.mainCamera.scrollY = initialWorldSpawnPosition.y - this.mainCamera.height / 2;
@@ -399,6 +398,8 @@ export class CameraMovementHandler {
     if (state.zoom !== undefined) {
       this.mainCamera.zoom = Math.max(state.zoom, this.config.maximumCameraDistance ?? this.cameraMaxZoom);
     }
-    if (state.scrollX !== undefined || state.scrollY !== undefined) this.cameraStateSetFromData = true;
+    if (state.scrollX !== undefined || state.scrollY !== undefined || state.zoom !== undefined) {
+      this.cameraStateSetFromData = true;
+    }
   }
 }

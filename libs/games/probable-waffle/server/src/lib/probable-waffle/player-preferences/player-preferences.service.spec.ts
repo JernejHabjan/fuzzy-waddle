@@ -48,7 +48,9 @@ describe("PlayerPreferencesService", () => {
   });
 
   it("persists the complete versioned document for the authenticated user", async () => {
-    const update = jest.fn(() => ({ eq: () => Promise.resolve({ error: null }) }));
+    const update = jest.fn(() => ({
+      eq: () => ({ select: () => ({ maybeSingle: () => Promise.resolve({ data: { id: "user-1" }, error: null }) }) })
+    }));
     const module = await Test.createTestingModule({
       providers: [
         PlayerPreferencesService,
@@ -58,5 +60,27 @@ describe("PlayerPreferencesService", () => {
 
     await expect(module.get(PlayerPreferencesService).save("user-1", preferences)).resolves.toEqual(preferences);
     expect(update).toHaveBeenCalledWith({ probable_waffle_preferences: preferences });
+  });
+  it("reports a missing profile rather than claiming preferences were persisted", async () => {
+    const module = await Test.createTestingModule({
+      providers: [
+        PlayerPreferencesService,
+        {
+          provide: SupabaseProviderService,
+          useValue: {
+            supabaseClient: {
+              from: () => ({
+                update: () => ({
+                  eq: () => ({ select: () => ({ maybeSingle: () => Promise.resolve({ data: null, error: null }) }) })
+                })
+              })
+            }
+          }
+        }
+      ]
+    }).compile();
+    await expect(module.get(PlayerPreferencesService).save("missing", preferences)).rejects.toThrow(
+      "User profile not found"
+    );
   });
 });
