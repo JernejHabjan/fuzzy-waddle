@@ -1,0 +1,873 @@
+{
+    "anims": [
+        {
+            "key": "siege_weapons/catapult/attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/n/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/n/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/n/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/n/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/n/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/n/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/attack/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/ne/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/ne/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/ne/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/ne/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/ne/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/ne/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/attack/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/nw/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/nw/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/nw/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/nw/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/nw/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/nw/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/attack/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/se/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/se/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/se/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/se/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/se/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/se/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/attack/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/sw/42.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/sw/43.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/sw/44.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/sw/45.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/sw/46.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/sw/47.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/w/36.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/w/37.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/w/38.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/w/39.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/w/40.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/attack/w/41.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/idle/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/e/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/move/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/e/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/e/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/e/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/e/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/idle/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/n/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/move/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/n/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/n/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/n/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/n/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/n/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/n/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/idle/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/ne/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/move/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/ne/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/ne/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/ne/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/ne/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/ne/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/ne/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/idle/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/nw/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/move/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/nw/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/nw/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/nw/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/nw/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/nw/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/nw/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/idle/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/move/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/idle/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/se/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/move/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/se/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/se/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/se/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/se/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/se/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/se/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/idle/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/sw/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/move/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/sw/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/sw/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/sw/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/sw/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/sw/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/sw/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/idle/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/w/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/catapult/move/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/w/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/w/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_catapult",
+                    "frame": "level1/move/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "meta": {
+        "app": "Phaser Editor - Animations Editor",
+        "contentType": "phasereditor2d.core.animations.AnimationContentType",
+        "version": 2
+    }
+}

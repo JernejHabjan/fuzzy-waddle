@@ -38,6 +38,16 @@ export function applyAiRuntimeRecoveryStart(scene: ProbableWaffleScene, branch: 
     sources.push({ actorId, resourceType: source.getResourceType(), available: source.getCurrentResources(), renewable: false });
   }
   if (!sources.length) throw new Error("recovery_setup_source_inventory_missing");
+  const workerConstructable = new Set<ObjectNames>();
+  const workerBuilderDef = getPwActorDefinition(workerObjectName, null)?.components?.builder?.constructableBuildings;
+  if (workerBuilderDef) {
+    for (const building of workerBuilderDef.buildings ?? []) workerConstructable.add(building);
+    for (const category of workerBuilderDef.categories ?? []) {
+      for (const group of category.buildings ?? []) {
+        for (const building of group.buildings ?? []) workerConstructable.add(building);
+      }
+    }
+  }
   const steps: AiRuntimeRecoverySetup["steps"][number][] = [], visited = new Set<ObjectNames>();
   const existing = new Set(self.map((actor) => actor.name));
   const price = (name: ObjectNames) => {
@@ -49,6 +59,12 @@ export function applyAiRuntimeRecoveryStart(scene: ProbableWaffleScene, branch: 
     if (!cost || Object.values(cost).some((amount) => amount === undefined || !Number.isFinite(amount) || amount < 0))
       throw new Error("recovery_setup_missing_definition_price");
     for (const required of definition?.components?.requirements?.actors ?? []) price(required);
+    for (const required of definition?.components?.buildingPrerequisites?.requiresAllOf ?? []) price(required);
+    const anyOf = definition?.components?.buildingPrerequisites?.requiresAnyOf ?? [];
+    if (anyOf.length > 0 && !anyOf.some((candidate) => existing.has(candidate))) {
+      const preferred = anyOf.find((candidate) => workerConstructable.has(candidate)) ?? anyOf[0]!;
+      price(preferred);
+    }
     steps.push({ objectName: name, cost: { ...cost } });
     existing.add(name);
     visited.delete(name);

@@ -114,6 +114,15 @@ import { pumpkinWarlockBatDefinition } from "../characters/mobs/pumpkin_warlock_
 import { pumpkinWarlockPumpkinDefinition } from "../characters/mobs/pumpkin_warlock_pumpkin/pumpkin_warlock_pumpkin.definition";
 import { vikingBoatDefinition } from "../characters/shared/VikingBoat/viking_boat.definition";
 import { commonBoatDefinition } from "../characters/shared/CommonBoat/common_boat.definition";
+import { catapultDefinition } from "../characters/shared/Catapult/catapult.definition";
+import { ballistaDefinition } from "../characters/shared/Ballista/ballista.definition";
+import { cannonDefinition } from "../characters/shared/Cannon/cannon.definition";
+import { tivaraGranaryDefinition } from "../buildings/tivara/TivaraGranary/tivara-granary.definition";
+import { tivaraDockDefinition } from "../buildings/tivara/TivaraDock/tivara-dock.definition";
+import { tivaraSiegeWorkshopDefinition } from "../buildings/tivara/TivaraSiegeWorkshop/tivara-siege-workshop.definition";
+import { skaduweeGranaryDefinition } from "../buildings/skaduwee/SkaduweeGranary/skaduwee-granary.definition";
+import { skaduweeDockDefinition } from "../buildings/skaduwee/SkaduweeDock/skaduwee-dock.definition";
+import { skaduweeSiegeWorkshopDefinition } from "../buildings/skaduwee/SkaduweeSiegeWorkshop/skaduwee-siege-workshop.definition";
 import { corpyDefinition } from "../characters/mobs/corpy/corpy.definition";
 
 /** Creates the minimal persisted definition shared by simple environment actors. */
@@ -161,6 +170,9 @@ export const pwActorDefinitions: {
   GeneralWarrior: generalWarriorDefinition,
   CommonBoat: commonBoatDefinition,
   VikingBoat: vikingBoatDefinition,
+  Catapult: catapultDefinition,
+  Ballista: ballistaDefinition,
+  Cannon: cannonDefinition,
   Centurion: centurionDefinition,
   Cyclops: cyclopsDefinition,
   Corpy: corpyDefinition,
@@ -203,6 +215,9 @@ export const pwActorDefinitions: {
   AnkGuard: ankGuardDefinition,
   Olival: olivalDefinition,
   Temple: templeDefinition,
+  TivaraGranary: tivaraGranaryDefinition,
+  TivaraDock: tivaraDockDefinition,
+  TivaraSiegeWorkshop: tivaraSiegeWorkshopDefinition,
   // Tivara units
   TivaraMacemanMale: tivaraMacemanMaleDefinition,
   TivaraAlchemist: tivaraAlchemistDefinition,
@@ -216,6 +231,9 @@ export const pwActorDefinitions: {
   Emberstone: emberstoneDefinition,
   InfantryInn: infantryInnDefinition,
   Owlery: owleryDefinition,
+  SkaduweeGranary: skaduweeGranaryDefinition,
+  SkaduweeDock: skaduweeDockDefinition,
+  SkaduweeSiegeWorkshop: skaduweeSiegeWorkshopDefinition,
   // Skaduwee units
   SkaduweeOwl: skaduweeOwlDefinition,
   SkaduweeRangedFemale: skaduweeRangedFemaleDefinition,

@@ -1,0 +1,89 @@
+{
+    "id": "2f816085-06c2-49eb-9ef2-de11f9118436",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "e992ec7b-b89c-45c5-9d3e-24591c4403e3",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "prefabId": "51875324-e554-4381-9d9e-c7b08ad77e8f",
+                    "id": "278cbe62-b9ce-4658-85ca-146eff3d1c8d",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "tivaraSiegeWorkshopCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "9f899e1d-bd24-4ade-941c-c09bf21c5705",
+                    "id": "9b3b1cf2-701e-4c58-bb62-94c38d545be6",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "tivaraSiegeWorkshopFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "f1130d67-e8b7-440a-b14e-19fe85e8db20",
+                    "id": "554c9362-61db-4f87-99ec-22542523e093",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "tivaraSiegeWorkshopFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "30bbbe52-52ad-40e3-9f1e-29ad35386e5d",
+                    "id": "6ce3265e-073a-4c0a-a749-7e8196eee830",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "tivaraSiegeWorkshopLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

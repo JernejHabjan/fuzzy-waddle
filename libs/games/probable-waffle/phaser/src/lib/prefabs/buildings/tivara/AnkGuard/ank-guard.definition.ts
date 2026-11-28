@@ -73,9 +73,7 @@ export const ankGuardDefinition = {
         ResearchType.FirestormSpell,
         ResearchType.FrostNovaSpell,
         ResearchType.WendigoBranches,
-        ResearchType.HealingRainSpell,
-        ResearchType.CommonBoatUpgradeLevel2,
-        ResearchType.VikingBoatUpgradeLevel2
+        ResearchType.HealingRainSpell
       ]
     },
     queue: {

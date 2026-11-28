@@ -232,7 +232,7 @@ export const researchDefinitions: Record<ResearchType, ResearchData> = {
     cost: { [ResourceType.Wood]: 80, [ResourceType.Stone]: 50 },
     researchTime: 25000,
     icon: { key: "units", frame: "common/boat/common_boat-24.png" },
-    requiredBuilding: ObjectNames.Sandhold,
+    requiredAnyBuildings: [ObjectNames.TivaraDock, ObjectNames.SkaduweeDock],
     refundFactor: 0.5
   },
 
@@ -244,7 +244,7 @@ export const researchDefinitions: Record<ResearchType, ResearchData> = {
     cost: { [ResourceType.Wood]: 150, [ResourceType.Stone]: 100, [ResourceType.Minerals]: 75 },
     researchTime: 40000,
     icon: { key: "units", frame: "common/viking-ship/ship9.png" },
-    requiredBuilding: ObjectNames.Sandhold,
+    requiredAnyBuildings: [ObjectNames.TivaraDock, ObjectNames.SkaduweeDock],
     refundFactor: 0.5
   }
 };

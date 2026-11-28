@@ -202,9 +202,33 @@ export class TechTreeService {
         return;
       }
 
-      // Recursively visit object prerequisites
+      // Recursively visit object prerequisites (AND)
       for (const prereqObject of n.prerequisites.prereqs.objectNames) {
         visit(prereqObject);
+      }
+
+      // Evaluate OR-prerequisite groups (at least one unlocked satisfies the group)
+      const inferredFaction = this.isUnlocked(playerNumber, ObjectNames.FrostForge) &&
+        !this.isUnlocked(playerNumber, ObjectNames.Sandhold)
+        ? FactionType.Skaduwee
+        : this.isUnlocked(playerNumber, ObjectNames.Sandhold) &&
+            !this.isUnlocked(playerNumber, ObjectNames.FrostForge)
+          ? FactionType.Tivara
+          : null;
+      for (const group of n.anyOfPrerequisites ?? []) {
+        if (group.length === 0) continue;
+        if (group.some((candidate) => this.isUnlocked(playerNumber, candidate))) continue;
+        const preferred =
+          (inferredFaction
+            ? group.find(
+                (candidate) =>
+                  this.isFactionMatch(candidate, inferredFaction) &&
+                  this.isContentAllowed(playerNumber, "actor", candidate)
+              )
+            : undefined) ??
+          group.find((candidate) => this.isContentAllowed(playerNumber, "actor", candidate)) ??
+          group[0]!;
+        visit(preferred);
       }
 
       // Collect research prerequisites

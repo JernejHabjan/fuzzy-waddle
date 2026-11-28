@@ -48,14 +48,16 @@ export const skaduweeWorkerDefinition: PrefabDefinition = {
           ObjectNames.FrostForge,
           ObjectNames.InfantryInn,
           ObjectNames.Owlery,
-          ObjectNames.Emberstone
+          ObjectNames.Emberstone,
+          ObjectNames.SkaduweeDock,
+          ObjectNames.SkaduweeSiegeWorkshop
         ],
         [
           new ConstructableCategory("gui", "action_icons/category_resource_gathering.png", "Resource Gathering", [
             new ConstructableDefinition([
               ObjectNames.WorkMill,
               ObjectNames.MiningCamp,
-              ObjectNames.Granary,
+              ObjectNames.SkaduweeGranary,
               ObjectNames.Field
             ])
           ]),

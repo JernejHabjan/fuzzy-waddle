@@ -54,8 +54,8 @@ export const fieldDefinition = {
       productionTime: 0,
       costType: PaymentType.PayImmediately
     },
-    requirements: {
-      actors: [ObjectNames.Granary]
+    buildingPrerequisites: {
+      requiresAnyOf: [ObjectNames.TivaraGranary, ObjectNames.SkaduweeGranary]
     },
     selectable: {},
     collider: { enabled: false }, // field is not a collider - can be walked over

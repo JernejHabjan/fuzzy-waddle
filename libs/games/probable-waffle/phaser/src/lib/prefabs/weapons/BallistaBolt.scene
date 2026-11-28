@@ -1,0 +1,36 @@
+{
+    "id": "5cfa1ade-17e9-449e-8007-88571bfb4874",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 24,
+        "borderHeight": 8
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "c1f348a7-e4e5-487e-844c-dd77ebcc3daf",
+            "label": "ballistabolt",
+            "texture": {
+                "key": "siege_weapons_ballista",
+                "frame": "level1/bolt.png"
+            },
+            "x": 12,
+            "y": 4
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

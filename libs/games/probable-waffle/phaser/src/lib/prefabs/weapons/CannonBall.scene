@@ -1,0 +1,36 @@
+{
+    "id": "511fe9f4-9006-486c-bbd7-931049a98831",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 12,
+        "borderHeight": 12
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "afde29a7-016d-47b7-be67-3a1566dc9d07",
+            "label": "cannonball",
+            "texture": {
+                "key": "siege_weapons_cannon",
+                "frame": "cannon-ball.png"
+            },
+            "x": 6,
+            "y": 6
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

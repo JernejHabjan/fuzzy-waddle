@@ -74,7 +74,7 @@ export const sandholdDefinition = {
       cooldown: 1000
     },
     production: {
-      availableProduceActors: [ObjectNames.TivaraWorker, ObjectNames.CommonBoat, ObjectNames.VikingBoat]
+      availableProduceActors: [ObjectNames.TivaraWorker]
     },
     queue: {
       queueCount: 1,

@@ -64,8 +64,8 @@ export const commonBoatDefinition = {
     housingCost: {
       housingNeeded: 1
     },
-    requirements: {
-      actors: [ObjectNames.Sandhold]
+    buildingPrerequisites: {
+      requiresAnyOf: [ObjectNames.TivaraDock, ObjectNames.SkaduweeDock]
     },
     translatable: {
       tileMoveDuration: 350,

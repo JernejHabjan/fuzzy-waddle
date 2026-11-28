@@ -136,7 +136,7 @@ describe("AI macro construction commitments", () => {
         {
           ...building,
           capabilityId: "granary",
-          sourceObjectName: ObjectNames.Granary,
+          sourceObjectName: ObjectNames.TivaraGranary,
           family: "drop_off",
           produces: [],
           constructionProfile: { ...building.constructionProfile, resourceCost: { [ResourceType.Wood]: 80 } }
@@ -229,10 +229,10 @@ describe("AI macro construction commitments", () => {
     );
 
     expect(producer.intents.filter((intent) => intent.kind === "construct").map((intent) => intent.objectName)).toEqual(
-      expect.arrayContaining([ObjectNames.Granary])
+      expect.arrayContaining([ObjectNames.TivaraGranary])
     );
     expect(
-      producer.intents.filter((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Granary)
+      producer.intents.filter((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.TivaraGranary)
     ).toHaveLength(1);
     expect(
       producer.statePatch?.opening?.plan.steps.find((step) => step.stepId === "step:opening:supply-safety")

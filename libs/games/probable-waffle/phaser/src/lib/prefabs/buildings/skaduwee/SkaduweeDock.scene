@@ -1,0 +1,89 @@
+{
+    "id": "746b212e-6641-4c87-8319-fee76842b8d0",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "8da6d4b7-cfd0-4334-ab2c-2dba884a99f5",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "prefabId": "6c6c3994-da2f-4e9b-b3e4-7cfea9990098",
+                    "id": "537264fc-f635-4f84-95cd-487b57f383e5",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "skaduweeDockCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "b7daf738-bcef-4a9c-b483-62b7b1156c08",
+                    "id": "3aa60287-0200-4631-a743-d0e3ee78e980",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "skaduweeDockFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "4030d077-7fb3-492f-9b49-b3905ecdfa73",
+                    "id": "dbc6fad7-ed7c-4436-aad5-36d96cdc0d62",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "skaduweeDockFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "6d9a224d-5a8c-45d6-8b72-2475ff3da629",
+                    "id": "7091a4e7-dc7c-4d06-b98b-a6732a3523ab",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "skaduweeDockLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

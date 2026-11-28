@@ -36,6 +36,12 @@ function gatherAllActors(mainBuildingNames: ObjectNames[]): Set<ObjectNames> {
     // Add all required actors (tech requirements)
     const requirements = components.requirements?.actors || [];
     requirements.forEach((required) => visit(required as ObjectNames));
+
+    // Add buildingPrerequisites actors
+    const anyOfPrereqs = components.buildingPrerequisites?.requiresAnyOf || [];
+    anyOfPrereqs.forEach((required) => visit(required as ObjectNames));
+    const allOfPrereqs = components.buildingPrerequisites?.requiresAllOf || [];
+    allOfPrereqs.forEach((required) => visit(required as ObjectNames));
   }
 
   mainBuildingNames.forEach((mainBuilding) => visit(mainBuilding));
@@ -73,6 +79,7 @@ export class TechTreeBuilder {
         id: actorName,
         kind,
         prerequisites: new PreRequirement(),
+        anyOfPrerequisites: [],
         produces: [],
         constructs: [],
         definition
@@ -81,7 +88,7 @@ export class TechTreeBuilder {
       graph.nodes[actorName] = node;
     });
 
-    // Step 3: Build prerequisite relationships from requirements
+    // Step 3: Build prerequisite relationships from requirements and buildingPrerequisites
     allActors.forEach((actorName) => {
       const node = graph.nodes[actorName];
       if (!node) return;
@@ -89,7 +96,7 @@ export class TechTreeBuilder {
       const definition = getPwActorDefinition(actorName, null);
       const requirements = definition?.components?.requirements?.actors;
 
-      // Add object (building/unit) prerequisites
+      // Add object (building/unit) prerequisites (AND)
       if (requirements && Array.isArray(requirements)) {
         requirements.forEach((requiredActor) => {
           // Only add prerequisite if the required actor exists in the graph
@@ -99,6 +106,26 @@ export class TechTreeBuilder {
         });
       }
 
+      const buildingPrereqs = definition?.components?.buildingPrerequisites;
+      if (buildingPrereqs?.requiresAllOf?.length) {
+        buildingPrereqs.requiresAllOf.forEach((requiredActor) => {
+          if (graph.nodes[requiredActor] && !node.prerequisites.prereqs.objectNames.includes(requiredActor)) {
+            node.prerequisites.prereqs.objectNames.push(requiredActor);
+          }
+        });
+      }
+      if (buildingPrereqs?.requiresAnyOf?.length) {
+        const validGroup = buildingPrereqs.requiresAnyOf.filter((requiredActor) => Boolean(graph.nodes[requiredActor]));
+        if (validGroup.length === 1) {
+          const single = validGroup[0]!;
+          if (!node.prerequisites.prereqs.objectNames.includes(single)) {
+            node.prerequisites.prereqs.objectNames.push(single);
+          }
+        } else if (validGroup.length > 1) {
+          node.anyOfPrerequisites = [...(node.anyOfPrerequisites ?? []), validGroup];
+        }
+      }
+
       // NOTE: We do NOT add spell research as prerequisites for unit creation.
       // Units can be created even if their spells aren't researched yet.
       // Spell research only gates whether those spells can be cast, not whether the unit can be produced.
@@ -106,6 +133,7 @@ export class TechTreeBuilder {
     });
 
     // Step 4: Build production and construction edges
+    const producersByActor = new Map<ObjectNames, ObjectNames[]>();
     allActors.forEach((actorName) => {
       const fromNode = graph.nodes[actorName];
       if (!fromNode) return;
@@ -124,10 +152,10 @@ export class TechTreeBuilder {
             if (!fromNode.produces.includes(producedActorName)) {
               fromNode.produces.push(producedActorName);
             }
-
-            // Add prerequisite: produced unit requires this building
-            if (!producedNode.prerequisites.prereqs.objectNames.includes(fromNode.id)) {
-              producedNode.prerequisites.prereqs.objectNames.push(fromNode.id);
+            const producers = producersByActor.get(producedActorName) ?? [];
+            if (!producers.includes(fromNode.id)) {
+              producers.push(fromNode.id);
+              producersByActor.set(producedActorName, producers);
             }
           }
         });
@@ -149,6 +177,20 @@ export class TechTreeBuilder {
             // Tech prerequisites come from the building's `requirements` component only.
           }
         });
+      }
+    });
+
+    // Link producer prerequisites: single producer -> AND prerequisite; multiple producers -> OR-group.
+    producersByActor.forEach((producers, producedActorName) => {
+      const producedNode = graph.nodes[producedActorName];
+      if (!producedNode) return;
+      if (producers.length === 1) {
+        const onlyProducer = producers[0]!;
+        if (!producedNode.prerequisites.prereqs.objectNames.includes(onlyProducer)) {
+          producedNode.prerequisites.prereqs.objectNames.push(onlyProducer);
+        }
+      } else if (producers.length > 1) {
+        producedNode.anyOfPrerequisites = [...(producedNode.anyOfPrerequisites ?? []), producers];
       }
     });
 

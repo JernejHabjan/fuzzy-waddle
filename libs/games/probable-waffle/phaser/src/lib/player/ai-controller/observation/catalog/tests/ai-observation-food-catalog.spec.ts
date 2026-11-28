@@ -16,7 +16,7 @@ it.each([true, false])(
   "exposes locked food prerequisite prices only when faction content is allowed: %s",
   (allowed) => {
     (getSceneService as jest.Mock).mockReturnValue({
-      getFactionActorIds: () => [ObjectNames.Field],
+      getFactionActorIds: () => [ObjectNames.Field, ObjectNames.TivaraGranary],
       isAvailable: () => false,
       isContentAllowed: () => allowed,
       getResearchedLevelForUnit: () => 0
@@ -32,7 +32,7 @@ it.each([true, false])(
     else {
       const field = requireAiTestEntry([...catalog.values()], 0);
       expect(field.sourceObjectName).toBe(ObjectNames.Field);
-      expect(field.constructionProfile?.requiredObjectNames).toEqual([ObjectNames.Granary]);
+      expect(field.constructionProfile?.requiredObjectNames).toEqual([ObjectNames.TivaraGranary]);
       expect(field.constructionProfile?.resourceCost.wood).toBeGreaterThan(0);
     }
   }

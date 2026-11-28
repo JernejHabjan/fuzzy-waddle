@@ -66,7 +66,8 @@ export function projectAvailableCatalogEntries(
   if (!techTree) return;
   // Never enumerate the global graph here: that would expose another faction's
   // roster even when no opponent actor has been observed.
-  for (const objectName of techTree.getFactionActorIds(player.factionType!)) {
+  const factionActorIds = new Set(techTree.getFactionActorIds(player.factionType!));
+  for (const objectName of factionActorIds) {
     const level = techTree.getResearchedLevelForUnit(playerNumber, objectName);
     const definition = getPwActorDefinition(objectName, level);
     if (!definition) continue;
@@ -85,7 +86,8 @@ export function projectAvailableCatalogEntries(
       objectName,
       definition,
       level,
-      definition.components?.research?.availableResearch ?? []
+      definition.components?.research?.availableResearch ?? [],
+      factionActorIds
     );
     catalogEntries.set(entry.capabilityId, entry);
   }
@@ -96,8 +98,22 @@ export function projectCatalogDefinition(
   objectName: ObjectNames,
   definition: NonNullable<ReturnType<typeof getPwActorDefinition>>,
   level: number,
-  researches: readonly ResearchType[]
+  researches: readonly ResearchType[],
+  factionActorIds?: ReadonlySet<ObjectNames>
 ): AiCapabilityCatalogEntry {
+  const anyOfPrereqs = definition.components?.buildingPrerequisites?.requiresAnyOf ?? [];
+  const filteredAnyOf = factionActorIds
+    ? anyOfPrereqs.filter((candidate) => factionActorIds.has(candidate))
+    : anyOfPrereqs;
+  const matchingAnyOf = filteredAnyOf.length > 0 ? filteredAnyOf : anyOfPrereqs;
+  const requiredObjectNames = [
+    ...new Set([
+      ...(definition.components?.requirements?.actors ?? []),
+      ...(definition.components?.buildingPrerequisites?.requiresAllOf ?? []),
+      ...matchingAnyOf
+    ])
+  ].sort();
+
   return {
     capabilityId: `${objectName}:level:${level}`,
     family:
@@ -133,7 +149,7 @@ export function projectCatalogDefinition(
     constructionProfile: {
       requiresAssignedBuilder: (definition.components?.constructable?.maxAssignedBuilders ?? 0) > 0,
       resourceCost: { ...(definition.components?.productionCost?.resources ?? {}) },
-      requiredObjectNames: [...(definition.components?.requirements?.actors ?? [])].sort(),
+      requiredObjectNames,
       footprintRadiusTiles: Math.max(
         0,
         Math.ceil(

@@ -1,0 +1,89 @@
+{
+    "id": "291b9ab6-90ea-41a3-b968-49db937a864a",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "003e4373-0b6f-4b92-9c1e-2cdeac958dee",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "prefabId": "d712e488-d6af-4a11-8146-fbbb9bd121c5",
+                    "id": "f9dcf43a-c6ed-4ccd-98e3-6ce528455721",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "tivaraGranaryCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "1588d695-fef6-40ea-969b-598729067317",
+                    "id": "469a588b-9997-4a42-b17d-c7288a828d80",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "tivaraGranaryFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "403a6908-e71b-4705-a5cd-661499286f6a",
+                    "id": "7497649e-a33c-417f-866a-4d55837a8e31",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "tivaraGranaryFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "da7c9d31-38fc-4413-874a-3dfd93c85f60",
+                    "id": "f6b37007-7880-4764-8079-f64fafb78caa",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "tivaraGranaryLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
