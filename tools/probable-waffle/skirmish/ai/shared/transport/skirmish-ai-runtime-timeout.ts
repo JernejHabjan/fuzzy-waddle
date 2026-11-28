@@ -1,8 +1,6 @@
-const MIN_RUNTIME_TIMEOUT_MS = 600_000;
-// Leave two minutes for runner startup/teardown so wall time stays within the 30-minute task cap.
-const MAX_RUNTIME_TIMEOUT_MS = 28 * 60_000;
-const STARTUP_AND_SEAL_TIMEOUT_MS = 180_000;
-const PER_TICK_TIMEOUT_MS = 450;
+// Keep the entire serial test within three minutes, independently of the selected tick horizons.
+// Refocus oversized recipes (especially H-10's 128-command backlog) or split selections instead of raising this ceiling.
+const MAX_RUNTIME_TIMEOUT_MS = 3 * 60_000;
 
 /** @param {number} variantRuns @param {number} maximumVariantTicks */
 export function skirmishRuntimeTestTimeoutMs(variantRuns: number, maximumVariantTicks = 0): number {
@@ -14,9 +12,5 @@ export function skirmishRuntimeTestTimeoutMs(variantRuns: number, maximumVariant
   ) {
     throw new Error("invalid_runtime_timeout_budget");
   }
-  const perVariantTimeout = Math.max(MIN_RUNTIME_TIMEOUT_MS, maximumVariantTicks * PER_TICK_TIMEOUT_MS);
-  return Math.min(
-    MAX_RUNTIME_TIMEOUT_MS,
-    Math.max(MIN_RUNTIME_TIMEOUT_MS, STARTUP_AND_SEAL_TIMEOUT_MS + variantRuns * perVariantTimeout)
-  );
+  return MAX_RUNTIME_TIMEOUT_MS;
 }

@@ -20,12 +20,12 @@ export function evaluateNativeClassic(
   return ["classic_native_reader_missing"];
 }
 
-/** Native paid work must either complete once or be cancelled through an attributed normal AI command/refund. */
+/** Native paid work completes once; a changed threat redirects future demand without erasing sunk commitments. */
 function transitionFailures(branch: string, context: ReturnType<typeof nativeScenarioContext>) {
   const failures: string[] = [],
     initial = context.result.presetInitialQueueItems;
   if (initial.length !== 4) failures.push("classic_transition_original_paid_queue_missing");
-  const frames = context.frames.filter((frame) => frame.tick >= 400);
+  const frames = context.frames.filter((frame) => frame.tick >= 200);
   if (
     !frames.some(
       (frame) =>
@@ -49,7 +49,7 @@ function transitionFailures(branch: string, context: ReturnType<typeof nativeSce
         fact.resource.emission.balanceMatches &&
         fact.resource.emission.callbackCount === 1
     );
-    if (complete.length + refund.length !== 1 || (branch === "retain" && refund.length))
+    if (complete.length !== 1 || refund.length)
       failures.push("classic_original_paid_commitment_lost_duplicated_or_unlawfully_cancelled");
   }
   for (const role of ["ready-producer", "ready-house", "own-deposit"])
@@ -59,16 +59,13 @@ function transitionFailures(branch: string, context: ReturnType<typeof nativeSce
   if (new Set(plans).size > 1) failures.push("classic_transition_restarted_opening");
   if (
     branch === "obsolete" &&
-    !context.facts.some(
-      (fact) =>
-        fact.kind === "queue_resource" &&
-        initial.some((item) => item.itemId === fact.resource.itemId) &&
-        fact.tick >= 400 &&
-        fact.resource.operation === "cancellation_refund" &&
-        fact.resource.cancellationCommand?.execution?.source === "ai"
+    !frames.some(
+      (frame) =>
+        frame.decision.economyProduction.adaptation.evidence.some((evidence) => evidence.kind === "flyer") &&
+        frame.decision.economyProduction.adaptation.activeRoleTargets.some((target) => target.role === "anti_air")
     )
   )
-    failures.push("classic_obsolete_optional_work_never_lawfully_cancelled");
+    failures.push("classic_transition_air_threat_not_adapted");
   if (!nativeWeaponHits(context).length) failures.push("classic_transition_has_no_useful_native_force_effect");
   return [...new Set(failures)];
 }

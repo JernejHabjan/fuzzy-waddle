@@ -20,7 +20,12 @@ export function projectRememberedContacts(
   for (const contact of memory.values()) {
     if (visibleIds.has(contact.actorId)) continue;
     // A stationary main building cannot remain at an empty location the player can currently see.
-    if (contact.mainBuilding === true && contact.position && mayObserveGroundTile(contact.position)) {
+    // The same rule applies to any contact observed to be stationary.
+    if (
+      (contact.mainBuilding === true || contact.wasStationary === true) &&
+      contact.position &&
+      mayObserveGroundTile(contact.position)
+    ) {
       memory.delete(contact.actorId);
       continue;
     }
@@ -102,7 +107,8 @@ function isValidRememberedContact(contact: unknown): contact is RememberedContac
     relation,
     position,
     mainBuilding,
-    wasCombatant
+    wasCombatant,
+    wasStationary
   } = contact;
   if (
     typeof actorId !== "string" ||
@@ -121,6 +127,7 @@ function isValidRememberedContact(contact: unknown): contact is RememberedContac
   }
   if (mainBuilding !== undefined && typeof mainBuilding !== "boolean") return false;
   if (wasCombatant !== undefined && typeof wasCombatant !== "boolean") return false;
+  if (wasStationary !== undefined && typeof wasStationary !== "boolean") return false;
   return (
     position === null ||
     (isRecord(position) &&

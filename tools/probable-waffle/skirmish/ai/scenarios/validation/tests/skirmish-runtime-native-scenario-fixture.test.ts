@@ -29,6 +29,28 @@ test("all native bindings retain their full branches and original acceptance obl
   }
 });
 
+test("C-01 funds all four pre-tick infantry queue commands before the post-queue resource reset", () => {
+  const fixture = nativeScenarioFixture("C-01"),
+    binding = nativeScenarioBindings.cases["C-01"];
+  assert.equal(binding.latestTick, 1600);
+  assert.deepEqual(binding.evidenceCheckpoints, [400, 800, 1200]);
+  assert.deepEqual(fixture.recipe.checkpointTicks, [20, 200, 400, 800, 1200, 1600]);
+  for (const variant of fixture.recipe.variants) {
+    assert.equal(variant.presetWorld.queues?.[0]?.count, 4, variant.id);
+    assert.equal(
+      variant.presetWorld.resourceGrants.find((grant) => grant.playerNumber === 2)?.amounts.food,
+      80,
+      variant.id
+    );
+    assert.equal(
+      variant.presetWorld.resourceStarts?.find((start) => start.playerNumber === 2)?.amounts.food,
+      1200,
+      variant.id
+    );
+    assert.ok(variant.presetWorld.controls.every((control) => control.requestTick <= 200), variant.id);
+  }
+});
+
 test("C-04 keeps only the real scouting decision roster and bounds its repeated-observation window", () => {
   const fixture = nativeScenarioFixture("C-04"),
     binding = nativeScenarioBindings.cases["C-04"];

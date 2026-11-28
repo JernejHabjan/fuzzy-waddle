@@ -27,8 +27,8 @@ export function configureNativePlacementActors(context: NativeActorLayoutContext
         actors.find((entry) => entry.fixtureActorId === fixtureActorId).position = tile(position[0], position[1]);
     }
     if (id === "PLACE-03" && branch === "layout")
-      // Start after the food-capacity floor so the layout case measures varied useful
-      // placement choices instead of spending its first build prefixes on emergency Fields.
+      // Seed the food-capacity floor so the layout case measures varied placement choices
+      // instead of spending its early build prefixes on emergency Fields.
       actors.push(
         actor("ready-field-1", "Field", 2, 37, 33),
         actor("ready-field-2", "Field", 2, 42, 33),

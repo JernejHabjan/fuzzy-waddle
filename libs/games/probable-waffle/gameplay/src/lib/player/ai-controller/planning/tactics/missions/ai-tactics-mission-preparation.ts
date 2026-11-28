@@ -113,7 +113,13 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
   members.forEach((actor) => claimedActors.add(actor.actorId));
   const origin = knownPosition(members[0]);
   const nearbyEnemies = visibleEnemies
-    .filter((enemy) => !origin || distance(origin, knownPosition(enemy)!) <= 18)
+    .filter((enemy) =>
+      members.some((member) => {
+        const memberPosition = knownPosition(member),
+          enemyPosition = knownPosition(enemy);
+        return !memberPosition || !enemyPosition || distance(memberPosition, enemyPosition) <= 18;
+      })
+    )
     .slice(0, MAX_LOCAL_ENEMIES);
   // Recon units keep searching through harmless contacts; only a credible attacker should interrupt scouting.
   const localEnemies =
@@ -254,6 +260,17 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     squad.role === "attack" &&
     squad.squadId.startsWith("squad:attack:raid:") &&
     squad.lifecycle?.terminalReason === "raid_counterforce_abort";
+  const awaitingLaunch =
+    squad.role === "attack" &&
+    (state.strategy.assessment?.targetActorId === squad.objectiveId ||
+      (objectiveActor !== undefined && state.strategy.assessment?.targetActorId === objectiveActor.actorId)) &&
+    !state.skirmish.timeline.some(
+      (event) =>
+        event.kind === "mission" &&
+        event.subjectId.split(":domain:")[0] === squad.squadId.split(":domain:")[0] &&
+        event.detail.startsWith("launch:") &&
+        event.tick >= (squad.lifecycle?.createdTick ?? observation.tick)
+    );
   const retreat =
     retainedRetreat ??
     safeRetreatPosition(
@@ -283,6 +300,7 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     visibleTarget,
     targetAwareMembers,
     estimate,
-    retreat
+    retreat,
+    awaitingStrategicLaunch: awaitingLaunch
   } as const;
 }

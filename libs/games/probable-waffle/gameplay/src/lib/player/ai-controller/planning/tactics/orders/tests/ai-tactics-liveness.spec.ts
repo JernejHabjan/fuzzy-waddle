@@ -263,6 +263,75 @@ describe("AiTacticsManager pressure liveness", () => {
     expect(proposal.intents.some((intent) => intent.kind === "attack")).toBe(false);
   });
 
+  it("keeps assembling when the same unlaunched core becomes a remembered hypothesis", () => {
+    const friendly = actor("guard", "self", 1000, 10);
+    const enemy = {
+      ...actor("core", "enemy", 1000, 0),
+      visibility: "last_seen" as const,
+      mainBuilding: { status: "known" as const, value: true, observedTick: 100 }
+    };
+    const initial = state({ ...squad(), objectiveId: `hypothesis:${enemy.evidenceId}`, state: "rally" });
+    const waiting = {
+      ...initial,
+      strategy: {
+        ...initial.strategy,
+        assessment: {
+          choice: "pressure" as const,
+          reason: "assembling_compatible_force",
+          targetActorId: enemy.actorId,
+          readyForce: 1,
+          requiredForce: 8,
+          visibleThreatCount: 0,
+          confidencePermille: 550,
+          expectedEffectTick: 500,
+          reconsiderTick: 240,
+          alternatives: []
+        }
+      }
+    };
+
+    const proposal = manager.propose(observation(200, [friendly, enemy]), waiting);
+    expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("assemble");
+    expect(proposal.intents.some((intent) => intent.kind === "attack")).toBe(false);
+  });
+
+  it("does not let local contact launch a force-gated pressure mission before strategy commits it", () => {
+    const friendly = actor("guard", "self", 1000, 10),
+      target = actor("core", "enemy", 1000, 0),
+      threat = {
+        ...actor("nearby-threat", "enemy", 1000, 100),
+        logicalPosition: { status: "known" as const, value: { x: 2, y: 0, z: 0 }, observedTick: 200 }
+      },
+      initial = state({ ...squad(), state: "forming" }),
+      waiting = {
+        ...initial,
+        strategy: {
+          ...initial.strategy,
+          stance: "pressure" as const,
+          goalId: "plan:squad:attack:pressure",
+          objectiveId: target.actorId,
+          commitmentDeadline: aiDeadline(400),
+          assessment: {
+            choice: "pressure" as const,
+            reason: "assembling_compatible_force",
+            targetActorId: target.actorId,
+            readyForce: 1,
+            requiredForce: 8,
+            visibleThreatCount: 1,
+            confidencePermille: 1000,
+            expectedEffectTick: 500,
+            reconsiderTick: 240,
+            alternatives: []
+          }
+        }
+      };
+
+    const proposal = manager.propose(observation(200, [friendly, target, threat]), waiting);
+
+    expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("assemble");
+    expect(proposal.intents.some((intent) => intent.kind === "attack")).toBe(false);
+  });
+
   it("keeps a visible strategic raid objective instead of replacing it with a higher-scored fortified core", () => {
     const friendly = actor("guard", "self", 1000, 10);
     const raidTarget = actor("economic-site", "enemy", 1000, 0);

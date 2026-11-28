@@ -133,6 +133,77 @@ describe("decideAiEconomyPolicy", () => {
       "emergency"
     );
   });
+
+  it("uses a known static defense weapon's reach before treating it as an economy threat", () => {
+    const base = createAiTestObservation();
+    const worker = {
+      ...economyWorker("worker"),
+      logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 20 }
+    };
+    const tower = {
+      ...visibleRaider("ground", "tower", 9, 0),
+      objectName: ObjectNames.WatchTower,
+      housingCost: { status: "unknown" as const, reason: "not_supported" as const },
+      combatProfile: {
+        status: "known" as const,
+        observedTick: 20,
+        value: {
+          maxHealth: 1000,
+          maxArmour: 0,
+          armourPermille: 0,
+          passiveRegenerationPerSecond: 0,
+          attacks: [
+            {
+              damage: 20,
+              cooldownTicks: 28,
+              remainingCooldownTicks: null,
+              range: 7,
+              minRange: 0,
+              highGroundRangeBonus: 2,
+              impactDelayTicks: 10,
+              areaRadius: 0,
+              targetDomains: ["ground" as const]
+            }
+          ],
+          healing: null,
+          spells: [],
+          statuses: []
+        }
+      }
+    };
+    const observation = {
+      ...base,
+      actors: [worker, tower],
+      threatSummary: { ...base.threatSummary, visibleEnemyActorIds: [tower.actorId] }
+    };
+
+    expect(observedAiEconomyThreats(observation)).toEqual([]);
+    expect(
+      observedAiEconomyThreats({
+        ...observation,
+        actors: [worker, { ...tower, logicalPosition: { ...tower.logicalPosition, value: { x: 7, y: 0, z: 0 } } }]
+      }).map((enemy) => enemy.actorId)
+    ).toEqual([tower.actorId]);
+    expect(
+      observedAiEconomyThreats({
+        ...observation,
+        actors: [worker, { ...tower, logicalPosition: { ...tower.logicalPosition, value: { x: 4, y: 4, z: 0 } } }]
+      }).map((enemy) => enemy.actorId)
+    ).toEqual([tower.actorId]);
+    const minimumRangeTower = {
+      ...tower,
+      logicalPosition: { ...tower.logicalPosition, value: { x: 1, y: 0, z: 0 } },
+      combatProfile: {
+        ...tower.combatProfile,
+        value: {
+          ...tower.combatProfile.value,
+          attacks: tower.combatProfile.value.attacks.map((attack) => ({ ...attack, minRange: 2 }))
+        }
+      }
+    };
+    expect(observedAiEconomyThreats({ ...observation, actors: [worker, minimumRangeTower] })).toEqual([]);
+  });
+
   it("uses only unreserved stockpile when admitting economy construction", () => {
     const observation = {
       ...createAiTestObservation(),

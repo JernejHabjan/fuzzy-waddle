@@ -14,7 +14,7 @@ import { skirmishRuntimeTestTimeoutMs } from "@fuzzy-waddle/probable-waffle-skir
 const runtimeRequestText = readRuntimeRequestText(process.env);
 
 test.skip(!runtimeRequestText, "The skirmish AI runtime driver is invoked only by the matrix runner.");
-test.setTimeout(600_000);
+test.setTimeout(skirmishRuntimeTestTimeoutMs(0));
 
 test("executes selected AI scenarios in real lobby-started Phaser matches", async ({ browser }) => {
   const request = parseRequest(runtimeRequestText);
@@ -57,7 +57,7 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
       })
   );
   const maximumVariantTicks = Math.max(0, ...selectedVariantHorizons);
-  // Budget each serial variant from its simulation horizon while preserving the runner teardown margin.
+  // Selections share a short wall-clock budget; split oversized workloads instead of extending the test.
   test.setTimeout(skirmishRuntimeTestTimeoutMs(variantRuns, maximumVariantTicks));
   const fixtureRuns = new Map<RuntimeFixture, readonly RuntimeVariantResult[]>();
   const fixtureErrors = new Map<RuntimeFixture, string[]>();

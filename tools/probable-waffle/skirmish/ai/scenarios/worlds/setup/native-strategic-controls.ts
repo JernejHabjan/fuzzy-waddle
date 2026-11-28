@@ -82,10 +82,11 @@ export function configureNativeStrategicControls(context: NativeWorldSetupContex
   }
   if (id === "STRAT-07" && branch === "breach") loss("opportunity-wall", 400);
   if (id === "STRAT-12" && branch === "own_threat") {
-    for (let index = 0; index < 3; index++) attack(`reinforcement-${index}`, "own-deposit", 400);
+    // Start the small raid beside its target so this recipe measures defense, not cross-map travel.
+    for (let index = 0; index < 3; index++) attack(`reinforcement-${index}`, "own-deposit", 20);
   }
   if (["STRAT-13", "FIGHT-03"].includes(id)) {
     if (branch === "escalated" || branch === "unequal") reinforcements(3);
-    if (branch === "infeasible") loss("front-target-a", id === "FIGHT-03" ? 400 : 600);
+    if (branch === "infeasible") loss("front-target-a", 400);
   }
 }

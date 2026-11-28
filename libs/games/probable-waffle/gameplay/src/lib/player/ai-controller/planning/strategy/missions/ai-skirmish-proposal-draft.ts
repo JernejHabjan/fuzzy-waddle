@@ -166,10 +166,25 @@ export function createAiSkirmishProposalContext(
     .sort(
       (left, right) => left.distance - right.distance || left.enemy.actorId.localeCompare(right.enemy.actorId)
     )[0]?.enemy;
+  const explicitProtectedThreat = visibleEnemies.find((candidate) => {
+    const targetActorId =
+      candidate.activeOrder?.status === "known" ? candidate.activeOrder.value?.targetActorId : undefined;
+    return targetActorId !== null && targetActorId !== undefined && protectedActorIds.has(targetActorId);
+  });
+  const economyThreats = observedAiEconomyThreats(observation);
+  const retainedDefenseThreat = activeDefense?.objectiveId
+    ? visibleEnemies.find(
+        (enemy) =>
+          enemy.actorId === activeDefense.objectiveId &&
+          (economyThreats.includes(enemy) || enemy === homeThreat || enemy === expansionThreat)
+      )
+    : undefined;
   const localThreat =
+    explicitProtectedThreat ??
+    retainedDefenseThreat ??
+    economyThreats[0] ??
     homeThreat ??
     expansionThreat ??
-    observedAiEconomyThreats(observation)[0] ??
     (home
       ? visibleEnemies.find((candidate) => {
           const candidatePosition = position(candidate);

@@ -2,6 +2,7 @@ import type { AiBrainState } from "../../../../contracts/state/ai-state-contract
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import { createAiTestOwnedActor } from "../../../../testing/fixtures/coordination/ai-test-fixtures";
+import { combatActor } from "../../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 
 import {
   brain,
@@ -200,6 +201,20 @@ describe("fastest credible offense", () => {
     expect(result.intents).toContainEqual(
       expect.objectContaining({ kind: "scout", logicalPosition: { x: 1, y: 0, z: 0 } })
     );
+  });
+
+  it("does not send a core scout directly through a visible compatible weapon", () => {
+    const rememberedCore = { ...core("enemy-core"), visibility: "last_seen" as const };
+    const tower = {
+      ...guard("tower", "enemy", 1),
+      combatProfile: combatActor("tower", "enemy", 1).combatProfile
+    };
+    const result = manager.propose(
+      world([guard("a", "self", 0), guard("b", "self", 0), rememberedCore, tower]),
+      brain()
+    );
+
+    expect(result.intents.some((intent) => intent.kind === "scout" && intent.logicalPosition.x === 1)).toBe(false);
   });
 
   it("does not recreate an attack on a stale last-seen mobile contact", () => {

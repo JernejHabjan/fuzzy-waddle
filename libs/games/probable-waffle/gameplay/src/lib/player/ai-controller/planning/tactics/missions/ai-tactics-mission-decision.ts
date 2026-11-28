@@ -149,17 +149,8 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
   const missionProgressed =
     usefulEffectTick !== null && usefulEffectTick > (squad.lifecycle?.lastUsefulEffectTick ?? -1);
   // Strategy launches the mission once; domain children inherit that permission without launching again.
-  const strategicLaunchRecorded = state.skirmish.timeline.some(
-    (event) =>
-      event.kind === "mission" &&
-      event.subjectId.split(":domain:")[0] === squad.squadId.split(":domain:")[0] &&
-      event.detail.startsWith("launch:") &&
-      event.tick >= (squad.lifecycle?.createdTick ?? observation.tick)
-  );
-  const awaitingStrategicLaunch =
-    squad.role === "attack" &&
-    state.strategy.assessment?.targetActorId === squad.objectiveId &&
-    !strategicLaunchRecorded;
+  const awaitingStrategicLaunch = input.awaitingStrategicLaunch;
+  // A provisional pressure goal must remain in formation through incidental contact; strategy has not authorized its attack yet.
   const committedPressure =
     squad.role === "attack" &&
     state.strategy.stance === "pressure" &&
@@ -167,6 +158,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     state.strategy.assessment?.choice === "pressure" &&
     state.strategy.assessment.targetActorId === squad.objectiveId &&
     state.strategy.commitmentDeadline.dueTick >= observation.tick &&
+    !awaitingStrategicLaunch &&
     !topologyLost;
   const missionExpired =
     ["attack", "escort", "reinforcement", "scout"].includes(squad.role) &&
@@ -371,7 +363,6 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     forcedDecision,
     usefulEffectTick,
     missionProgressed,
-    strategicLaunchRecorded,
     awaitingStrategicLaunch,
     committedPressure,
     missionExpired,
@@ -381,7 +372,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     missionRecoveryExhausted,
     emptyRecoveryExhausted,
     endangeredActorIds,
-    safeFiringPositions,
+    safeFiringPositions: nextState === "retreat" ? [] : safeFiringPositions,
     holdRetreat,
     quietState,
     nextState,

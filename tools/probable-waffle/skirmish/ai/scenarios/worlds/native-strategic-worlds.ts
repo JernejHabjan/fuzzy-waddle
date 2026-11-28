@@ -14,7 +14,7 @@ export function nativeStrategicWorld(id, faction, branch): NativeScenarioWorld {
   );
   const actor = (role, name, owner, x, y) => ({ fixtureActorId: role, actorName: name, owner, position: tile(x, y) });
   const count = id === "STRAT-09" ? 6 : 30;
-  for (let i = 0; i < count; i++)
+  for (let i = 0; i < count; i++) {
     world.actors.push(
       actor(
         `army-${i}`,
@@ -24,6 +24,7 @@ export function nativeStrategicWorld(id, faction, branch): NativeScenarioWorld {
         i >= count - 6 ? 19 + (i % 2) : 28 + Math.floor(i / 4)
       )
     );
+  }
   if (id === "STRAT-09" && ["denial", "raid", "path_outage"].includes(branch)) {
     for (let i = 0; i < count; i++) {
       const ownArmy = world.actors.find((candidate) => candidate.fixtureActorId === `army-${i}`);

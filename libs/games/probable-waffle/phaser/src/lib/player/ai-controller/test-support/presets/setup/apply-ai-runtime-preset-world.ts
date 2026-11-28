@@ -116,12 +116,12 @@ export function applyAiRuntimePresetWorld(scene: GameProbableWaffleScene, creato
     applyAiRuntimeTerrainPatches(scene.tilemap, preset, getSceneService(scene, ActorIndexSystem)?.getAllIdActors());
     scene.events.emit(NavigationService.UpdateNavigationEvent);
   }
-  for (const grant of preset.resourceGrants) {
-    emitResource(scene, "resource.added", grant.amounts as Partial<PlayerStateResources>, grant.playerNumber);
-  }
   applyAiRuntimeSourceStocks(preset, createdActors);
   const completeSetup = () => {
     assertAiRuntimePresetRoster(scene, preset);
+    for (const grant of preset.resourceGrants) {
+      emitResource(scene, "resource.added", grant.amounts as Partial<PlayerStateResources>, grant.playerNumber);
+    }
     applyAiRuntimeHealthStarts(preset, createdActors);
     const techTree = getSceneService(scene, TechTreeService);
     if ((preset.completedResearch?.length ?? 0) > 0) {

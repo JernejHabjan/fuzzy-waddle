@@ -163,7 +163,8 @@ export function nativeRecoveryDeadlineFailures(context: ReturnType<typeof native
 
 /** Every forced premise must be observed on its pinned original actor; failed adapter dispatch alone never establishes it. */
 export function nativeRecoveryCommonFailures(
-  context: Pick<ReturnType<typeof nativeScenarioContext>, "frames" | "capture">
+  context: Pick<ReturnType<typeof nativeScenarioContext>, "frames" | "capture">,
+  requireUnrelatedIncome = true
 ) {
   const failures: string[] = [];
   if (
@@ -177,6 +178,7 @@ export function nativeRecoveryCommonFailures(
     failures.push("recovery_complete_selected_ownership_missing");
   if (context.frames.some((frame) => frame.decision.acceptedIntents.some((intent) => intent.kind === "concede")))
     failures.push("recovery_technical_or_optional_failure_caused_concession");
-  if (!nativeRecoveryIncome(context)) failures.push("recovery_unrelated_native_income_missing");
+  if (requireUnrelatedIncome && !nativeRecoveryIncome(context))
+    failures.push("recovery_unrelated_native_income_missing");
   return failures;
 }

@@ -299,3 +299,17 @@ describe("AI scouting admission", () => {
     expect(new Set(assigned).size).toBe(assigned.length);
   });
 });
+import { isScoutDirectPathThreatened } from "../ai-skirmish-scouting";
+import { combatActor } from "../../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
+import type { AiSkirmishProposalContext } from "../../missions/ai-skirmish-proposal-context";
+
+it("rejects a direct scout path through compatible visible weapons without inventing an alternate route", () => {
+  const scout = combatActor("scout", "self", 0);
+  const tower = combatActor("tower", "enemy", 5);
+  const destination = { x: 20, y: 0, z: 0 };
+  const context = { visibleEnemies: [tower] } as unknown as AiSkirmishProposalContext;
+  expect(isScoutDirectPathThreatened(context, scout, destination)).toBe(true);
+  expect(isScoutDirectPathThreatened({ ...context, visibleEnemies: [] }, scout, destination)).toBe(false);
+  const airOnly = combatActor("tower", "enemy", 5, "ground", 1000, { targetDomains: ["air"] });
+  expect(isScoutDirectPathThreatened({ ...context, visibleEnemies: [airOnly] }, scout, destination)).toBe(false);
+});

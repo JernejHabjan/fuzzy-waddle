@@ -4,6 +4,7 @@ import {
   type GameCommand,
   type GameCommandSource,
   type GameCommandAuthorityState,
+  ProbableWafflePlayerType,
   type GameCommandInput,
   type GameCommandOutcome,
   type GameCommandOutcomeKind,
@@ -85,8 +86,12 @@ export class CommandBusService {
   readonly commandOutcome$ = this._commandOutcome$.asObservable();
 
   dispatch(command: GameCommandInput): GameCommandDispatchReceipt {
-    if (this.destroyed) return { status: "rejected", reason: "application_failed" };
-    if (this.scene?.isSpectator || this.scene?.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
+    if (this.destroyed || this.scene?.isSpectator) return { status: "rejected", reason: "application_failed" };
+    return this.dispatchInput(command);
+  }
+
+  private dispatchInput(command: GameCommandInput): GameCommandDispatchReceipt {
+    if (this.scene?.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       return { status: "rejected", reason: "application_failed" };
     }
 
@@ -153,10 +158,17 @@ export class CommandBusService {
   /** Admits an AI intent through the normal bus while preserving exact command/outcome correlation. */
   dispatchAi(command: GameCommandInput, correlation: AiGameCommandCorrelation): GameCommandDispatchReceipt {
     if (this.destroyed) return { status: "rejected", reason: "application_failed" };
+    // A local spectator can host the simulation while having no player input authority.
+    if (this.scene.isSpectator) {
+      const player = this.scene.players.find((candidate) => candidate.playerNumber === command.playerNumber);
+      if (!this.scene.isHost || player?.playerController.data.playerDefinition?.playerType !== ProbableWafflePlayerType.AI) {
+        return { status: "rejected", reason: "invalid_owner" };
+      }
+    }
     const sequence = this.authority.allocateSequence(command.playerNumber);
     const authorityEpoch = this.authority.authorityEpoch;
     const commandId = `${command.playerNumber}:${authorityEpoch}:${sequence}:${this.scene.gameInstanceId}`;
-    return this.dispatch({
+    return this.dispatchInput({
       ...command,
       execution: {
         schemaVersion: 1,

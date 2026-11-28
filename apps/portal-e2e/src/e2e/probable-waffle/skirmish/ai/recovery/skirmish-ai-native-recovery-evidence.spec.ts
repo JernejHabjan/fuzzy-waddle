@@ -63,6 +63,9 @@ test("reassuring selected recovery state without physical income is not a native
   expect(nativeRecoveryCommonFailures({ frames: [frame], capture: undefined })).toContain(
     "recovery_unrelated_native_income_missing"
   );
+  expect(nativeRecoveryCommonFailures({ frames: [frame], capture: undefined }, false)).not.toContain(
+    "recovery_unrelated_native_income_missing"
+  );
   const unavailable = { ...frame, decision: { ...frame.decision, missionState: undefined } };
   expect(nativeRecoveryCommonFailures({ frames: [unavailable], capture: undefined })).toContain(
     "recovery_complete_selected_ownership_missing"

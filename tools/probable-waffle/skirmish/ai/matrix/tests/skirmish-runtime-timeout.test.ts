@@ -2,20 +2,15 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { skirmishRuntimeTestTimeoutMs } from "../../shared/transport/skirmish-ai-runtime-timeout.ts";
 
-test("one selected native variant gets a horizon-based test window", () => {
-  assert.equal(skirmishRuntimeTestTimeoutMs(1, 2_000), 180_000 + 2_000 * 450);
-});
-
-test("runtime test windows leave teardown margin inside the thirty-minute wall cap", () => {
-  const maximumTestWindow = 28 * 60_000;
-  const teardownMargin = 2 * 60_000;
-  assert.equal(skirmishRuntimeTestTimeoutMs(3, 20_000), maximumTestWindow);
-  assert.equal(skirmishRuntimeTestTimeoutMs(100, 120_000), maximumTestWindow);
-  assert.ok(maximumTestWindow + teardownMargin <= 30 * 60_000);
-});
-
-test("the base timeout covers startup when no variants are selected", () => {
-  assert.equal(skirmishRuntimeTestTimeoutMs(0), 10 * 60_000);
+test("runtime selections cannot expand the three-minute test ceiling", () => {
+  for (const [variants, ticks] of [
+    [0, 0],
+    [1, 2000],
+    [8, 3000],
+    [100, 120000]
+  ]) {
+    assert.equal(skirmishRuntimeTestTimeoutMs(variants, ticks), 3 * 60_000);
+  }
 });
 
 test("runtime timeout rejects invalid variant counts", () => {

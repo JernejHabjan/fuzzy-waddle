@@ -203,10 +203,13 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     }
     // Fighting members and distant reinforcements need independent orders in the same decision.
     const awareIds = new Set(targetAwareMembers.map((actor) => actor.actorId));
+    const reservedIds = new Set(damageReservations.map((reservation) => reservation.actorId));
     for (const assignment of assignedPositions.filter(
       (entry) =>
         actorsNeedingOrder.includes(entry.actorId) &&
         !awareIds.has(entry.actorId) &&
+        !reservedIds.has(entry.actorId) &&
+        !(input.awaitingStrategicLaunch && !retreat) &&
         !protectedIds.has(entry.actorId) &&
         !safeFiringActorIds.has(entry.actorId)
     )) {
@@ -227,6 +230,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     !preserveSearchOrder &&
     materiallyChanged &&
     anchor &&
+    !(input.awaitingStrategicLaunch && !retreat) &&
     !["completed", "cancelled"].includes(updated.state)
   ) {
     if (assignedPositions.length > 0) {

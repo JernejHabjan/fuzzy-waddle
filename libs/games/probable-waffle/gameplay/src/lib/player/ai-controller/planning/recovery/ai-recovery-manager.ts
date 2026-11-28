@@ -6,6 +6,7 @@ import { aiDeadline } from "../../contracts/ai-core-types";
 import type { AiIntent } from "../../contracts/commands/ai-intent";
 import type { AiObservation, AiObservedActor } from "../../contracts/observation/ai-observation";
 import { aiEconomySiteSafety } from "../economy/service/ai-economy-site-safety";
+import { observedAiEconomyThreats } from "../economy/service/ai-economy-policy";
 import { compareAiActorsByVisibleGeometry } from "../production/macro/ai-macro-observation";
 import type { AiManagerProposal, AiProposalManager } from "../coordination/ai-manager-proposal";
 
@@ -291,70 +292,82 @@ export class AiRecoveryManager implements AiProposalManager {
 
     // A visible hostile dynamic obstacle near an owned base is targetable; an unobserved obstacle
     // is represented as an access question by existing scouting rather than leaking an actor ID.
-    for (const base of bases.filter((candidate) => candidate.active && candidate.anchorPosition).slice(0, 4)) {
-      const blocker = observation.actors
-        .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible" && position(actor))
-        .filter((actor) => distance(base.anchorPosition!, position(actor)!) <= 10)
-        .sort((a, b) => a.actorId.localeCompare(b.actorId))[0];
-      if (!blocker) continue;
-      const squad = state.squads
-        .filter(
-          (candidate) => candidate.role === "defense" && candidate.actorIds.length > 0 && candidate.state !== "retreat"
-        )
-        .sort((a, b) => a.squadId.localeCompare(b.squadId))[0];
-      if (!squad) continue;
-      const capableDefenders = squad.actorIds
-        .map((actorId) => self.find((actor) => actor.actorId === actorId))
-        .filter((actor): actor is AiObservedActor => actor !== undefined)
-        .filter(
-          (actor) =>
-            actor.healthPermille?.status !== "known" ||
-            actor.healthPermille.value > 400 ||
-            actor.combatProfile?.status !== "known" ||
-            !actor.combatProfile.value.attacks.some((attack) => attack.minRange > 0)
-        )
-        .filter((actor) => canTarget(actor, blocker) && canSee(actor, blocker, catalog));
-      if (capableDefenders.length === 0) continue;
-      const key = `blocker:${base.baseId}:${blocker.actorId}`;
-      const old = prior.get(key);
-      if (old && observation.tick < old.nextRetryTick) continue;
-      const actionIds = ids(state, key);
-      intents.push({
-        ...actionIds,
-        kind: "attack",
-        planId: `plan:${squad.squadId}` as AiIntent["planId"],
-        demandId: null,
-        lane: "army_threat",
-        proposedTick: observation.tick,
-        urgencyClass: 0,
-        utility: 930,
-        preconditions: [{ kind: "target_visible", actorId: blocker.actorId }],
-        claims: [
-          ...capableDefenders.map((actor, index) => ({
-            claimId: `${actionIds.claimId}:actor:${index}` as AiIntent["claims"][number]["claimId"],
-            kind: "actor" as const,
-            actorId: actor.actorId
-          })),
-          { claimId: actionIds.claimId, kind: "effect", effectId: actionIds.effectId }
-        ],
-        reasonCode: "recovery:visible_proxy_or_egress_blocker",
-        actorIds: capableDefenders.map((actor) => actor.actorId),
-        targetActorId: blocker.actorId,
-        targetPosition: null
-      });
-      records.push(
-        record(old, {
-          recoveryKey: key,
-          domain: "blocker",
-          planId: `plan:${squad.squadId}` as RecoveryRecord["planId"],
-          actorId: blocker.actorId,
-          cause: "visible_hostile_egress_blocker",
-          nextRetryTick: observation.tick + AI_RECOVERY_NO_PROGRESS_TICKS,
-          state: "recovering",
-          alternate: "compatible_defense_squad"
-        })
-      );
-      reasons.push(`visible_blocker:${blocker.actorId}`);
+    const activeDefenseHasObjective = state.squads.some(
+      (squad) =>
+        squad.role === "defense" &&
+        squad.actorIds.length > 0 &&
+        squad.objectiveId !== null &&
+        squad.state !== "completed" &&
+        squad.state !== "cancelled"
+    );
+    const hasNearbyEconomyThreat = observedAiEconomyThreats(observation).length > 0;
+    if (!activeDefenseHasObjective && !hasNearbyEconomyThreat) {
+      for (const base of bases.filter((candidate) => candidate.active && candidate.anchorPosition).slice(0, 4)) {
+        const blocker = observation.actors
+          .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible" && position(actor))
+          .filter((actor) => distance(base.anchorPosition!, position(actor)!) <= 10)
+          .sort((a, b) => a.actorId.localeCompare(b.actorId))[0];
+        if (!blocker) continue;
+        const squad = state.squads
+          .filter(
+            (candidate) =>
+              candidate.role === "defense" && candidate.actorIds.length > 0 && candidate.state !== "retreat"
+          )
+          .sort((a, b) => a.squadId.localeCompare(b.squadId))[0];
+        if (!squad || (squad.objectiveId && squad.objectiveId !== blocker.actorId)) continue;
+        const capableDefenders = squad.actorIds
+          .map((actorId) => self.find((actor) => actor.actorId === actorId))
+          .filter((actor): actor is AiObservedActor => actor !== undefined)
+          .filter(
+            (actor) =>
+              actor.healthPermille?.status !== "known" ||
+              actor.healthPermille.value > 400 ||
+              actor.combatProfile?.status !== "known" ||
+              !actor.combatProfile.value.attacks.some((attack) => attack.minRange > 0)
+          )
+          .filter((actor) => canTarget(actor, blocker) && canSee(actor, blocker, catalog));
+        if (capableDefenders.length === 0) continue;
+        const key = `blocker:${base.baseId}:${blocker.actorId}`;
+        const old = prior.get(key);
+        if (old && observation.tick < old.nextRetryTick) continue;
+        const actionIds = ids(state, key);
+        intents.push({
+          ...actionIds,
+          kind: "attack",
+          planId: `plan:${squad.squadId}` as AiIntent["planId"],
+          demandId: null,
+          lane: "army_threat",
+          proposedTick: observation.tick,
+          urgencyClass: 0,
+          utility: 930,
+          preconditions: [{ kind: "target_visible", actorId: blocker.actorId }],
+          claims: [
+            ...capableDefenders.map((actor, index) => ({
+              claimId: `${actionIds.claimId}:actor:${index}` as AiIntent["claims"][number]["claimId"],
+              kind: "actor" as const,
+              actorId: actor.actorId
+            })),
+            { claimId: actionIds.claimId, kind: "effect", effectId: actionIds.effectId }
+          ],
+          reasonCode: "recovery:visible_proxy_or_egress_blocker",
+          actorIds: capableDefenders.map((actor) => actor.actorId),
+          targetActorId: blocker.actorId,
+          targetPosition: null
+        });
+        records.push(
+          record(old, {
+            recoveryKey: key,
+            domain: "blocker",
+            planId: `plan:${squad.squadId}` as RecoveryRecord["planId"],
+            actorId: blocker.actorId,
+            cause: "visible_hostile_egress_blocker",
+            nextRetryTick: observation.tick + AI_RECOVERY_NO_PROGRESS_TICKS,
+            state: "recovering",
+            alternate: "compatible_defense_squad"
+          })
+        );
+        reasons.push(`visible_blocker:${blocker.actorId}`);
+      }
     }
 
     // Repair is intentionally capped so the recovery itself cannot destroy the economy. Runtime

@@ -237,6 +237,153 @@ test("a delayed consumer receipt may remain pending until the native terminal re
   );
 });
 
+test("one actor terminal does not settle a multi-actor authority command", () => {
+  const commandId = "2:0:17:runtime-fixture";
+  const outcome = (kind: string, actorIds: string[]) => ({
+    schemaVersion: 1,
+    kind,
+    reason: kind,
+    tick: 20,
+    playerNumber: 2,
+    commandId,
+    authorityEpoch: 0,
+    sequence: 17,
+    actorIds
+  });
+  const delivery = (tick: number, phase: "held" | "released") => ({
+    kind: "authority_delivery",
+    tick,
+    playerNumber: 2,
+    sequence: tick,
+    delivery: {
+      faultId: "original-ai-receipt",
+      tick,
+      playerNumber: 2,
+      phase,
+      pendingCount: 1,
+      outcome: outcome("applied", ["worker-a"])
+    }
+  });
+  const pendingFrame = (tick: number) => ({
+    tick,
+    decision: {
+      missionState: {
+        authority: { pendingCommandIds: [`command:${commandId}`] },
+        pendingOutcomes: [{ identity: { commandId: `command:${commandId}` }, kind: "cancelled" }]
+      }
+    }
+  });
+  const context = {
+    facts: [
+      {
+        kind: "outcome",
+        tick: 10,
+        sequence: 10,
+        playerNumber: 2,
+        outcome: outcome("dispatched", ["worker-a", "worker-b"])
+      },
+      delivery(10, "held"),
+      { kind: "outcome", tick: 50, sequence: 50, playerNumber: 2, outcome: outcome("cancelled", ["worker-a"]) },
+      delivery(100, "released")
+    ],
+    frames: [pendingFrame(60), pendingFrame(120)],
+    capture: undefined,
+    result: { presetInitialQueueItems: [], perturbations: [] }
+  } as unknown as ReturnType<typeof nativeScenarioContext>;
+
+  expect(evaluateNativeAuthority("H-10", "over_capacity", context)).not.toContain(
+    "authority_late_original_receipt_resurrected_settled_work"
+  );
+});
+
+test("a completed native operation may be repeated after its physical terminal result", () => {
+  const commandId = "2:0:18:runtime-fixture";
+  const intent = (effectId: string) => ({
+    kind: "produce",
+    demandId: "demand:adapt:air_pressure",
+    effectId,
+    intentId: `intent:${effectId}`,
+    producerId: "producer-a",
+    objectName: "TivaraAlchemist"
+  });
+  const request = (sequence: number, tick: number, effectId: string) => ({
+    kind: "intent_dispatch",
+    sequence,
+    tick,
+    event: {
+      kind: "requested",
+      correlation: { effectId },
+      acceptedIntent: intent(effectId)
+    }
+  });
+  const delivery = (tick: number, phase: "held" | "released") => ({
+    kind: "authority_delivery",
+    sequence: tick,
+    tick,
+    playerNumber: 2,
+    delivery: {
+      faultId: "original-ai-receipt",
+      tick,
+      playerNumber: 2,
+      phase,
+      pendingCount: 1,
+      outcome: {
+        schemaVersion: 1,
+        kind: "applied",
+        reason: "applied",
+        tick: 10,
+        playerNumber: 2,
+        commandId,
+        authorityEpoch: 0,
+        sequence: 18,
+        actorIds: ["producer-a"],
+        effectId: "effect:original",
+        intentId: "intent:effect:original"
+      }
+    }
+  });
+  const context = {
+    facts: [
+      {
+        kind: "outcome",
+        sequence: 1,
+        tick: 10,
+        playerNumber: 2,
+        outcome: { commandId, kind: "dispatched", actorIds: ["producer-a"] }
+      },
+      request(2, 10, "effect:original"),
+      delivery(10, "held"),
+      {
+        kind: "outcome",
+        sequence: 3,
+        tick: 50,
+        playerNumber: 2,
+        outcome: { commandId, kind: "completed", actorIds: ["producer-a"] }
+      },
+      request(4, 51, "effect:repeat"),
+      delivery(100, "released")
+    ],
+    frames: [
+      {
+        tick: 60,
+        decision: {
+          missionState: {
+            authority: { pendingCommandIds: [`command:${commandId}`] },
+            pendingOutcomes: [{ identity: { commandId: `command:${commandId}` }, kind: "dispatched" }]
+          }
+        }
+      },
+      { tick: 120, decision: { missionState: { authority: { pendingCommandIds: [] }, pendingOutcomes: [] } } }
+    ],
+    capture: undefined,
+    result: { presetInitialQueueItems: [], perturbations: [] }
+  } as unknown as ReturnType<typeof nativeScenarioContext>;
+
+  expect(evaluateNativeAuthority("H-10", "over_capacity", context)).not.toContain(
+    "authority_uncertain_original_demand_retried_with_new_effect_identity"
+  );
+});
+
 /** Synthetic negative inputs test evidence readers; no native scenario execution is implied. */
 function receiptOnly(): AiRuntimeProductionSnapshot {
   const execution = {

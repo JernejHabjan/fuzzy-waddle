@@ -136,6 +136,7 @@ test("SCOUT-04 isolates three native scouting responses in a bounded six-variant
     });
     assert.deepEqual(contact.position, branch === "approach" ? tile(13, 35) : tile(14, 7), variant.id);
     assert.equal(roles.includes("scout-reserve"), branch !== "approach", variant.id);
+    assert.equal(roles.includes("scout-reserve-2"), branch !== "approach", variant.id);
     assert.ok(!roles.some((role) => role.startsWith("army-") || role.startsWith("enemy-")), variant.id);
     assert.equal(variant.presetWorld.terrainPatches.length, branch === "approach" ? 92 : 0, variant.id);
   }

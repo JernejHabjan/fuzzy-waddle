@@ -9,6 +9,7 @@ import type { AiSquadState } from "../../../contracts/state/ai-state-contracts";
 import type { AiSkirmishProposalContext } from "../missions/ai-skirmish-proposal-context";
 import {
   baseId,
+  canTarget,
   domains,
   intentBase,
   node,
@@ -23,6 +24,38 @@ import { distance } from "../../tactics/combat/ai-tactics-geometry";
 import { retainAiSquadTacticsForActors } from "../../tactics/orders/ai-skirmish-tactics-ownership";
 
 const SCOUT_HOME_RECALL_DISTANCE = 32;
+
+/** Reject a direct scout order crossing a currently visible weapon's reach; this does not certify an alternate route. */
+export function isScoutDirectPathThreatened(
+  context: AiSkirmishProposalContext,
+  scout: AiSkirmishProposalContext["combat"][number],
+  destination: { x: number; y: number; z: number }
+): boolean {
+  const from = position(scout);
+  if (!from) return true;
+  const dx = destination.x - from.x,
+    dy = destination.y - from.y;
+  const lengthSquared = dx * dx + dy * dy;
+  return context.visibleEnemies.some((enemy) => {
+    const enemyPosition = position(enemy);
+    const attacks = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value.attacks : [];
+    if (!enemyPosition || !canTarget(enemy, scout)) return false;
+    const fraction =
+      lengthSquared === 0
+        ? 0
+        : Math.max(0, Math.min(1, ((enemyPosition.x - from.x) * dx + (enemyPosition.y - from.y) * dy) / lengthSquared));
+    const separation = Math.hypot(
+      enemyPosition.x - (from.x + fraction * dx),
+      enemyPosition.y - (from.y + fraction * dy)
+    );
+    return attacks.some(
+      (attack) =>
+        attack.damage > 0 &&
+        domains(scout).some((domain) => attack.targetDomains.includes(domain)) &&
+        separation <= attack.range + (enemyPosition.z > from.z ? attack.highGroundRangeBonus : 0)
+    );
+  });
+}
 
 /** Do not send the last unassigned combat unit away from home for another scouting objective. */
 function hasScoutCapacity(context: AiSkirmishProposalContext): boolean {

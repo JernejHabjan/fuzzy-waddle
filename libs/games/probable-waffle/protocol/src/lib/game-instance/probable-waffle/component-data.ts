@@ -754,6 +754,8 @@ export interface AiObservationRememberedContactData {
   readonly mainBuilding?: boolean;
   /** Previously observed ability to fight; stores no weapon, range, damage, or live combat state. */
   readonly wasCombatant?: boolean;
+  /** Previously observed lack of movement; omitted by older saves. */
+  readonly wasStationary?: boolean;
   readonly position: Vector3Simple | null;
 }
 

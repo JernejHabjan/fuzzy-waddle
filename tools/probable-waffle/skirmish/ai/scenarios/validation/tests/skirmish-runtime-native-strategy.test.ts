@@ -1,7 +1,102 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { nativeScenarioFixture } from "../../registration/native-scenario-registration.ts";
+import { nativeScenarioBindings, nativeScenarioFixture } from "../../registration/native-scenario-registration.ts";
 import { tile } from "../../worlds/native-world-geometry.ts";
+
+test("STRAT-12 bounds the own-service raid to the decision and recovery window", () => {
+  const fixture = nativeScenarioFixture("STRAT-12"),
+    binding = nativeScenarioBindings.cases["STRAT-12"];
+  assert.equal(binding.latestTick, 400);
+  assert.deepEqual(binding.evidenceCheckpoints, [100, 200]);
+  assert.deepEqual(fixture.recipe.checkpointTicks, [20, 100, 200, 400]);
+  for (const faction of ["Tivara", "Skaduwee"]) {
+    const variant = fixture.recipe.variants.find(
+      (candidate) => candidate.aiFaction === faction && candidate.id.endsWith("-own-threat")
+    );
+    assert.ok(variant);
+    assert.equal(
+      variant.presetWorld.actors.filter((actor) => actor.fixtureActorId.startsWith("reinforcement-")).length,
+      3
+    );
+    assert.deepEqual(
+      variant.presetWorld.actors
+        .filter((actor) => actor.fixtureActorId.startsWith("reinforcement-"))
+        .map((actor) => actor.position),
+      [tile(28, 27), tile(29, 27), tile(30, 27)]
+    );
+    assert.equal(
+      variant.presetWorld.controls.filter(
+        (control) => control.id.startsWith("attack-reinforcement-") && control.requestTick === 20
+      ).length,
+      3
+    );
+  }
+});
+
+test("STRAT-13 removes the infeasible front before its target can die naturally", () => {
+  const fixture = nativeScenarioFixture("STRAT-13"),
+    branches = fixture.assertions["STRAT-13"].requiredNativeScenario.branchByVariant;
+  assert.equal(fixture.assertions["STRAT-13"].maximumTick, 1200);
+  assert.deepEqual(nativeScenarioBindings.cases["STRAT-13"].evidenceCheckpoints, [800, 1000]);
+  for (const faction of ["Tivara", "Skaduwee"]) {
+    const variant = fixture.recipe.variants.find(
+      (candidate) => candidate.aiFaction === faction && branches[candidate.id] === "infeasible"
+    );
+    assert.ok(variant, `${faction}:infeasible`);
+    assert.ok(
+      variant.presetWorld.actors.some((actor) => actor.fixtureActorId === "front-target-a"),
+      variant.id
+    );
+    assert.equal(variant.presetWorld.events.find((event) => event.id === "loss-front-target-a")?.tick, 400, variant.id);
+  }
+});
+
+test("STRAT-13 stages a compact force at two focused, reachable fronts", () => {
+  const fixture = nativeScenarioFixture("STRAT-13"),
+    branches = fixture.assertions["STRAT-13"].requiredNativeScenario.branchByVariant;
+  for (const variant of fixture.recipe.variants) {
+    const actors = variant.presetWorld.actors,
+      roles = new Set(actors.map((actor) => actor.fixtureActorId));
+    assert.equal(actors.filter((actor) => actor.fixtureActorId.startsWith("army-")).length, 8, variant.id);
+    for (const role of [
+      "contact-group",
+      "scout-probe",
+      "ranged-probe",
+      "support-probe",
+      "enemy-producer",
+      "enemy-deposit",
+      "enemy-source",
+      "enemy-worker",
+      "noise-scout"
+    ])
+      assert.equal(roles.has(role), false, `${variant.id}: ${role} is an unrelated competing target`);
+    assert.equal(
+      actors.find((actor) => actor.fixtureActorId === "front-target-a")?.actorName,
+      branches[variant.id] === "infeasible"
+        ? variant.aiFaction === "Tivara"
+          ? "FrostForge"
+          : "Sandhold"
+        : actors.find((actor) => actor.fixtureActorId === "front-target-b")?.actorName,
+      variant.id
+    );
+    assert.deepEqual(
+      actors.find((actor) => actor.fixtureActorId === "front-target-a")?.position,
+      tile(22, 18),
+      variant.id
+    );
+    assert.deepEqual(
+      actors.find((actor) => actor.fixtureActorId === "front-target-b")?.position,
+      tile(42, 38),
+      variant.id
+    );
+    for (let index = 0; index < 8; index++)
+      assert.deepEqual(
+        actors.find((actor) => actor.fixtureActorId === `army-${index}`)?.position,
+        tile(25 + ((index % 4) % 2), (index < 4 ? 17 : 31) + Math.floor((index % 4) / 2)),
+        `${variant.id}: army-${index} is staged at its front`
+      );
+  }
+});
 
 test("STRAT-09 target-specific variants separate an equivalent competing drop-off", () => {
   const fixture = nativeScenarioFixture("STRAT-09");

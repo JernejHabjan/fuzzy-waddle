@@ -126,7 +126,7 @@ export function nativeRecoveryWorld(id, faction, branch): NativeScenarioWorld {
       {
         id: "optional-query-outage",
         fromTick: 1,
-        throughTick: branch === "late" ? 600 : 1001,
+        throughTick: branch === "pending" ? 1001 : 600,
         fixtureActorIds: ["army-0"],
         mode: branch === "error" ? "error" : "pending"
       }
@@ -143,31 +143,70 @@ export function nativeRecoveryWorld(id, faction, branch): NativeScenarioWorld {
 
 /** Fixed opponent pressure exposes a real choke, leaving branch-specific alternatives without commanding the AI response. */
 function configureMissionRecovery(world, id, faction, enemy, branch, actor, move) {
+  if (["H-24", "H-26"].includes(id)) world.actors.find((a) => a.fixtureActorId === "worker-1").position = tile(32, 32);
   if (id === "H-24") {
     for (let i = 0; i < 16; i++)
       world.actors.push(actor(`hidden-force-${i}`, melee(enemy), 1, 4 + (i % 4), 9 + Math.floor(i / 4)));
     world.actors.find((a) => a.fixtureActorId === "mission-target").actorName =
       branch === "raid" ? `${enemy}WorkerMale` : branch === "denial" ? producer(enemy) : "WorkMill";
-    if (branch === "unsafe")
-      for (let i = 0; i < 8; i++)
-        world.actors.push(actor(`known-danger-${i}`, "WatchTower", 1, 17 + (i % 4) * 2, 23 + Math.floor(i / 4) * 4));
-    if (branch === "information") {
-      world.actors.find((a) => a.fixtureActorId === "mission-target").position = tile(13, 30);
-      world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(29, 30);
+    if (branch === "raid" || branch === "denial") {
+      // Start this bounded decision at the contact line. A long cross-map march lets unrelated
+      // defense/scouting decisions consume the evidence window before the small opportunity is tested.
+      for (const [role, x, y] of [
+        ["army-0", 23, 26],
+        ["army-1", 23, 27],
+        ["army-2", 24, 27]
+      ])
+        world.actors.find((actor) => actor.fixtureActorId === role).position = tile(x, y);
     }
+    if (branch === "denial")
+      world.actors.find((actor) => actor.fixtureActorId === "mission-target").position = tile(24, 25);
+    if (branch === "unsafe")
+      for (let i = 0; i < 4; i++)
+        // Keep the towers visible around the opportunity but outside their opening weapon envelope.
+        world.actors.push(actor(`known-danger-${i}`, "WatchTower", 1, 14 + i * 2, 23));
+    if (branch === "information") {
+      world.actors.find((a) => a.fixtureActorId === "mission-target").position = tile(20, 30);
+      world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(29, 30);
+      world.actors.find((a) => a.fixtureActorId === "scout-probe").actorName =
+        faction === "Tivara" ? "TivaraAlchemist" : "SkaduweeOwl";
+    }
+    const focusedRoles = new Set([
+      "worker-1",
+      "own-deposit",
+      "own-source",
+      "mission-target",
+      "army-0",
+      "army-1",
+      "army-2",
+      "enemy-deposit",
+      "enemy-source",
+      "enemy-worker"
+    ]);
+    if (branch === "information") focusedRoles.add("scout-probe");
+    world.actors = world.actors.filter(
+      ({ fixtureActorId }) =>
+        focusedRoles.has(fixtureActorId) ||
+        fixtureActorId.startsWith("hidden-force-") ||
+        (branch === "unsafe" && fixtureActorId.startsWith("known-danger-"))
+    );
+    world.initialOrders = world.initialOrders.filter((order) => order.workerFixtureActorId === "worker-1");
+    const resources = world.resourceStarts.find((entry) => entry.playerNumber === 2);
+    if (resources) resources.amounts = { food: 300, wood: 0, stone: 0, minerals: 0 };
     return;
   }
-  // Cross-map water barrier has two physical land approaches; closing the southern one is an authored negative control.
+  // The two land approaches are authored separately so each H-26 branch proves one route policy.
   for (let y = 0; y < 50; y++)
     for (const x of [24, 25]) {
-      if ((y >= 23 && y <= 26) || (branch !== "no_alternative" && branch !== "no_safe_route" && y >= 37 && y <= 40))
-        continue;
+      if ((y >= 23 && y <= 26) || (id === "H-26" && branch === "safe_alternate" && y >= 37 && y <= 40)) continue;
       world.terrainPatches.push({ x, y, terrain: "water", blocked: false });
     }
-  for (let i = 0; i < 4; i++) world.actors.push(actor(`choke-guard-${i}`, "WatchTower", 1, 21, 20 + i * 3));
+  const chokeGuardCount = id === "H-26" && branch === "grouping" ? 1 : 4;
+  for (let i = 0; i < chokeGuardCount; i++)
+    world.actors.push(actor(`choke-guard-${i}`, "WatchTower", 1, id === "H-26" ? 20 : 21, 20 + i * 3));
   world.actors.find((a) => a.fixtureActorId === "mission-target").position = tile(17, 26);
-  world.actors.push(actor("alternative-target", "WorkMill", 1, 18, 39));
-  world.actors.push(actor("alternative-observer", melee(faction), 2, 22, 39));
+  if (id !== "H-26" || branch === "safe_alternate")
+    world.actors.push(actor("alternative-target", "WorkMill", 1, 18, 39));
   if (id === "H-25") {
     for (let i = 0; i < 8; i++) {
       world.actors.push(actor(`pressure-${i}`, melee(enemy), 1, 18 + (i % 4), 23 + Math.floor(i / 4)));
@@ -184,20 +223,89 @@ function configureMissionRecovery(world, id, faction, enemy, branch, actor, move
       );
   }
   if (id === "H-26") {
-    world.actors.find((a) => a.fixtureActorId === "enemy-worker").position = tile(15, 32);
-    for (const a of world.actors.filter((a) => a.fixtureActorId.startsWith("army-")))
-      a.position = tile(
-        18 + (Number(a.fixtureActorId.split("-")[1]) % 3),
-        30 + Math.floor(Number(a.fixtureActorId.split("-")[1]) / 3)
+    const noSafeRoute = branch === "no_safe_route";
+    const missionTarget = world.actors.find((candidate) => candidate.fixtureActorId === "mission-target");
+    missionTarget.actorName = enemy === "Tivara" ? "Sandhold" : "FrostForge";
+    missionTarget.position = tile(14, 36);
+    world.actors.find((candidate) => candidate.fixtureActorId === "army-0").position = tile(12, 36);
+    world.actors.find((candidate) => candidate.fixtureActorId === "scout-probe").actorName =
+      faction === "Tivara" ? "TivaraAlchemist" : "SkaduweeOwl";
+    world.actors.find((candidate) => candidate.fixtureActorId === "scout-probe").position = tile(23, 36);
+    world.actors.find((candidate) => candidate.fixtureActorId === "ready-producer").position = tile(35, 32);
+    world.actors.find((candidate) => candidate.fixtureActorId === "ready-house").position = tile(38, 32);
+    const focusedRoles = new Set([
+      "ready-producer",
+      "ready-house",
+      "army-0",
+      "scout-probe",
+      "mission-target",
+      "own-source",
+      "own-deposit",
+      ...Array.from({ length: 6 }, (_, index) => `worker-${index}`),
+      ...(branch === "safe_alternate" ? ["alternative-target"] : [])
+    ]);
+    world.actors = world.actors.filter(
+      (candidate) => focusedRoles.has(candidate.fixtureActorId) || candidate.fixtureActorId.startsWith("choke-guard-")
+    );
+    for (let index = 0; index < 6; index++) {
+      world.actors.find((candidate) => candidate.fixtureActorId === `worker-${index}`).position = tile(
+        38 + (index % 3),
+        12 + Math.floor(index / 3)
       );
-    world.queues = [{ producerFixtureActorId: "ready-producer", actorName: melee(faction), count: 4 }];
-    // Rally toward the owned front-line member; enemy objectives are not legal shared rally targets.
-    world.productionRallies = [{ producerObjectName: producer(faction), owner: 2, targetFixtureActorId: "army-0" }];
+    }
+    world.actors.find((candidate) => candidate.fixtureActorId === "own-source").position = tile(37, 16);
+    world.actors.find((candidate) => candidate.fixtureActorId === "own-deposit").position = tile(42, 16);
+    // The stock map contributes a roaming starting combatant outside the authored recovery world.
+    // Bind and remove it before the first AI decision so only this scenario's army and threat matter.
+    const mapCombatants =
+      faction === "Tivara"
+        ? [
+            { fixtureActorId: "map-starting-maceman", actorName: "TivaraMacemanMale", owner: 2 },
+            { fixtureActorId: "map-opponent-magician", actorName: "SkaduweeMagicianFemale", owner: 1 }
+          ]
+        : [{ fixtureActorId: "map-starting-magician", actorName: "SkaduweeMagicianFemale", owner: 2 }];
+    world.existingActorBindings.push(...mapCombatants);
+    world.events.push(
+      ...mapCombatants.map((combatant) => ({
+        id: `remove-${combatant.fixtureActorId}`,
+        tick: 1,
+        kind: "destroy_owned_actor" as const,
+        owner: combatant.owner,
+        objectName: combatant.actorName,
+        fixtureActorId: combatant.fixtureActorId
+      }))
+    );
+    // The authored enemy core keeps the opponent alive and is the sole strategic objective.
+    world.events.push({
+      id: "remove-map-enemy-home",
+      tick: 1,
+      kind: "destroy_owned_actor",
+      owner: 1,
+      objectName: missionTarget.actorName,
+      fixtureActorId: "enemy-home"
+    });
+    world.initialOrders = Array.from({ length: 6 }, (_, index) => ({
+      workerFixtureActorId: `worker-${index}`,
+      sourceFixtureActorId: "own-source",
+      kind: "gather" as const
+    }));
+    if (noSafeRoute) {
+      const resources = world.resourceStarts.find((entry) => entry.playerNumber === 2);
+      if (resources) resources.amounts = { food: 240, wood: 0, stone: 0, minerals: 0 };
+    }
+    world.resourceGrants.push({ playerNumber: 2, amounts: { food: 40 } });
+    world.queues = [
+      { producerFixtureActorId: "ready-producer", actorName: melee(faction), count: noSafeRoute ? 1 : 4 }
+    ];
+    // Keep the existing main front separate from the paid force; an actual scout starts at the lower-route decision.
+    world.productionRallies = [
+      { producerObjectName: producer(faction), owner: 2, targetFixtureActorId: "ready-house" }
+    ];
     if (branch === "threat_clears")
       for (let i = 0; i < 4; i++)
         world.events.push({
           id: `loss-choke-guard-${i}`,
-          tick: 1200,
+          tick: 200,
           kind: "destroy_owned_actor",
           owner: 1,
           objectName: "WatchTower",

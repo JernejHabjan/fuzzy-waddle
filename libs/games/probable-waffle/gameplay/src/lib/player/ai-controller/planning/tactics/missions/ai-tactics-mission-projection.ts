@@ -106,6 +106,7 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
       .map((assignment) => [assignment.actorId, `${assignment.position.x},${assignment.position.y}`])
   );
   const recoveryPhase =
+    input.awaitingStrategicLaunch ||
     nextState === "retreat" ||
     nextState === "recover" ||
     nextState === "assemble" ||
@@ -269,8 +270,60 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     .map(({ enemy }) => enemy)
     .filter((enemy) => enemy.actorId !== visibleTarget?.actorId);
   const prioritizedEnemyIds = new Set(prioritizedEnemies.map((enemy) => enemy.actorId));
-  const damageReservations =
-    visibleTarget && targetAwareMembers.length > 0 && (finalState === "engage" || finalState === "advance")
+  // Members still travelling to a committed core can defend themselves without redirecting the front.
+  const localThreatByActor = new Map(
+    visibleTarget?.mainBuilding?.status === "known" &&
+    visibleTarget.mainBuilding.value &&
+    squad.role === "attack" &&
+    (finalState === "engage" || finalState === "advance") &&
+    targetAwareMembers.length > 0
+      ? members
+          .flatMap((member) => {
+            if (targetAwareMembers.some((aware) => aware.actorId === member.actorId)) return [];
+            const position = knownPosition(member);
+            if (!position) return [];
+            const threat = localEnemies
+              .filter((enemy) => {
+                const enemyPosition = knownPosition(enemy);
+                const attacks = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value.attacks : [];
+                return (
+                  enemy.actorId !== visibleTarget.actorId &&
+                  enemyPosition &&
+                  canTarget(member, enemy) &&
+                  canTarget(enemy, member) &&
+                  canSeeTarget(member, enemy, input.catalog) &&
+                  attacks.some(
+                    (attack) =>
+                      attack.damage > 0 &&
+                      movementDomains(member).some((domain) => attack.targetDomains.includes(domain)) &&
+                      distance(position, enemyPosition) <= attack.range + 2
+                  )
+                );
+              })
+              .sort(
+                (a, b) =>
+                  distance(position, knownPosition(a)!) - distance(position, knownPosition(b)!) ||
+                  a.actorId.localeCompare(b.actorId)
+              )[0];
+            return threat ? [[member.actorId, threat] as const] : [];
+          })
+          .slice(0, Math.max(0, profile.maxActorOrdersPerStep - targetAwareMembers.length))
+      : []
+  );
+  const localReservations = [...localThreatByActor].flatMap(([actorId, threat]) => {
+    const member = members.find((candidate) => candidate.actorId === actorId)!;
+    return assignDamage(
+      [member],
+      [threat],
+      observation.tick,
+      squad.squadId,
+      squad.tactics?.damageReservations ?? [],
+      state.pendingOutcomes
+    );
+  });
+  const damageReservations = [
+    ...localReservations,
+    ...(visibleTarget && targetAwareMembers.length > 0 && (finalState === "engage" || finalState === "advance")
       ? assignDamage(
           targetAwareMembers.slice(0, profile.maxActorOrdersPerStep),
           [
@@ -285,7 +338,8 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
           squad.tactics?.damageReservations ?? [],
           state.pendingOutcomes
         )
-      : [];
+      : [])
+  ];
   const orderSignature = `${finalState}:${script}:${targetId ?? "none"}:${target?.visibility ?? "missing"}:${anchor ? `${anchor.x},${anchor.y},${anchor.z}` : "none"}`;
   const previouslyOrderedActorIds =
     squad.tactics?.orderSignature === orderSignature
@@ -294,6 +348,9 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
   const actorsNeedingOrder = members
     .filter((actor) => {
       const activeOrder = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+      const localThreat = localThreatByActor.get(actor.actorId);
+      if (localThreat && (finalState === "engage" || finalState === "advance"))
+        return activeOrder?.orderType !== OrderType.Attack || activeOrder.targetActorId !== localThreat.actorId;
       const assignment = assignedPositions.find((candidate) => candidate.actorId === actor.actorId);
       // Preserve the skirmish planner's shore firing approach; a rally move would cancel its native path.
       if (

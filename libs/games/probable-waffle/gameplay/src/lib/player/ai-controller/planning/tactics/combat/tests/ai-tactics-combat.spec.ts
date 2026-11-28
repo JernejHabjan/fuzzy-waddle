@@ -13,6 +13,7 @@ import {
   squad
 } from "../../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 import { canSeeTarget, estimateAiEngagement } from "../ai-tactics-combat";
+import * as approachPositions from "../ai-tactics-approach-positions";
 
 describe("AiTacticsManager", () => {
   it("serves a large formation over bounded decisions without losing the deferred members", () => {
@@ -691,6 +692,60 @@ describe("AiTacticsManager", () => {
         (intent) => intent.kind === "attack" || (intent.kind === "move" && intent.actorIds.includes(guard.actorId))
       )
     ).toBe(false);
+  });
+
+  it("does not replace an active full retreat with a new firing position", () => {
+    const guard = {
+      ...combatActor("guard", "self", 1, "ground", 300),
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 110,
+        value: { orderType: OrderType.Move, targetActorId: null, targetPosition: { x: 45, y: 11, z: 0 } }
+      }
+    };
+    const enemyBase = combatActor("enemy", "enemy", 2, "ground", 100, { damage: 1 });
+    const enemyProfile = enemyBase.combatProfile.status === "known" ? enemyBase.combatProfile.value : undefined;
+    const enemy = {
+      ...enemyBase,
+      combatProfile: {
+        ...enemyBase.combatProfile,
+        value: {
+          ...enemyProfile!,
+          attacks: enemyProfile!.attacks.map((attack) => ({ ...attack, range: 1, minRange: 0 }))
+        }
+      }
+    };
+    const target = combatActor("objective", "enemy", 12, "ground", 1000, { damage: 0 });
+    const prior = squad("squad:attack", "attack", [guard.actorId]);
+    const mission = {
+      ...prior,
+      state: "retreat" as const,
+      objectiveId: target.actorId,
+      tactics: { ...prior.tactics!, script: "protected_retreat" as const, nextReconsiderTick: 100 }
+    };
+    const source = observation([guard, enemy, target], 110);
+    const current = {
+      ...source,
+      map: {
+        ...source.map!,
+        tacticalCells: [
+          {
+            tileKey: "7,0",
+            position: { x: 7, y: 0, z: 0 },
+            groundPassable: true,
+            waterPassable: false,
+            elevation: 0,
+            observedBlocked: false
+          }
+        ]
+      }
+    };
+    expect(approachPositions.selectAiSafeFiringPositions([guard], [enemy, target], target, current)).toHaveLength(1);
+    const result = manager.propose(current, fixtureState([mission]));
+    expect(result.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(result.intents.some((intent) => intent.kind === "move" && intent.actorIds.includes(guard.actorId))).toBe(
+      false
+    );
   });
 
   it("drops a protected retreat destination after the observed access graph proves it unreachable", () => {

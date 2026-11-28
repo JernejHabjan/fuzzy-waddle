@@ -44,9 +44,17 @@ export function nativeScenarioActors(id: string, own: string, enemy: string, bra
       { length: ["SCOUT-01", "SCOUT-04"].includes(id) ? 1 : placement ? 16 : id === "WALL-02" ? 2 : 8 },
       (_, i) => actor(`worker-${i}`, `${own}WorkerMale`, 2, 32 + (i % 4), 21 + Math.floor(i / 4))
     ),
-    ...Array.from({ length: scouting || placement || id === "WALL-02" ? 0 : id === "FIGHT-01" ? 2 : 8 }, (_, i) =>
-      actor(`army-${i}`, i < 6 ? melee(own) : ranged(own), 2, 29 + (i % 4), 25 + Math.floor(i / 4))
-    ),
+    ...Array.from({ length: scouting || placement || id === "WALL-02" ? 0 : id === "FIGHT-01" ? 2 : 8 }, (_, i) => {
+      const strat13Group = Math.floor(i / 4),
+        strat13Index = i % 4;
+      return actor(
+        `army-${i}`,
+        id === "STRAT-13" ? (strat13Index < 2 ? melee(own) : ranged(own)) : i < 6 ? melee(own) : ranged(own),
+        2,
+        id === "STRAT-13" ? 25 + (strat13Index % 2) : 29 + (i % 4),
+        id === "STRAT-13" ? (strat13Group === 0 ? 17 : 31) + Math.floor(strat13Index / 2) : 25 + Math.floor(i / 4)
+      );
+    }),
     actor("ready-producer", producer(own), 2, 37, 23),
     actor("ready-house", own === "Tivara" ? "Olival" : "Emberstone", 2, 39, 18),
     ...(id === "WALL-02"
@@ -171,7 +179,10 @@ export function nativeScenarioActors(id: string, own: string, enemy: string, bra
     return actors.filter((entry) => fightRoles.has(entry.fixtureActorId));
   }
   if (id === "SCOUT-04") {
-    if (branch !== "approach") actors.push(actor("scout-reserve", melee(own), 2, 34, 16));
+    if (branch !== "approach") {
+      actors.push(actor("scout-reserve", melee(own), 2, 34, 16));
+      actors.push(actor("scout-reserve-2", melee(own), 2, 35, 16));
+    }
     const distractions = new Set([
       "ready-producer",
       "ranged-probe",

@@ -4,17 +4,17 @@
   "driver": "runtime",
   "scenarioIds": ["C-01"],
   "status": "authored_not_executed",
-  "purpose": "Both faction branches preserve completed assets/commitments during evidence-backed transition; no opening restart spam",
+  "purpose": "Both factions preserve completed assets and paid commitments through an evidence-backed air response; no opening restart spam",
   "acceptance": {
     "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
-    "requiredOutcome": "Both faction branches preserve completed assets/commitments during evidence-backed transition; no opening restart spam",
+    "requiredOutcome": "Both factions preserve completed assets and paid commitments through an evidence-backed air response; no opening restart spam",
     "setup": [
       "Each faction has completed opening assets and useful paid/in-flight commitments",
       "An actual observed threat/technology change justifies an archetype or phase transition"
     ],
     "actions": [
       "Reveal the new evidence normally and let strategic transition occur",
-      "Continue through completion or lawful cancellation of old commitments"
+      "Allow already-paid infantry to complete while new flyer evidence redirects future demand"
     ],
     "measurements": [
       "Opening plan and completed asset identities, transition reason, original queue/site linkage and useful effects"
@@ -27,7 +27,7 @@
     "branches": [
       "Both factions",
       "Useful old work survives",
-      "Truly obsolete optional work cancels through real authority"
+      "New flyer evidence triggers anti-air demand without discarding sunk infantry commitments"
     ],
     "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
     "executionStatus": "authored_not_executed"
@@ -37,7 +37,7 @@
     "aiPlayerNumber": 2,
     "simulationTimeScale": 1,
     "fixedStepFrames": true,
-    "checkpointTicks": [20, 200, 400, 800, 1200, 1600, 2000, 2400, 3000, 4000],
+    "checkpointTicks": [20, 200, 400, 800, 1200, 1600],
     "variants": [
       {
         "id": "c-01-tivara-retain",
@@ -428,7 +428,7 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [{ "playerNumber": 2, "amounts": { "food": 80 } }],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -453,8 +453,8 @@
             {
               "id": "transition-contact",
               "producerFixtureActorId": "new-contact",
-              "requestTick": 400,
-              "applicationTick": 400,
+              "requestTick": 200,
+              "applicationTick": 200,
               "action": {
                 "kind": "move",
                 "worldPosition": {
@@ -902,7 +902,7 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [{ "playerNumber": 2, "amounts": { "food": 80 } }],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -927,8 +927,8 @@
             {
               "id": "transition-contact",
               "producerFixtureActorId": "new-contact",
-              "requestTick": 400,
-              "applicationTick": 400,
+              "requestTick": 200,
+              "applicationTick": 200,
               "action": {
                 "kind": "move",
                 "worldPosition": {
@@ -941,8 +941,8 @@
             {
               "id": "transition-air-0",
               "producerFixtureActorId": "air-counter-0",
-              "requestTick": 400,
-              "applicationTick": 400,
+              "requestTick": 200,
+              "applicationTick": 200,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -951,8 +951,8 @@
             {
               "id": "transition-air-1",
               "producerFixtureActorId": "air-counter-1",
-              "requestTick": 400,
-              "applicationTick": 400,
+              "requestTick": 200,
+              "applicationTick": 200,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -961,8 +961,8 @@
             {
               "id": "transition-air-2",
               "producerFixtureActorId": "air-counter-2",
-              "requestTick": 400,
-              "applicationTick": 400,
+              "requestTick": 200,
+              "applicationTick": 200,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -1376,7 +1376,7 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [{ "playerNumber": 2, "amounts": { "food": 80 } }],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -1401,8 +1401,8 @@
             {
               "id": "transition-contact",
               "producerFixtureActorId": "new-contact",
-              "requestTick": 400,
-              "applicationTick": 400,
+              "requestTick": 200,
+              "applicationTick": 200,
               "action": {
                 "kind": "move",
                 "worldPosition": {
@@ -1850,7 +1850,7 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [{ "playerNumber": 2, "amounts": { "food": 80 } }],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -1875,8 +1875,8 @@
             {
               "id": "transition-contact",
               "producerFixtureActorId": "new-contact",
-              "requestTick": 400,
-              "applicationTick": 400,
+              "requestTick": 200,
+              "applicationTick": 200,
               "action": {
                 "kind": "move",
                 "worldPosition": {
@@ -1889,8 +1889,8 @@
             {
               "id": "transition-air-0",
               "producerFixtureActorId": "air-counter-0",
-              "requestTick": 400,
-              "applicationTick": 400,
+              "requestTick": 200,
+              "applicationTick": 200,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -1899,8 +1899,8 @@
             {
               "id": "transition-air-1",
               "producerFixtureActorId": "air-counter-1",
-              "requestTick": 400,
-              "applicationTick": 400,
+              "requestTick": 200,
+              "applicationTick": 200,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -1909,8 +1909,8 @@
             {
               "id": "transition-air-2",
               "producerFixtureActorId": "air-counter-2",
-              "requestTick": 400,
-              "applicationTick": 400,
+              "requestTick": 200,
+              "applicationTick": 200,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -1939,14 +1939,14 @@
   },
   "assertions": {
     "C-01": {
-      "maximumTick": 4000,
+      "maximumTick": 1600,
       "minimumDecisions": 1,
       "minimumAppliedCommands": 1,
       "requiredAiFactions": ["Tivara", "Skaduwee"],
       "requiredNativeScenario": {
         "schemaVersion": 1,
         "scenarioId": "C-01",
-        "latestTick": 4000,
+        "latestTick": 1600,
         "humanPlayerNumber": 1,
         "branchByVariant": {
           "c-01-tivara-retain": "retain",
