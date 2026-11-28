@@ -1191,6 +1191,14 @@
       "y": 272
     },
     {
+      "prefabId": "62c8d4ce-9f8b-4605-80cb-603d18f979fb",
+      "id": "de1c2ca6-1645-4fe1-85d9-baa548edc600",
+      "unlock": ["x", "y"],
+      "label": "shark",
+      "x": 928,
+      "y": 480
+    },
+    {
       "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
       "id": "798a4d38-72ce-471d-b171-f9bc0890ca90",
       "unlock": ["x", "y", "sfxKey", "type", "sfxType"],

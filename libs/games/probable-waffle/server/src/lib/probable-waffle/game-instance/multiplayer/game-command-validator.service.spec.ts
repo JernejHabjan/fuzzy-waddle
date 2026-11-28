@@ -22,9 +22,12 @@ describe("GameCommandValidatorService", () => {
           }
         }
       }),
+      gameInstanceMetadata: { data: { currentHostUserId: "user-1", createdBy: "user-1" } },
       gameState: {
         data: {
           actors: [
+            { id: { id: "neutral-shark" }, name: ObjectNames.Shark },
+            { id: { id: "neutral-hare" }, name: ObjectNames.Hare },
             {
               id: { id: "actor-1" },
               owner: { ownerId: 1 },
@@ -58,7 +61,7 @@ describe("GameCommandValidatorService", () => {
     } as unknown as ProbableWaffleGameInstance;
   }
 
-  function createMoveEvent(worldX: number, worldY: number, tick = 0): ProbableWaffleGameCommandEvent {
+  function createMoveEvent(worldX: number, worldY: number, tick = 0, actorId = "actor-1"): ProbableWaffleGameCommandEvent {
     return {
       gameInstanceId: "gi-1",
       emitterUserId: "user-1",
@@ -69,7 +72,7 @@ describe("GameCommandValidatorService", () => {
           type: "MOVE",
           tick,
           playerNumber: 1,
-          actorIds: ["actor-1"],
+          actorIds: [actorId],
           tileVec3: { x: 10, y: 10, z: 0 },
           worldVec3: { x: worldX, y: worldY, z: 0 },
           queue: false
@@ -89,6 +92,27 @@ describe("GameCommandValidatorService", () => {
       commands: [command]
     };
   }
+
+  it("permits only the host to move a neutral shark", () => {
+    const event = createMoveEvent(640, 0, 0, "neutral-shark");
+    expect(service.validate(event, createGameInstance(), { id: "user-1" } as never)).toEqual({ valid: true });
+
+    const nonHostInstance = createGameInstance();
+    Object.assign(nonHostInstance.gameInstanceMetadata.data, { currentHostUserId: "other-user" });
+    expect(new GameCommandValidatorService().validate(event, nonHostInstance, { id: "user-1" } as never))
+      .toMatchObject({ valid: false, relayEmpty: true });
+  });
+
+  it("does not grant the host control of other neutral animals or shark actions", () => {
+    const move = createMoveEvent(640, 0, 0, "neutral-hare");
+    expect(service.validate(move, createGameInstance(), { id: "user-1" } as never))
+      .toMatchObject({ valid: false, relayEmpty: true });
+    const action = createQueueEvent({
+      type: "STOP", tick: 0, playerNumber: 1, actorIds: ["neutral-shark"]
+    });
+    expect(new GameCommandValidatorService().validate(action, createGameInstance(), { id: "user-1" } as never))
+      .toMatchObject({ valid: false, relayEmpty: true });
+  });
 
   it("accepts move commands with consistent tile and world coordinates", () => {
     expect(service.validate(createMoveEvent(640, 0), createGameInstance(), { id: "user-1" } as never)).toEqual({

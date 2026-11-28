@@ -217,8 +217,13 @@ export class GameCommandValidatorService {
 
     // 2c. Per-command payload checks.
     const actorIndex = this.getActorIndex(gameInstance);
+    const metadata = gameInstance.gameInstanceMetadata?.data;
+    const hostUserId = (metadata as { currentHostUserId?: string | null } | undefined)?.currentHostUserId ??
+      metadata?.createdBy;
     for (const command of commands) {
-      const payloadError = this.validateCommandPayload(command, tick, playerNumber, actorIndex, gameInstanceId);
+      const payloadError = this.validateCommandPayload(
+        command, tick, playerNumber, actorIndex, gameInstanceId, hostUserId === user.id
+      );
       if (payloadError !== null) {
         return { valid: false, relayEmpty: true, reason: payloadError };
       }
@@ -251,7 +256,8 @@ export class GameCommandValidatorService {
     expectedTick: number,
     playerNumber: number,
     actorIndex: Map<string, ActorDefinition>,
-    gameInstanceId: string
+    gameInstanceId: string,
+    isHost: boolean
   ): string | null {
     if (!command || typeof command !== "object") {
       this.logger.warn(`[GameCommand] Non-object command in ${gameInstanceId}`);
@@ -281,7 +287,10 @@ export class GameCommandValidatorService {
         unknownActorIds.push(actorId);
         continue;
       }
-      if (actor.owner?.ownerId !== playerNumber) {
+      // Neutral wildlife has no player owner. Only the host may relay its movement.
+      const hostNeutralSharkMove = isHost && type === ProbableWaffleGameCommandTypes.Move &&
+        actor.name === ObjectNames.Shark && actor.owner?.ownerId == null;
+      if (actor.owner?.ownerId !== playerNumber && !hostNeutralSharkMove) {
         this.logger.warn(
           `[GameCommand] Ownership violation for actor ${actorId} by player ${playerNumber} in ${gameInstanceId}`
         );

@@ -1,9 +1,7 @@
+import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
 
-/**
- * Defines the shark fin's visual footprint without enabling collision or gameplay systems. The authoritative
- * actor lifecycle still supplies an ID and actor-index registration when a scenario creates it.
- */
+/** Water navigation uses the same movement system and terrain restrictions as boats. */
 export const sharkDefinition = {
   components: {
     representable: {
@@ -13,6 +11,8 @@ export const sharkDefinition = {
     },
     objectDescriptor: {
       color: 0x1e5d7a
-    }
-  }
+    },
+    translatable: { tileMoveDuration: 450, movementTerrainType: MovementTerrainType.Water }
+  },
+  systems: { movement: { enabled: true }, action: { enabled: true } }
 } satisfies PrefabDefinition;

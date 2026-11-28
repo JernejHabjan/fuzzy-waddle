@@ -1,9 +1,12 @@
 import Phaser from "phaser";
+import { BehaviourTree, State } from "mistreevous";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { DepthHelper } from "../../../world/services/depth.helper";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { nearestActor } from "../behavior/nearest-actor";
+import { registerAmbientTarget, unregisterAmbientTarget } from "../behavior/ambient-targets";
+import { reactToNearby } from "../behavior/proximity-behavior";
 import { AmbientRespawner } from "../behavior/ambient-respawner";
 import { ANIM_BIRD_FLY, ANIM_BIRD_FLY_OFF, ANIM_BIRD_IDLE } from "../tree-bird/anims-bird";
 import {
@@ -30,21 +33,29 @@ enum WaterSeagullState {
 /* START OF COMPILED CODE */
 
 export default class WaterSeagull extends Phaser.GameObjects.Sprite {
-  constructor(
-    scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string, respawn = true
-  ) {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 16, y ?? 112, texture ?? "animals", frame ?? "1.png");
 
     this.setOrigin(0.5, 1);
     this.play(ANIM_BIRD_IDLE);
     /* START-USER-CTR-CODE */
     DepthHelper.setActorDepth(this);
-    this.startThreatPolling();
-    if (respawn && scene instanceof ProbableWaffleScene) {
+    if (!WaterSeagull.creatingReplacement && scene instanceof ProbableWaffleScene) {
+      this.setVisible(false);
+      this.spawnTimer = scene.time.delayedCall(Phaser.Math.Between(1_000, 10_000), () => {
+        this.spawnTimer = undefined;
+        if (!this.active) return;
+        this.setVisible(true);
+        this.beginIdle();
+      });
+    } else {
+      this.beginIdle();
+    }
+    if (!WaterSeagull.creatingReplacement && scene instanceof ProbableWaffleScene) {
       const spawnX = this.x;
       const spawnY = this.y;
       new AmbientRespawner(scene, this, () => {
-        const bird = new WaterSeagull(scene, spawnX, spawnY, texture, frame, false);
+        const bird = WaterSeagull.createReplacement(scene, spawnX, spawnY, texture, frame);
         scene.add.existing(bird);
         return bird;
       }, 10_000, 30_000);
@@ -54,7 +65,24 @@ export default class WaterSeagull extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
+  private static creatingReplacement = false;
+
+  /** Replacement birds reuse their spawn owner's timer instead of creating another owner. */
+  static createReplacement(
+    scene: Phaser.Scene, x: number, y: number, texture?: string, frame?: number | string
+  ): WaterSeagull {
+    const previous = WaterSeagull.creatingReplacement;
+    WaterSeagull.creatingReplacement = true;
+    try {
+      return new WaterSeagull(scene, x, y, texture, frame);
+    } finally {
+      WaterSeagull.creatingReplacement = previous;
+    }
+  }
+
   private lifecycleState = WaterSeagullState.Idle;
+  private readonly behaviorTree = new BehaviourTree(`root { action [FleeNearby] }`, this);
+  private spawnTimer?: Phaser.Time.TimerEvent;
   private reactionTimer?: Phaser.Time.TimerEvent;
   private flightTween?: Phaser.Tweens.Tween;
   private flightTimeout?: Phaser.Time.TimerEvent;
@@ -62,33 +90,45 @@ export default class WaterSeagull extends Phaser.GameObjects.Sprite {
   /** Completes the guarded takeoff animation transition exactly once. */
   private readonly onTakeoffComplete = (): void => this.startFlying();
 
+  private beginIdle(): void {
+    registerAmbientTarget(this);
+    this.startThreatPolling();
+  }
+
   /** Polls only in idle state, and safely does nothing in Phaser Editor previews without game scene services. */
   private startThreatPolling(): void {
     this.reactionTimer = this.scene.time.addEvent({
       delay: WATER_SEAGULL_REACTION_POLL_MS,
       loop: true,
       callback: () => {
-        const threat = this.findNearbyThreat();
-        if (threat) this.takeOffFrom(threat);
+        this.behaviorTree.reset();
+        this.behaviorTree.step();
       }
     });
   }
 
+  FleeNearby(): State {
+    return reactToNearby(() => this.findNearbyThreat(), (threat) => this.takeOffFrom(threat));
+  }
+
   /** Find the closest active actor, so escape direction reflects the most immediate threat. */
-  private findNearbyThreat(): Phaser.GameObjects.Sprite | undefined {
+  private findNearbyThreat(): Phaser.GameObjects.Sprite | Phaser.GameObjects.Image | undefined {
     if (this.lifecycleState !== WaterSeagullState.Idle || !(this.scene instanceof ProbableWaffleScene))
       return undefined;
 
     const actors = getSceneService(this.scene, ActorIndexSystem)?.getAllIdActors() ?? [];
-    const sprites = actors.filter((actor): actor is Phaser.GameObjects.Sprite => actor instanceof Phaser.GameObjects.Sprite);
+    const sprites = actors.filter((actor): actor is Phaser.GameObjects.Sprite | Phaser.GameObjects.Image =>
+      actor instanceof Phaser.GameObjects.Sprite || actor instanceof Phaser.GameObjects.Image
+    );
     return nearestActor(this, sprites, WATER_SEAGULL_REACTION_RADIUS_PX, (actor) => actor.active && actor !== this);
   }
 
   /** Stops idle work and begins the one-shot escape away from the approaching actor. */
-  private takeOffFrom(threat: Phaser.GameObjects.Sprite): void {
+  private takeOffFrom(threat: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image): void {
     if (this.lifecycleState !== WaterSeagullState.Idle) return;
 
     this.lifecycleState = WaterSeagullState.TakingOff;
+    unregisterAmbientTarget(this);
     this.reactionTimer?.remove(false);
     this.reactionTimer = undefined;
     this.once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY + ANIM_BIRD_FLY_OFF, this.onTakeoffComplete);
@@ -133,6 +173,8 @@ export default class WaterSeagull extends Phaser.GameObjects.Sprite {
     if (this.lifecycleState === WaterSeagullState.Destroyed) return;
 
     this.lifecycleState = WaterSeagullState.Destroyed;
+    unregisterAmbientTarget(this);
+    this.spawnTimer?.remove(false);
     this.off(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY + ANIM_BIRD_FLY_OFF, this.onTakeoffComplete);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.reactionTimer?.remove(false);

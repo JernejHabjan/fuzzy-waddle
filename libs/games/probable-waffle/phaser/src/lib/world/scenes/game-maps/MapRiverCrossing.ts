@@ -73,6 +73,7 @@ import TivaraWorkerMale from "../../../prefabs/characters/tivara/tivara-worker/t
 import Stairs from "../../../prefabs/buildings/tivara/stairs/Stairs";
 import SoundEffectMarker from "../../../prefabs/buildings/misc/SoundEffectMarker";
 import WaterSeagull from "../../../prefabs/animals/water-seagull/WaterSeagull";
+import Shark from "../../../prefabs/animals/shark/Shark";
 import SkaduweeMagicianFemale from "../../../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
 import EditorActorLevel from "../editor-components/EditorActorLevel";
 import FenceRightCorner from "../../../prefabs/outside/architecture/obstruction/FenceRightCorner";
@@ -732,6 +733,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // waterSeagull
     const waterSeagull = new WaterSeagull(this, 928, 480);
     this.add.existing(waterSeagull);
+
+    // shark
+    const shark = new Shark(this, 928, 480);
+    this.add.existing(shark);
 
     // water flowing
     const water_flowing = new SoundEffectMarker(this, 704, 896);

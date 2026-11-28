@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { Subject, Subscription } from "rxjs";
 import {
+  ObjectNames,
   type GameCommand,
   type GameCommandInput,
   type ProbableWaffleGameCommandEvent,
@@ -856,7 +857,11 @@ export class CommandBusService {
     const actorIds = [...new Set(command.actorIds)].filter((actorId) => {
       const actor = actorIndex.getActorById(actorId);
       const owner = actor ? getActorComponent(actor, OwnerComponent)?.getOwner() : undefined;
-      return actor?.active && actor.getData("campaign.controllable") !== false && owner === command.playerNumber;
+      // The server independently restricts neutral shark movement to the host.
+      const hostNeutralSharkMove = this.scene.isHost && command.type === ProbableWaffleGameCommandTypes.Move &&
+        actor?.name === ObjectNames.Shark && owner === undefined;
+      return actor?.active && actor.getData("campaign.controllable") !== false &&
+        (owner === command.playerNumber || hostNeutralSharkMove);
     });
 
     if (actorIds.length === 0) {

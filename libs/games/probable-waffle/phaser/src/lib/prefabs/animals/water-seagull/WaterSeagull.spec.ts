@@ -34,7 +34,7 @@ describe("WaterSeagull lifecycle", () => {
       destroy: jest.fn(),
       play: jest.fn()
     });
-    const bird = new WaterSeagull(scene as unknown as Phaser.Scene, 100, 100);
+    const bird = WaterSeagull.createReplacement(scene as unknown as Phaser.Scene, 100, 100);
     bird.active = true;
     const poll = () => addEvent.mock.calls[0][0].callback();
     const complete = () => events.get(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY + "bird-fly-off")?.();
