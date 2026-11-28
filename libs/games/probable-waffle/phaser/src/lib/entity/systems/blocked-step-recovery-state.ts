@@ -1,0 +1,13 @@
+/** Mutable retry counters shared by recursive execution of one native path; never saved or relayed. */
+export interface BlockedStepRecoveryState {
+  /** Movement cancellation generation captured by the path owner. */
+  generation?: number;
+  /** Congestion waits already used at each blocked x/y tile within this path execution. */
+  waitAttemptsByTile: Map<string, number>;
+  /** Local sidesteps used across recursive recovery, capped by the path executor. */
+  sideStepAttempts: number;
+  /** Direct repath escalations used across recursive recovery; per-repath wait retries are separate. */
+  repathAttempts: number;
+  /** A fallback must stay near the original target and may be selected only once per order. */
+  fallbackAttempted: boolean;
+}

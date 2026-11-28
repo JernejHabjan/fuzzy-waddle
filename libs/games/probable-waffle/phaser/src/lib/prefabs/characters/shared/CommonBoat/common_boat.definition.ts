@@ -2,7 +2,7 @@ import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protoco
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
-import { AiType } from "../../../ai-agents/ai-type";
+import { AiType } from "../../../ai-agents/controller/ai-type";
 import { ANIM_COMMON_BOAT_DEFINITION } from "./common_boat_anims";
 import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 

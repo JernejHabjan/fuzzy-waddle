@@ -3,7 +3,7 @@ import { ANIM_ZOMBIE3_DEFINITION } from "./zombie3_anim";
 import { weaponDefinitions } from "../../../../../entity/components/combat/weapon-definitions";
 import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
-import { AiType } from "../../../../ai-agents/ai-type";
+import { AiType } from "../../../../ai-agents/controller/ai-type";
 import { type PrefabDefinition } from "../../../../definitions/prefab-definition";
 
 export const zombie3Definition = {

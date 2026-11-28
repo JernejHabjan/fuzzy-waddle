@@ -7,7 +7,7 @@
   "tags": ["scope:portal", "type:app"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
+      "executor": "@angular/build:application",
       "dependsOn": ["assets-check", "trump-defense-lines"],
       "outputs": ["{workspaceRoot}/dist/apps/portal"],
       "defaultConfiguration": "production",
@@ -104,13 +104,60 @@
           "optimization": false,
           "extractLicenses": false,
           "sourceMap": true,
-          "namedChunks": true
+          "namedChunks": true,
+          "assets": [
+            "apps/portal/src/assets",
+            "apps/portal/src/manifest.webmanifest",
+            {
+              "glob": "favicon.ico",
+              "input": "libs/platform/game-host/src/assets",
+              "output": "."
+            },
+            {
+              "glob": "**/*",
+              "input": "libs/platform/game-host/src/assets",
+              "output": "assets",
+              "ignore": [
+                "favicon.ico"
+              ]
+            },
+            {
+              "glob": "**/*",
+              "input": "libs/games/dungeon-crawler/gameplay/src/assets",
+              "output": "assets"
+            },
+            {
+              "glob": "**/*",
+              "input": "libs/games/fly-squasher/gameplay/src/assets",
+              "output": "assets"
+            },
+            {
+              "glob": "**/*",
+              "input": "libs/games/little-muncher/gameplay/src/assets",
+              "output": "assets"
+            },
+            {
+              "glob": "**/*",
+              "input": "libs/games/probable-waffle/phaser/src/assets",
+              "output": "assets"
+            },
+            {
+              "glob": "**/*",
+              "input": "libs/games/trump-defense/interface/src/assets",
+              "output": "assets"
+            },
+            {
+              "glob": "*.json",
+              "input": "tmp/ai-scenario-browser",
+              "output": "dev/ai-scenarios"
+            }
+          ]
         }
       }
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
-      "dependsOn": ["assets-check"],
+      "executor": "@angular/build:dev-server",
+      "dependsOn": ["assets-check", "prepare-ai-scenario-browser"],
       "defaultConfiguration": "development",
       "continuous": true,
       "options": {
@@ -123,6 +170,12 @@
         "development": {
           "buildTarget": "portal:build:development"
         }
+      }
+    },
+    "prepare-ai-scenario-browser": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/probable-waffle/skirmish/ai/cli/prepare-scenario-browser.ts"
       }
     },
     "assets-check": {
@@ -141,7 +194,7 @@
       }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "@angular/build:extract-i18n",
       "options": {
         "buildTarget": "portal:build"
       }

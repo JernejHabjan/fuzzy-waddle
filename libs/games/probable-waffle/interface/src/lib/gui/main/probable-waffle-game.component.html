@@ -1,3 +1,9 @@
 @if (gameData && gameConfig) {
+  @if (scenarioTitle; as title) {
+    <header class="scenario-toolbar">
+      <a routerLink="/aota/ai-scenarios">← AI scenarios</a>
+      <span>{{ title }} · Normal speed</span>
+    </header>
+  }
   <fuzzy-waddle-game-container [gameConfig]="gameConfig" [gameData]="gameData" />
 }

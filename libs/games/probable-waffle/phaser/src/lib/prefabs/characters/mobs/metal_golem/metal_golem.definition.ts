@@ -3,7 +3,7 @@ import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
-import { AiType } from "../../../ai-agents/ai-type";
+import { AiType } from "../../../ai-agents/controller/ai-type";
 import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 
 export const metalGolemDefinition = {

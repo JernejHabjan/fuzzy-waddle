@@ -28,7 +28,7 @@ import { AudioSprites } from "../../../sfx/audio-sprites";
 import { UiFeedbackSfx } from "../../../hud/UiFeedbackSfx";
 import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
 import { OwnerComponent } from "../../../entity/components/owner-component";
-import { PawnAiController } from "../../ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../ai-agents/controller/pawn-ai-controller";
 import { PlayerActionsHandler } from "../../../player/human-controller/player-actions-handler";
 import { OrderType } from "../../../ai/order-type";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
@@ -60,6 +60,8 @@ import { ContainerComponent } from "../../../entity/components/building/containe
 import { NavigationService } from "../../../world/services/navigation.service";
 import { isWaterUnit } from "../../../data/game-object-helper";
 import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 /* END-USER-IMPORTS */
 
 /**
@@ -294,6 +296,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   /** Documents the on build mode key down member and its declared contract at this boundary. */
   private onBuildModeKeyDown(hotkeyIndex: number) {
+    if (this.mainSceneWithActors.isSpectator) return;
     if (!this.buildingMode) return;
 
     if (hotkeyIndex === -1) return;
@@ -660,6 +663,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   /** Documents the can show icons member and its declared contract at this boundary. */
   private canShowIcons(actor: Phaser.GameObjects.GameObject) {
+    if (this.mainSceneWithActors.isSpectator) return true;
     const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
     const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
     return actorPlayerNr === currentPlayerNr;
@@ -886,7 +890,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       disabled: !canUnload,
       action: () => {
         if (!canUnload) return;
-        containerComponent.unloadAll();
+        const actorId = getActorComponent(actor, IdComponent)?.id;
+        const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+        const commandBus = getSceneService(this.mainSceneWithActors, CommandBusService);
+        if (!actorId || playerNumber === undefined || !commandBus) return;
+        commandBus.dispatch({
+          type: "UNLOAD",
+          playerNumber,
+          actorIds: [actorId]
+        });
       },
       tooltipInfo: {
         title: "Unload All",
@@ -1381,7 +1393,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     disabledDescription: string | null;
     validation: PreRequirement | null;
   } {
-    const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
+    const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+    if (playerNumber === undefined) {
+      return { disabled: false, disabledDescription: null, validation: null };
+    }
     const validation = ProductionValidator.validateObject(this.mainSceneWithActors, playerNumber, objectName);
     const disabled = !validation.canQueue;
     let disabledDescription: string | null = null;

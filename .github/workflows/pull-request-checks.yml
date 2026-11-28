@@ -16,6 +16,7 @@ permissions:
   contents: read
 
 env:
+  AI_REGRESSION_PROFILE: ${{ vars.AI_REGRESSION_PROFILE || 'core' }}
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
 jobs:
@@ -74,6 +75,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check skirmish test catalog
+        run: pnpm ai:skirmish:catalog
+
       - name: Derive affected project SHAs
         uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
         with:
@@ -98,6 +102,10 @@ jobs:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+      - name: Run AI tooling tests and typecheck
+        if: github.base_ref == 'main'
+        run: pnpm tools:test && pnpm ai:tools:typecheck
+
       - name: Install Playwright Chromium
         if: github.base_ref == 'main'
         run: pnpm exec playwright install --with-deps chromium
@@ -114,3 +122,66 @@ jobs:
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
+
+  e2e-ai-plan:
+    name: E2E AI Plan
+    if: github.event.pull_request.draft == false && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.select.outputs.matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Use Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .node-version
+      - name: Select e2e:ai cases from manifest
+        id: select
+        run: node tools/probable-waffle/skirmish/ai/cli/select-ai-regression-shards.ts
+
+  e2e-ai:
+    name: E2E AI (${{ matrix.id }})
+    if: github.event.pull_request.draft == false && github.base_ref == 'main'
+    needs: e2e-ai-plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJSON(needs.e2e-ai-plan.outputs.matrix) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          lfs: true
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: 11.14.0
+      - name: Use Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .node-version
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run e2e:ai case
+        run: pnpm ai:skirmish:regression -- --case "${{ matrix.caseId }}"
+        env:
+          AI_SKIRMISH_MATRIX_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: e2e-ai-${{ matrix.id }}-${{ github.run_id }}
+          path: |
+            tmp/ai-skirmish-matrix/*.json
+            tmp/ai-skirmish-matrix/*.json.variants/**
+            tmp/ai-skirmish-matrix/indexes/*.json
+            tmp/ai-skirmish-regression/latest.json
+            test-results/
+          if-no-files-found: warn

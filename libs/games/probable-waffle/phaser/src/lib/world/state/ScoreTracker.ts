@@ -12,7 +12,6 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getPlayersFromScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { isGameObjectActiveInActiveScene, isSceneActive } from "../../data/game-object-helper";
-import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { getActorComponent, hasActorComponent } from "../../data/actor-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
@@ -37,7 +36,6 @@ type RawScoreData =
  * Similar to GameModeConditionChecker, runs continuously and collects statistics.
  */
 export class ScoreTracker {
-  private currentPlayerNumber!: PlayerNumber;
   private players!: ProbableWafflePlayer[];
   private stopped: boolean = false;
   private readonly updateIntervalTicks = 20; // 1 second at the fixed 20 Hz simulation rate.
@@ -107,7 +105,6 @@ export class ScoreTracker {
     if (!isSceneActive(this.scene)) return;
     if (this.stopped) return;
 
-    this.currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
     this.players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
 
     this.updateLiveMetrics();

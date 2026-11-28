@@ -80,7 +80,7 @@ export class MatchmakingService implements IMatchmakingService {
 
   private get levels(): MatchmakingLevel[] {
     return Object.values(ProbableWaffleLevels)
-      .filter((level) => (environment.production || this.excludeDevMaps ? !level.devOnly : true))
+      .filter((level) => !level.testOnly && (environment.production || this.excludeDevMaps ? !level.devOnly : true))
       .map((level) => ({
         id: level.id,
         name: level.name,
@@ -93,7 +93,7 @@ export class MatchmakingService implements IMatchmakingService {
 
   get nrOfPlayersOptions(): number[] {
     const options = new Set<number>();
-    Object.values(ProbableWaffleLevels).forEach((level) => {
+    Object.values(ProbableWaffleLevels).filter((level) => !level.testOnly).forEach((level) => {
       options.add(level.mapInfo.startPositionsOnTile.length);
     });
     return Array.from(options);

@@ -1,4 +1,4 @@
 interface:
   display_name: "Fuzzy Waddle Autonomous Delivery"
   short_description: "Deliver one GitHub issue safely as a draft PR."
-  default_prompt: "Deliver an agent-ready Fuzzy Waddle issue as a verified draft PR."
+  default_prompt: "Use $fuzzy-waddle-autonomous-delivery to deliver an agent-ready Fuzzy Waddle issue as a verified draft PR within its authorized stage boundary."

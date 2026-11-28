@@ -10,7 +10,7 @@ import type { ActorTranslateDefinition } from "@fuzzy-waddle/probable-waffle-gam
 import type { ColliderDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/collider-definition";
 import type { FlightDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/flight-definition";
 import type { NavigableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-definition";
-import type { PawnAiDefinition } from "../ai-agents/pawn-ai-definition";
+import type { PawnAiDefinition } from "../ai-agents/controller/pawn-ai-definition";
 import type { OwnerDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/owner-definition";
 import type { RequirementsDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/requirements-definition";
 import type { SelectableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/selectable-definition";

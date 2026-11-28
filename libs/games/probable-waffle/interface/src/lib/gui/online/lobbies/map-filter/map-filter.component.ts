@@ -12,7 +12,7 @@ export class MapFilterComponent implements OnInit {
   protected checkedMaps: { id: number; name: string; checked: boolean }[] = [];
 
   ngOnInit(): void {
-    this.checkedMaps = Object.values(ProbableWaffleLevels).map((m) => ({
+    this.checkedMaps = Object.values(ProbableWaffleLevels).filter((map) => !map.testOnly).map((m) => ({
       id: m.id,
       name: m.name,
       checked: true

@@ -3,7 +3,7 @@
 ## Tech Stack
 
 | Layer              | Technology                                  |
-|--------------------|---------------------------------------------|
+| ------------------ | ------------------------------------------- |
 | Frontend (web)     | Angular 21, Phaser 4, Bootstrap 5, Chart.js |
 | Frontend (desktop) | Angular 21 and Tauri 2                      |
 | Backend            | NestJS 11, Socket.IO                        |
@@ -42,8 +42,7 @@ Each game is split by game-facing responsibility:
 
 Dungeon Crawler is local-only and currently needs only `gameplay` and `interface`. Applications compose libraries; game libraries do not import another game, and platform libraries do not import games.
 
-See [Game project boundaries](../docs/architecture/game-project-boundaries.md)
-for the complete project list and dependency direction.
+Project `project.json` files and ESLint boundary rules define the enforced dependency direction.
 
 ## Browser and Desktop Applications
 
@@ -91,7 +90,7 @@ There is no catch-all API interfaces package. Import contracts from their owner:
 
 ## Real-time Communication
 
-Socket.IO carries multiplayer state. The Angular interface owns the browser socket adapter, each game protocol owns its event names and payloads, and the matching server project owns the NestJS gateway. Probable Waffle's detailed design is documented in [AOTA Multiplayer Architecture](aota-multiplayer-architecture.md).
+Socket.IO carries multiplayer state. The Angular interface owns the browser socket adapter, each game protocol owns its event names and payloads, and the matching server project owns the NestJS gateway. Probable Waffle's detailed design is documented in [AOTA Multiplayer Architecture](./aota-multiplayer-architecture.md).
 
 ## Architecture evolution priorities
 

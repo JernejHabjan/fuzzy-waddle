@@ -1,0 +1,501 @@
+import type { Browser, Page } from "@playwright/test";
+import type { RuntimeFixture } from "../contracts/skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "../setup/skirmish-ai-runtime-variant";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeNativeEvidenceProbe } from "./skirmish-ai-runtime-native-evidence-probe";
+import type { RuntimeCheckpoint } from "../capture/skirmish-ai-runtime-checkpoint";
+import { captureCheckpoint } from "../capture/skirmish-ai-runtime-checkpoint-capture";
+import { last } from "../contracts/skirmish-ai-runtime-value";
+import { applyRuntimePerturbation } from "./skirmish-ai-runtime-perturbation-runner";
+import { digestRuntimeValue, projectRuntimeOutcomeDigestInput } from "../observation/skirmish-ai-runtime-digest";
+import { projectRuntimeVariantStart } from "../setup/skirmish-ai-runtime-variant-start-report";
+import { prepareRuntimeVariant } from "../setup/skirmish-ai-runtime-variant-setup";
+import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
+import { evaluateEvidenceStopAtCheckpoint } from "../evaluation/controls/skirmish-ai-runtime-evidence-stop-evaluation";
+import { collectRuntimePresetEvents } from "../setup/skirmish-ai-runtime-preset-event-results";
+import {
+  captureRuntimeProductionAuthority,
+  recordRuntimeProductionBoundary
+} from "../production/capture/skirmish-ai-runtime-production-capture";
+import {
+  buildRuntimeProductionReport,
+  compactRuntimeProductionReport
+} from "../production/evidence/skirmish-ai-runtime-production-report";
+import { nativeEvidenceInterventionsPending } from "../evaluation/scenario/skirmish-ai-native-proof-window";
+import { advanceRuntimeFrames } from "./skirmish-ai-runtime-frame-driver";
+
+const runtimeProgressStartedAt = performance.now();
+
+export async function runVariant(
+  browser: Browser,
+  fixture: RuntimeFixture,
+  variant: RuntimeVariant,
+  requestedSeed: number | null,
+  requestedScenarioIds: readonly string[],
+  sourceRevision: string,
+  fixtureDigest: string,
+  debugProbe?: (page: Page, checkpointIndex: number, checkpoint?: RuntimeCheckpoint) => Promise<void>,
+  afterVariant?: (page: Page, result: RuntimeVariantResult) => Promise<void>,
+  beforeVariant?: (page: Page) => Promise<void>,
+  beforeCheckpoint?: (page: Page, checkpointIndex: number, targetTick: number) => Promise<boolean>,
+  beforeFinalize?: (page: Page) => Promise<void>,
+  nativeEvidence?: RuntimeNativeEvidenceProbe
+): Promise<RuntimeVariantResult> {
+  const profiling = process.env.AI_SKIRMISH_PROFILE === "1";
+  const variantStartedAt = performance.now();
+  const context = await browser.newContext();
+  const checkpointPhases: {
+    targetTick: number;
+    advanceMs: number;
+    settleMs: number;
+    captureMs: number;
+  }[] = [];
+  let perturbationMs = 0;
+  const aiErrors: string[] = [];
+  const effectiveSeed = requestedSeed ?? variant.seed;
+  let lastProgressTick = 0;
+  let currentPhase = "variant_setup";
+  let lastProof: { tick: number; failures: readonly string[] } | undefined;
+  let failSetup: (error: Error) => void;
+  const fatalSetup = new Promise<never>((_, reject) => {
+    failSetup = reject;
+  });
+  const checkForFatalAiError = (tick: number) => {
+    lastProgressTick = tick;
+    if (nativeEvidence && aiErrors.length)
+      throw new Error("runtime_focused_ai_error:" + variant.id + ":tick=" + tick + ":" + aiErrors[0]);
+  };
+  const run = async () => {
+    const page = await context.newPage();
+    const onSetupError = (error: Error) => {
+      if (/\bruntime_(?:preset_|construction_not_applied:)/.test(error.message)) failSetup(error);
+    };
+    page.on("pageerror", onSetupError);
+    page.on("console", (message) => {
+      if (message.text().startsWith("[AI_SKIRMISH_PRODUCTION_CAPTURE]")) process.stdout.write(`${message.text()}\n`);
+    });
+    await beforeVariant?.(page);
+    const initialBoundary = await prepareRuntimeVariant(
+      page,
+      fixture,
+      variant,
+      effectiveSeed,
+      sourceRevision,
+      fixtureDigest,
+      profiling,
+      aiErrors,
+      debugProbe,
+      false,
+      (phase) => {
+        currentPhase = phase;
+      }
+    );
+    page.off("pageerror", onSetupError);
+    checkForFatalAiError(0);
+    const advanceTo = (tick: number, index: number) => {
+      currentPhase = `advance_to_tick_${tick}`;
+      return advanceRuntimeToTick(page, fixture, tick, index, nativeEvidence ? checkForFatalAiError : undefined);
+    };
+    const setupMs = Math.round(performance.now() - variantStartedAt);
+    const variantStart = projectRuntimeVariantStart(variant, initialBoundary, effectiveSeed, fixture.recipe.mapLabel);
+    const checkpoints: RuntimeCheckpoint[] = [];
+    const perturbations: { id: string; tick: number; dispatchedActors: number; subjectName: string | null }[] = [];
+    let acceptedPresetEvents: RuntimeVariantResult["perturbations"] | undefined;
+    const pendingPerturbations = [...(variant.perturbations ?? [])].sort(
+      (left, right) => left.tick - right.tick || left.id.localeCompare(right.id)
+    );
+    const applicableScenarioIds = requestedScenarioIds.filter(
+      (scenarioId) =>
+        fixture.scenarioIds.includes(scenarioId) &&
+        (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
+    );
+    const fullProductionProof = applicableScenarioIds.some(
+      (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18"].includes(id) || id.startsWith("TECH-")
+    );
+    const captureProduction =
+      fullProductionProof ||
+      process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1" ||
+      variant.captureConstruction === true ||
+      applicableScenarioIds.some((id) => ["ECO-05", "ECO-06", "H-16"].includes(id));
+    const productionHorizons = applicableScenarioIds.flatMap((id) => {
+      const contract =
+        fixture.assertions[id]?.requiredProductionContracts?.[variant.id] ??
+        fixture.assertions[id]?.requiredTechnologyContracts?.[variant.id] ??
+        fixture.assertions[id]?.requiredSupplyRecovery;
+      return contract ? [contract.latestTick] : [];
+    });
+    const productionHorizon = productionHorizons.length
+      ? Math.max(...productionHorizons)
+      : variant.captureConstruction === true
+        ? (variant.checkpointTicks ?? fixture.recipe.checkpointTicks).at(-1)
+        : undefined;
+    let productionCapture = captureProduction
+      ? await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber, productionHorizon)
+      : undefined;
+    const closedProductionHorizon = productionCapture?.frontiers?.latestTick ?? productionHorizon;
+    let productionClosedThrough = productionCapture?.frontiers?.closedThroughTick ?? -1;
+    let stopReason: RuntimeVariantResult["stopReason"] = "checkpoint_ceiling";
+    let satisfiedSinceTick: number | null = null;
+    const maximumTick = Math.max(
+      ...applicableScenarioIds.map(
+        (scenarioId) => fixture.assertions[scenarioId]?.maximumTick ?? last(fixture.recipe.checkpointTicks)
+      )
+    );
+    const checkpointTicks = [...new Set(variant.checkpointTicks ?? fixture.recipe.checkpointTicks)]
+      .filter((tick) => tick <= maximumTick)
+      .sort((left, right) => left - right);
+    if (checkpointTicks.length === 0) throw new Error("runtime_variant_has_no_checkpoints");
+    for (const [index, targetTick] of checkpointTicks.entries()) {
+      while (pendingPerturbations[0] && pendingPerturbations[0].tick <= targetTick) {
+        const perturbation = pendingPerturbations.shift();
+        if (!perturbation) break;
+        const perturbationStartedAt = performance.now();
+        await advanceTo(perturbation.tick, index);
+        await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
+        await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
+        perturbations.push(await applyRuntimePerturbation(page, perturbation, fixture.recipe.aiPlayerNumber));
+        if (profiling) perturbationMs += performance.now() - perturbationStartedAt;
+      }
+      const advanceStartedAt = performance.now();
+      const diagnosticStopAtCaptureHorizon =
+        process.env.AI_SKIRMISH_DIAGNOSTIC_STOP_AT_CAPTURE_HORIZON === "1" &&
+        closedProductionHorizon !== undefined &&
+        targetTick >= closedProductionHorizon;
+      const stopAtTick = diagnosticStopAtCaptureHorizon
+        ? closedProductionHorizon
+        : closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
+          ? closedProductionHorizon + 1
+          : targetTick;
+      await advanceTo(stopAtTick, index);
+      currentPhase = `settle_at_tick_${stopAtTick}`;
+      if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
+        process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=advance complete\n`);
+      const settleStartedAt = performance.now();
+      await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
+      await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
+      if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
+        process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=settle complete\n`);
+      const captureStartedAt = performance.now();
+      currentPhase = `capture_checkpoint_${targetTick}`;
+      if (await beforeCheckpoint?.(page, index, targetTick)) {
+        if (profiling)
+          checkpointPhases.push({
+            targetTick,
+            advanceMs: Math.round(settleStartedAt - advanceStartedAt),
+            settleMs: Math.round(captureStartedAt - settleStartedAt),
+            captureMs: 0
+          });
+        continue;
+      }
+      const checkpoint = await captureCheckpoint(
+        page,
+        fixture.recipe.aiPlayerNumber,
+        targetTick,
+        applicableScenarioIds.some((id) => fixture.assertions[id]?.requireHiddenStateParity)
+      );
+      if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
+        process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=checkpoint complete\n`);
+      checkForFatalAiError(checkpoint.tick);
+      checkpoints.push(checkpoint);
+      const pendingEventTicks = [
+        ...pendingPerturbations.map((event) => event.tick),
+        ...(variant.presetWorld?.events ?? []).map((event) => event.tick),
+        // The request can precede its command's application by many ticks. Keep the whole authored intervention.
+        ...(variant.presetWorld?.controls ?? []).map((control) =>
+          Math.max(control.requestTick, control.applicationTick)
+        )
+      ];
+      const terminal = canStopAfterTerminal(fixture.assertions, applicableScenarioIds, checkpoint, pendingEventTicks);
+      const probe =
+        captureProduction &&
+        checkpoint.tick === targetTick &&
+        nativeEvidence?.checkpoints.includes(targetTick) === true &&
+        !nativeEvidenceInterventionsPending(variant, checkpoint.tick);
+      // A terminal score does not seal its own native tick. Close that tick before reading early-terminal proof.
+      // An ordinary evidence checkpoint also needs the next native frame to seal its prefix.
+      if (
+        captureProduction &&
+        productionClosedThrough < checkpoint.tick &&
+        (probe ||
+          (checkpoint.gameResult === "win" &&
+            applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory)))
+      ) {
+        await advanceTo(checkpoint.tick + 1, index);
+        if (probe) await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
+      }
+      if (captureProduction) {
+        const needsReport =
+          index === checkpointTicks.length - 1 ||
+          terminal ||
+          probe ||
+          variant.evidenceStop !== undefined ||
+          beforeCheckpoint !== undefined ||
+          process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1";
+        if (needsReport) {
+          productionCapture = await captureRuntimeProductionAuthorityWithDiagnostics(
+            page,
+            fixture.recipe.aiPlayerNumber,
+            targetTick
+          );
+          productionClosedThrough = productionCapture.frontiers?.closedThroughTick ?? -1;
+        } else {
+          productionClosedThrough = await recordRuntimeProductionBoundary(page, fixture.recipe.aiPlayerNumber);
+        }
+      }
+      await debugProbe?.(page, index, checkpoint);
+      if (profiling) {
+        checkpointPhases.push({
+          targetTick,
+          advanceMs: Math.round(settleStartedAt - advanceStartedAt),
+          settleMs: Math.round(captureStartedAt - settleStartedAt),
+          captureMs: Math.round(performance.now() - captureStartedAt)
+        });
+      }
+      if (terminal) {
+        stopReason = "terminal_result";
+        break;
+      }
+      if (probe && nativeEvidence && productionCapture) {
+        const presetEvents = await collectRuntimePresetEvents(page, variant);
+        const failures = await nativeEvidence.failures(page, {
+          ...variantStart,
+          stopReason: "native_evidence_satisfied",
+          outcomeDigest: "",
+          productionCapture,
+          checkpoints,
+          perturbations: [...perturbations, ...presetEvents],
+          aiErrors: [...aiErrors]
+        });
+        if (failures.length === 0) {
+          acceptedPresetEvents = presetEvents;
+          stopReason = "native_evidence_satisfied";
+          break;
+        }
+        lastProof = { tick: checkpoint.tick, failures };
+        if (process.env.AI_SKIRMISH_DIAGNOSTIC_PROOF_TRACE === "1")
+          process.stdout.write(
+            `[AI_SKIRMISH_PROOF] ${variant.id} tick=${checkpoint.tick} failures=${failures.join("|")}\n`
+          );
+      }
+      if (variant.evidenceStop) {
+        const next = evaluateEvidenceStopAtCheckpoint({
+          variant,
+          fixture,
+          scenarioIds: applicableScenarioIds,
+          initialBoundary,
+          effectiveSeed,
+          checkpoints,
+          perturbations,
+          aiErrors,
+          pendingEventTicks,
+          satisfiedSinceTick
+        });
+        satisfiedSinceTick = next.satisfiedSinceTick;
+        if (next.stop) {
+          stopReason = "evidence_satisfied";
+          break;
+        }
+      }
+    }
+    await beforeFinalize?.(page);
+    perturbations.push(...(acceptedPresetEvents ?? (await collectRuntimePresetEvents(page, variant))));
+
+    const outcomeDigest = digestRuntimeValue({
+      checkpoints: projectRuntimeOutcomeDigestInput(
+        checkpoints,
+        !variant.presetWorld,
+        !!variant.productionCompositionBranch
+      ),
+      perturbations,
+      aiErrors
+    });
+    const browserLongTasks = await readRuntimeLongTasks(page, profiling);
+    const productionReport =
+      productionCapture && fullProductionProof
+        ? buildRuntimeProductionReport(productionCapture, initialBoundary.presetApplication ?? undefined)
+        : undefined;
+    const result: RuntimeVariantResult = {
+      ...variantStart,
+      stopReason,
+      outcomeDigest,
+      ...(productionCapture
+        ? fullProductionProof
+          ? applicableScenarioIds.every((id) => id === "H-18") && productionReport
+            ? compactRuntimeProductionReport(productionReport)
+            : productionReport
+          : { productionCapture }
+        : {}),
+      checkpoints,
+      perturbations,
+      aiErrors: [...aiErrors],
+      ...(profiling
+        ? {
+            timing: {
+              setupMs,
+              perturbationMs: Math.round(perturbationMs),
+              totalWallMsExcludingTeardown: Math.round(performance.now() - variantStartedAt),
+              checkpointPhases,
+              browserLongTasks
+            }
+          }
+        : {})
+    };
+    // Lifecycle controls act only after the original match's native history, event facts and result have been detached.
+    await afterVariant?.(page, result);
+    return result;
+  };
+  let watchdog: ReturnType<typeof setTimeout> | undefined;
+  try {
+    if (!nativeEvidence) return await Promise.race([run(), fatalSetup]);
+    const wallClockBudgetMs =
+      process.env.AI_SKIRMISH_DIAGNOSTIC_SHORT_TIMEOUT === "1"
+        ? Math.min(nativeEvidence.wallClockBudgetMs, 30_000)
+        : nativeEvidence.wallClockBudgetMs;
+    const deadline = new Promise<never>((_, reject) => {
+      watchdog = setTimeout(() => {
+        reject(
+          new Error(
+            "runtime_focused_variant_timeout:" +
+              variant.id +
+              ":phase=" +
+              currentPhase +
+              ":tick=" +
+              lastProgressTick +
+              ":budget_ms=" +
+              wallClockBudgetMs +
+              (lastProof ? ":proof_tick=" + lastProof.tick + ":" + lastProof.failures.slice(0, 3).join("|") : "")
+          )
+        );
+      }, wallClockBudgetMs);
+    });
+    return await Promise.race([run(), fatalSetup, deadline]);
+  } finally {
+    clearTimeout(watchdog);
+    await context.close();
+  }
+}
+
+async function captureRuntimeProductionAuthorityWithDiagnostics(page: Page, playerNumber: number, targetTick: number) {
+  const trace = process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000;
+  if (!trace) return captureRuntimeProductionAuthority(page, playerNumber);
+
+  const startedAt = performance.now();
+  process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=production-authority start\n`);
+  await page.evaluate(() => {
+    (window as unknown as { __aiSkirmishProductionCaptureTrace?: boolean }).__aiSkirmishProductionCaptureTrace = true;
+  });
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const capture = captureRuntimeProductionAuthority(page, playerNumber);
+    const result = await Promise.race([
+      capture,
+      new Promise<never>((_, reject) => {
+        timeout = setTimeout(() => reject(new Error("runtime_production_capture_phase_timeout:120000ms")), 120_000);
+      })
+    ]);
+    process.stdout.write(
+      `[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=production-authority complete elapsedMs=${Math.round(
+        performance.now() - startedAt
+      )}\n`
+    );
+    return result;
+  } catch (error) {
+    process.stdout.write(
+      `[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=production-authority failed elapsedMs=${Math.round(
+        performance.now() - startedAt
+      )} reason=${error instanceof Error ? error.message : String(error)}\n`
+    );
+    throw error;
+  } finally {
+    if (timeout) clearTimeout(timeout);
+  }
+}
+
+async function advanceRuntimeToTick(
+  page: Page,
+  fixture: RuntimeFixture,
+  targetTick: number,
+  checkpointIndex: number,
+  onProgress?: (tick: number) => void
+) {
+  if (fixture.recipe.fixedStepFrames)
+    return advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, targetTick, 1, false, (tick) => {
+      onProgress?.(tick);
+      if (tick % 500 === 0)
+        process.stdout.write(
+          `[AI_SKIRMISH_PROGRESS] ${fixture.scenarioIds.join(",")} ${tick}/${targetTick} elapsedMs=${Math.round(
+            performance.now() - runtimeProgressStartedAt
+          )}\n`
+        );
+    });
+  await setSimulationState(
+    page,
+    fixture.recipe.aiPlayerNumber,
+    "resume",
+    checkpointIndex === 0 ? 1 : fixture.recipe.simulationTimeScale,
+    targetTick
+  );
+  await waitForSimulationTick(page, fixture.recipe.aiPlayerNumber, targetTick);
+}
+
+async function waitForSimulationTick(page: Page, aiPlayerNumber: number, targetTick: number): Promise<void> {
+  await page.waitForFunction(
+    ({ playerNumber, tick }) =>
+      (window.__fuzzyWaddleAiRuntimeParts?.(playerNumber)?.tickService.currentTick ?? -1) >= tick,
+    { playerNumber: aiPlayerNumber, tick: targetTick },
+    { timeout: 120_000 }
+  );
+}
+
+async function waitForSettledDecision(page: Page, aiPlayerNumber: number): Promise<void> {
+  await page.waitForFunction(
+    (playerNumber) =>
+      window.__fuzzyWaddleAiRuntimeParts?.(playerNumber)?.controller.isDecisionBoundarySettled() === true,
+    aiPlayerNumber,
+    { timeout: 30_000 }
+  );
+}
+
+async function setSimulationState(
+  page: Page,
+  aiPlayerNumber: number,
+  state: "pause" | "resume",
+  scale: number,
+  stopAtTick?: number
+): Promise<void> {
+  await page.evaluate(
+    ({ playerNumber, nextState, timeScale, stopAtTick }) => {
+      const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
+      if (!parts) throw new Error("runtime_controller_unavailable");
+      parts.tickService.setSimulationTimeScale(timeScale);
+      if (nextState === "pause") parts.tickService.pauseTick("manual");
+      else {
+        if (stopAtTick !== undefined) {
+          if (parts.tickService.currentTick >= stopAtTick) return;
+          const subscription = parts.tickService.tick$.subscribe((tick) => {
+            if (tick < stopAtTick) return;
+            parts.tickService.pauseTick("manual");
+            subscription.unsubscribe();
+          });
+        }
+        parts.tickService.resumeTick("manual");
+      }
+    },
+    { playerNumber: aiPlayerNumber, nextState: state, timeScale: scale, stopAtTick }
+  );
+}
+
+/** Read the existing optional browser performance sample without expanding ordinary match work. */
+async function readRuntimeLongTasks(page: Page, profiling: boolean) {
+  if (!profiling) return null;
+  return page.evaluate(() => {
+    const metrics = (
+      window as unknown as {
+        __skirmishPerf?: { count: number; totalMs: number; maximumMs: number };
+      }
+    ).__skirmishPerf;
+    return metrics
+      ? { count: metrics.count, totalMs: Math.round(metrics.totalMs), maximumMs: Math.round(metrics.maximumMs) }
+      : null;
+  });
+}
