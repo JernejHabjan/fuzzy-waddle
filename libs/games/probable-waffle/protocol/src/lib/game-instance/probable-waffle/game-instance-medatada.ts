@@ -371,6 +371,8 @@ export interface ProbableWaffleReplayData {
    * ordering/uniqueness semantics when reading, serializing, or extending it.
    */
   commands: ProbableWaffleReplayCommandBatch[];
+  /** Ordered application outcomes retained for deterministic incident comparison. */
+  commandOutcomes?: import("./game-command").GameCommandOutcome[];
   /** Documents the campaign events member and its declared contract at this boundary. */
   campaignEvents?: CampaignMissionRuntimeEvent[];
   /** Documents the campaign mission initial state member and its declared contract at this boundary. */
