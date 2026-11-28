@@ -42,7 +42,7 @@ it.each(["one_worker", "bootstrap", "infeasible"] as const)("authors only a pre-
   const setup = requireAiTestEntry(f.captured, 0);
   expect(setup.workerIds).toHaveLength(branch === "bootstrap" ? 0 : 1);
   expect(setup.steps.map((step) => step.objectName)).toContain(ObjectNames.Field);
-  expect(setup.steps.map((step) => step.objectName)).toContain(ObjectNames.Granary);
+  expect(setup.steps.map((step) => step.objectName)).toContain(ObjectNames.TivaraGranary);
   expect(setup.sources).toEqual([{ actorId: "tree", resourceType: ResourceType.Wood, available: 0, renewable: false }]);
   expect(f.bank).toEqual(setup.bank);
   expect(f.bank.wood).toBe(branch === "infeasible" ? 0 : 140);

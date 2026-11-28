@@ -25,7 +25,7 @@ export const catalog: AiCapabilityCatalog = {
       movementDomains: ["ground"],
       targetDomains: [],
       produces: [],
-      constructs: [ObjectNames.Olival, ObjectNames.AnkGuard, ObjectNames.Granary, ObjectNames.Field],
+      constructs: [ObjectNames.Olival, ObjectNames.AnkGuard, ObjectNames.TivaraGranary, ObjectNames.Field],
       researches: [],
       gathers: [ResourceType.Wood, ResourceType.Food],
       housingCapacity: null,

@@ -66,7 +66,8 @@ export function projectAvailableCatalogEntries(
   if (!techTree) return;
   // Never enumerate the global graph here: that would expose another faction's
   // roster even when no opponent actor has been observed.
-  for (const objectName of techTree.getFactionActorIds(player.factionType!)) {
+  const factionActorIds = new Set(techTree.getFactionActorIds(player.factionType!));
+  for (const objectName of factionActorIds) {
     const level = techTree.getResearchedLevelForUnit(playerNumber, objectName);
     const definition = getPwActorDefinition(objectName, level);
     if (!definition) continue;
@@ -86,7 +87,7 @@ export function projectAvailableCatalogEntries(
       definition,
       level,
       definition.components?.research?.availableResearch ?? [],
-      actorNames
+      factionActorIds
     );
     catalogEntries.set(entry.capabilityId, entry);
   }
