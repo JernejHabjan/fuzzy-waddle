@@ -1,6 +1,6 @@
 ---
 name: fuzzy-waddle-autonomous-delivery
-description: Deliver a single well-scoped Fuzzy Waddle GitHub issue from investigation through a verified draft PR. Use for issues labeled agent-ready, decision-pr, or research; use it when Codex may create branches, commits, pushes, and draft PRs but must stop for product or high-risk decisions.
+description: Deliver a single well-scoped Fuzzy Waddle GitHub issue from investigation through a verified draft PR. Use for issues labeled agent-ready, decision-pr, or research; use it when the coding agent may create branches, commits, pushes, and draft PRs but must stop for product or high-risk decisions.
 ---
 
 # Fuzzy Waddle Autonomous Delivery
