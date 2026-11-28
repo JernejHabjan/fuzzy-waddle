@@ -62,7 +62,15 @@ test("incremental runtime parts assemble into a valid decodable runtime artifact
       ...metadata,
       status: "passed",
       scenarios: [
-        { scenarioId: "ECO-01", passed: true, failures: [], variants: [{ variantId: "v1", checkpoints: [] }] }
+        {
+          scenarioId: "ECO-01",
+          passed: true,
+          failures: [],
+          variants: [
+            { variantId: "v1", checkpoints: [] },
+            { variantId: "v2", checkpoints: [] }
+          ]
+        }
       ],
       workCounts: { scenarios: 1, decisions: 5, ticks: 100 }
     });
@@ -73,7 +81,9 @@ test("incremental runtime parts assemble into a valid decodable runtime artifact
       scenarios: [{ scenarioId: "ECO-03", passed: false, failures: ["runtime_test_timeout:180000ms"], variants: [] }],
       workCounts: { scenarios: 1, decisions: 0, ticks: 0 }
     });
+    const first = assembleRuntimeParts(artifactPath, metadata);
     const assembled = assembleRuntimeParts(artifactPath, metadata);
+    assert.ok(first);
     assert.ok(assembled);
     const decoded = decodeRuntimeArtifact(
       JSON.parse(readFileSync(artifactPath, "utf8")) as Parameters<typeof decodeRuntimeArtifact>[0],

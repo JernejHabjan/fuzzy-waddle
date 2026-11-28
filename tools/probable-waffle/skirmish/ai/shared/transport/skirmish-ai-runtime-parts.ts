@@ -1,5 +1,14 @@
 import type { RuntimeArtifactDocument } from "../../contracts/reports/runtime-artifact-document.ts";
-import { copyFileSync, existsSync, linkSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  linkSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync
+} from "node:fs";
 import { join } from "node:path";
 import { decodeRuntimeArtifact, encodeRuntimeArtifact } from "./skirmish-ai-runtime-artifact-codec.ts";
 
@@ -10,6 +19,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function retainVariantFile(source: string, destination: string): void {
+  rmSync(destination, { force: true });
   try {
     linkSync(source, destination);
   } catch (error) {
