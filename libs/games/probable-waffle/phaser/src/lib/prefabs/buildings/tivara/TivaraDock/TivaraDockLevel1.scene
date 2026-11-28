@@ -1,0 +1,44 @@
+{
+    "id": "8abd01aa-c84e-405d-b8f9-d87e72fdac1d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "4dfc3f27-cd24-4923-9dd5-256538e40c3e",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "42ef2efb-4ad7-4c8f-99b8-9a88cd5bf607",
+                    "label": "tivaraDockLevel1Image",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/dock/tivara-dock3.png"
+                    },
+                    "y": -32
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1036,5 +1036,107 @@ export const weaponDefinitions = {
       fire: 400,
       hit: 0
     }
+  },
+  [WeaponType.CatapultRock]: {
+    weaponType: WeaponType.CatapultRock,
+    canTargetAir: false,
+    projectile: {
+      type: ProjectileType.CatapultRockProjectile,
+      speed: 420,
+      orientation: {
+        randomizeOrientation: true,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: EffectsAnims.debrisAnimations
+      },
+      trajectoryType: "parabolic" as const,
+      parabolicPeakHeight: 160
+    },
+    damage: 45,
+    damageType: DamageType.Physical,
+    cooldown: 4000,
+    range: 9,
+    minRange: 3,
+    highGroundRangeBonus: 2,
+    animationType: AnimationType.Shoot,
+    sounds: {
+      preparing: SharedActorActionsSfxLeatherNockSounds,
+      fire: SharedActorActionsSfxArrowShootMultipleSounds,
+      hit: SharedActorActionsSfxArrowHitSounds
+    },
+    delays: {
+      fire: 450,
+      hit: 0
+    }
+  },
+  [WeaponType.BallistaBolt]: {
+    weaponType: WeaponType.BallistaBolt,
+    canTargetAir: true,
+    projectile: {
+      type: ProjectileType.BallistaBoltProjectile,
+      speed: 750,
+      orientation: {
+        randomizeOrientation: false,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: EffectsAnims.debrisAnimations
+      }
+    },
+    damage: 30,
+    damageType: DamageType.Physical,
+    cooldown: 2500,
+    range: 8,
+    minRange: 2,
+    highGroundRangeBonus: 1,
+    animationType: AnimationType.Shoot,
+    sounds: {
+      preparing: SharedActorActionsSfxLeatherNockSounds,
+      fire: SharedActorActionsSfxArrowShootMultipleSounds,
+      hit: SharedActorActionsSfxArrowHitSounds
+    },
+    delays: {
+      fire: 300,
+      hit: 0
+    }
+  },
+  [WeaponType.CannonShot]: {
+    weaponType: WeaponType.CannonShot,
+    canTargetAir: false,
+    projectile: {
+      type: ProjectileType.CannonBallProjectile,
+      speed: 520,
+      orientation: {
+        randomizeOrientation: false,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: EffectsAnims.fireImpacts
+      },
+      trajectoryType: "parabolic" as const,
+      parabolicPeakHeight: 90,
+      trailEffect: {
+        key: "factions",
+        frame: "buildings/skaduwee/infantry_inn/cloud-vertical.png",
+        intervalMs: 70
+      }
+    },
+    damage: 60,
+    damageType: DamageType.Fire,
+    cooldown: 4500,
+    range: 8,
+    minRange: 3,
+    highGroundRangeBonus: 1,
+    animationType: AnimationType.Shoot,
+    sounds: {
+      preparing: SharedActorActionsSfxLeatherNockSounds,
+      fire: SharedActorActionsSfxArrowShootMultipleSounds,
+      hit: SharedActorActionsSfxArrowHitSounds
+    },
+    delays: {
+      fire: 400,
+      hit: 0
+    }
   }
 };

@@ -1,0 +1,44 @@
+{
+    "id": "da7c9d31-38fc-4413-874a-3dfd93c85f60",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "759d3a56-0cfa-40f7-9761-08666f09e98e",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "b4e46534-6b07-4608-afea-87acc93c3975",
+                    "label": "tivaraGranaryLevel1Image",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/granary/tivara-granary3.png"
+                    },
+                    "y": -32
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

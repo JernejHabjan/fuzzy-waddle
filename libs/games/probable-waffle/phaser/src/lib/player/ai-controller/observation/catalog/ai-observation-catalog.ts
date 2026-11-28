@@ -85,7 +85,8 @@ export function projectAvailableCatalogEntries(
       objectName,
       definition,
       level,
-      definition.components?.research?.availableResearch ?? []
+      definition.components?.research?.availableResearch ?? [],
+      actorNames
     );
     catalogEntries.set(entry.capabilityId, entry);
   }
@@ -96,8 +97,21 @@ export function projectCatalogDefinition(
   objectName: ObjectNames,
   definition: NonNullable<ReturnType<typeof getPwActorDefinition>>,
   level: number,
-  researches: readonly ResearchType[]
+  researches: readonly ResearchType[],
+  factionActorIds?: ReadonlySet<ObjectNames>
 ): AiCapabilityCatalogEntry {
+  const anyOfPrereqs = definition.components?.buildingPrerequisites?.requiresAnyOf ?? [];
+  const matchingAnyOf = factionActorIds
+    ? anyOfPrereqs.filter((candidate) => factionActorIds.has(candidate))
+    : anyOfPrereqs;
+  const requiredObjectNames = [
+    ...new Set([
+      ...(definition.components?.requirements?.actors ?? []),
+      ...(definition.components?.buildingPrerequisites?.requiresAllOf ?? []),
+      ...matchingAnyOf
+    ])
+  ].sort();
+
   return {
     capabilityId: `${objectName}:level:${level}`,
     family:
@@ -133,7 +147,7 @@ export function projectCatalogDefinition(
     constructionProfile: {
       requiresAssignedBuilder: (definition.components?.constructable?.maxAssignedBuilders ?? 0) > 0,
       resourceCost: { ...(definition.components?.productionCost?.resources ?? {}) },
-      requiredObjectNames: [...(definition.components?.requirements?.actors ?? [])].sort(),
+      requiredObjectNames,
       footprintRadiusTiles: Math.max(
         0,
         Math.ceil(

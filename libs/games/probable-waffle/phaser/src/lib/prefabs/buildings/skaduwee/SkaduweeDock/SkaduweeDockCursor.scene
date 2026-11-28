@@ -1,0 +1,44 @@
+{
+    "id": "6c6c3994-da2f-4e9b-b3e4-7cfea9990098",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "393663b1-ef78-46ff-bdab-c36fcf49ffb3",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "17fd191a-41c6-4418-b73c-253dd27c566d",
+                    "label": "skaduweeDockCursorImage",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/dock/skaduwee-dock3.png"
+                    },
+                    "y": -32
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

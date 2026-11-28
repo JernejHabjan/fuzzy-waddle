@@ -40,5 +40,8 @@ export enum WeaponType {
   FlowerSpit = "FlowerSpit",
   FlowerStomp = "FlowerStomp",
   "SandWormBite" = "SandWormBite",
-  "SandWormShootAcid" = "SandWormShootAcid"
+  "SandWormShootAcid" = "SandWormShootAcid",
+  CatapultRock = "CatapultRock",
+  BallistaBolt = "BallistaBolt",
+  CannonShot = "CannonShot"
 }

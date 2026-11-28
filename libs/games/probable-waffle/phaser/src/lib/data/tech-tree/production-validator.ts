@@ -230,15 +230,13 @@ export class ProductionValidator {
     if (!actorIndex) return;
 
     const ownedActors = actorIndex.getOwnedActors(playerNumber);
-    // Filter to only include production buildings that are finished and alive
-    const productionBuildings = Array.from(ownedActors).filter((actor) => {
-      return getActorComponent(actor, ProductionComponent) !== undefined && shouldConsiderActorUnlocked(actor);
-    });
+    // Include all finished, alive owned actors so non-production buildings (e.g. Granaries) satisfy buildingPrerequisites.
+    const validBuildings = Array.from(ownedActors).filter((actor) => shouldConsiderActorUnlocked(actor));
 
     // Check requiresAnyOf
     if (buildingPrereqs.requiresAnyOf && buildingPrereqs.requiresAnyOf.length > 0) {
       const hasAnyRequired = buildingPrereqs.requiresAnyOf.some((requiredBuilding) =>
-        productionBuildings.some((building) => {
+        validBuildings.some((building) => {
           return building.name === requiredBuilding;
         })
       );
@@ -252,7 +250,7 @@ export class ProductionValidator {
     if (buildingPrereqs.requiresAllOf && buildingPrereqs.requiresAllOf.length > 0) {
       const missingRequired = buildingPrereqs.requiresAllOf.filter(
         (requiredBuilding) =>
-          !productionBuildings.some((building) => {
+          !validBuildings.some((building) => {
             return building.name === requiredBuilding;
           })
       );

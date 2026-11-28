@@ -24,6 +24,11 @@ import { ProductionValidator } from "../../../data/tech-tree/production-validato
 import { NavigationService } from "../navigation.service";
 import { TilemapComponent } from "../../tilemap/tilemap.component";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
+import {
+  createNavigationTerrainProbe,
+  isConstructionFootprintValidForRule
+} from "../../../entity/components/construction/construction-placement-validator";
 
 /** Applies the shared native construction checks and lifecycle; placement observation adds no route query. */
 export function applySharedConstructionCommand(
@@ -130,10 +135,12 @@ export function applySharedConstructionCommand(
           footprint.some((siteTile) => actorTile.x === siteTile.x && actorTile.y === siteTile.y)
         )
     );
+  const placementRule =
+    getPwActorDefinition(command.actorName, null)?.components?.constructable?.placementRule ?? "ground";
   const illegal =
     footprint.length === 0 ||
     !navigation ||
-    footprint.some((tile) => !navigation.isTileGridWithoutBlockingObjectsNavigable(tile)) ||
+    !isConstructionFootprintValidForRule(footprint, placementRule, createNavigationTerrainProbe(navigation, true)) ||
     hasCollision;
   emitConstructionPlacement(scene, command, site, footprint, !illegal, observedAdmissionCost);
   if (illegal) {

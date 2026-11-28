@@ -135,7 +135,15 @@ import SandWorm from "../../../prefabs/characters/mobs/sand_worm/SandWorm";
 import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
 import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
 import Field from "../../../prefabs/buildings/shared/Field";
-import Granary from "../../../prefabs/buildings/shared/Granary";
+import TivaraGranary from "../../../prefabs/buildings/tivara/TivaraGranary";
+import TivaraDock from "../../../prefabs/buildings/tivara/TivaraDock";
+import TivaraSiegeWorkshop from "../../../prefabs/buildings/tivara/TivaraSiegeWorkshop";
+import SkaduweeGranary from "../../../prefabs/buildings/skaduwee/SkaduweeGranary";
+import SkaduweeDock from "../../../prefabs/buildings/skaduwee/SkaduweeDock";
+import SkaduweeSiegeWorkshop from "../../../prefabs/buildings/skaduwee/SkaduweeSiegeWorkshop";
+import Catapult from "../../../prefabs/characters/shared/Catapult/Catapult";
+import Ballista from "../../../prefabs/characters/shared/Ballista/Ballista";
+import Cannon from "../../../prefabs/characters/shared/Cannon/Cannon";
 import UndeadLandDeadTreeAnim3 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim3";
 import UndeadLandDeadTreeAnim2 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim2";
 import UndeadLandDeadTreeAnim1 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim1";
@@ -1130,9 +1138,41 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const field = new Field(this, -256, 560);
     this.add.existing(field);
 
-    // granary
-    const granary = new Granary(this, -127, 690);
-    this.add.existing(granary);
+    // tivaraGranary
+    const tivaraGranary = new TivaraGranary(this, -127, 690);
+    this.add.existing(tivaraGranary);
+
+    // tivaraDock
+    const tivaraDock = new TivaraDock(this, 96, 368);
+    this.add.existing(tivaraDock);
+
+    // tivaraSiegeWorkshop
+    const tivaraSiegeWorkshop = new TivaraSiegeWorkshop(this, -320, 760);
+    this.add.existing(tivaraSiegeWorkshop);
+
+    // skaduweeGranary
+    const skaduweeGranary = new SkaduweeGranary(this, 832, 624);
+    this.add.existing(skaduweeGranary);
+
+    // skaduweeDock
+    const skaduweeDock = new SkaduweeDock(this, 832, 432);
+    this.add.existing(skaduweeDock);
+
+    // skaduweeSiegeWorkshop
+    const skaduweeSiegeWorkshop = new SkaduweeSiegeWorkshop(this, 960, 688);
+    this.add.existing(skaduweeSiegeWorkshop);
+
+    // catapult
+    const catapult = new Catapult(this, -480, 760);
+    this.add.existing(catapult);
+
+    // ballista
+    const ballista = new Ballista(this, -416, 816);
+    this.add.existing(ballista);
+
+    // cannon
+    const cannon = new Cannon(this, -352, 864);
+    this.add.existing(cannon);
 
     // undeadLandDeadTreeAnim3
     const undeadLandDeadTreeAnim3 = new UndeadLandDeadTreeAnim3(this, 181, 803);
@@ -1778,9 +1818,41 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const fieldEditorOwner = new EditorOwner(field);
     fieldEditorOwner.owner_id = "1";
 
-    // granary (components)
-    const granaryEditorOwner = new EditorOwner(granary);
-    granaryEditorOwner.owner_id = "1";
+    // tivaraGranary (components)
+    const tivaraGranaryEditorOwner = new EditorOwner(tivaraGranary);
+    tivaraGranaryEditorOwner.owner_id = "1";
+
+    // tivaraDock (components)
+    const tivaraDockEditorOwner = new EditorOwner(tivaraDock);
+    tivaraDockEditorOwner.owner_id = "1";
+
+    // tivaraSiegeWorkshop (components)
+    const tivaraSiegeWorkshopEditorOwner = new EditorOwner(tivaraSiegeWorkshop);
+    tivaraSiegeWorkshopEditorOwner.owner_id = "1";
+
+    // skaduweeGranary (components)
+    const skaduweeGranaryEditorOwner = new EditorOwner(skaduweeGranary);
+    skaduweeGranaryEditorOwner.owner_id = "1";
+
+    // skaduweeDock (components)
+    const skaduweeDockEditorOwner = new EditorOwner(skaduweeDock);
+    skaduweeDockEditorOwner.owner_id = "1";
+
+    // skaduweeSiegeWorkshop (components)
+    const skaduweeSiegeWorkshopEditorOwner = new EditorOwner(skaduweeSiegeWorkshop);
+    skaduweeSiegeWorkshopEditorOwner.owner_id = "1";
+
+    // catapult (components)
+    const catapultEditorOwner = new EditorOwner(catapult);
+    catapultEditorOwner.owner_id = "1";
+
+    // ballista (components)
+    const ballistaEditorOwner = new EditorOwner(ballista);
+    ballistaEditorOwner.owner_id = "1";
+
+    // cannon (components)
+    const cannonEditorOwner = new EditorOwner(cannon);
+    cannonEditorOwner.owner_id = "1";
 
     // commonBoat (components)
     const commonBoatEditorOwner = new EditorOwner(commonBoat);

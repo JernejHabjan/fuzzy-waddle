@@ -1,0 +1,873 @@
+{
+    "anims": [
+        {
+            "key": "siege_weapons/ballista/attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/e/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/e/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/e/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/e/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/n/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/n/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/n/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/n/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/n/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/n/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/attack/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/ne/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/ne/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/ne/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/ne/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/ne/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/ne/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/attack/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/nw/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/nw/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/nw/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/nw/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/nw/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/nw/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/attack/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/se/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/se/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/se/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/se/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/se/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/se/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/attack/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/sw/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/sw/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/sw/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/sw/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/sw/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/sw/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/w/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/w/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/attack/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": 0,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/idle/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/e/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/move/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/e/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/e/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/e/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/e/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/idle/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/n/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/move/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/n/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/n/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/n/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/n/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/n/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/n/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/idle/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/ne/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/move/ne",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/ne/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/ne/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/ne/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/ne/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/ne/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/ne/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/idle/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/nw/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/move/nw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/nw/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/nw/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/nw/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/nw/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/nw/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/nw/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/idle/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/move/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/idle/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/se/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/move/se",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/se/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/se/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/se/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/se/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/se/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/se/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/idle/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/sw/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/move/sw",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/sw/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/sw/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/sw/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/sw/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/sw/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/sw/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/idle/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/w/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "siege_weapons/ballista/move/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/w/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/w/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "siege_weapons_ballista",
+                    "frame": "level1/move/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "meta": {
+        "app": "Phaser Editor - Animations Editor",
+        "contentType": "phasereditor2d.core.animations.AnimationContentType",
+        "version": 2
+    }
+}

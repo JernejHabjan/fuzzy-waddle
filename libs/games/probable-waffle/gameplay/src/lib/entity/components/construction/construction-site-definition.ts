@@ -1,3 +1,5 @@
+import type { ConstructionPlacementRule } from "./construction-placement-rule";
+
 export type ConstructionSiteDefinition = {
   // Whether the building site consumes builders when building is finished
   readonly consumesBuilders: boolean;
@@ -17,4 +19,6 @@ export type ConstructionSiteDefinition = {
   };
   // Whether multiple buildings can be placed one after another by dragging the mouse - Wall building for example
   readonly canBeDragPlaced: boolean;
+  // Terrain placement rule; defaults to "ground" when omitted
+  readonly placementRule?: ConstructionPlacementRule;
 };

@@ -6,7 +6,8 @@ import type { TechNodeKind } from "@fuzzy-waddle/probable-waffle-gameplay/data/t
 export interface TechTreeNode {
   id: ObjectNames; // Upgrades may be synthetic strings
   kind: TechNodeKind;
-  prerequisites: PreRequirement; // ids this node depends on
+  prerequisites: PreRequirement; // ids this node depends on (AND)
+  anyOfPrerequisites?: ObjectNames[][]; // OR-groups: at least one actor in each group must be unlocked
   produces: ObjectNames[]; // unit production edges
   constructs: ObjectNames[]; // building construction edges
   definition: PrefabDefinition; // Full actor definition for validation and reference

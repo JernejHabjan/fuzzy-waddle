@@ -9,5 +9,8 @@ export enum ProjectileType {
   VaseProjectile = "VaseProjectile",
   CorpyAcidProjectile = "CorpyAcidProjectile",
   SnowstormProjectile = "snowstormProjectile",
-  FireArrowProjectile = "fireArrowProjectile"
+  FireArrowProjectile = "fireArrowProjectile",
+  CatapultRockProjectile = "catapultRockProjectile",
+  BallistaBoltProjectile = "ballistaBoltProjectile",
+  CannonBallProjectile = "cannonBallProjectile"
 }

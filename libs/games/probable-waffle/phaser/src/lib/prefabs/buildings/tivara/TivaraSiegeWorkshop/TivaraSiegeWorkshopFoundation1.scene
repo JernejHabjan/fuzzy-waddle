@@ -1,0 +1,44 @@
+{
+    "id": "9f899e1d-bd24-4ade-941c-c09bf21c5705",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "0e844078-7a18-4f24-9636-351c59d0cd48",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "bf12a12e-e7cb-4df2-895d-428ad9939448",
+                    "label": "tivaraSiegeWorkshopFoundation1Image",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/workshop/tivara-siege-workshop1.png"
+                    },
+                    "y": -32
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

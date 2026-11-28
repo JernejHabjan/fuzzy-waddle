@@ -1,0 +1,40 @@
+{
+    "id": "02aa91e5-6168-45c0-905a-1c7227941b3b",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "a23af6bc-3f15-4cf5-998d-a9e10b89c81e",
+            "label": "ballista",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 64,
+            "hitArea.y": 64,
+            "hitArea.radius": 28,
+            "texture": {
+                "key": "siege_weapons_ballista",
+                "frame": "level1/move/s/0.png"
+            },
+            "x": 64,
+            "y": 64
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

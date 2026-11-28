@@ -1,0 +1,89 @@
+{
+    "id": "6f428be8-f08d-4998-955f-48cd4959b866",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "36f85064-e2d3-4d75-9947-6f8e3f5551a1",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "prefabId": "6564dafc-a538-4121-b666-a6d9447cef41",
+                    "id": "b7460f8f-fd92-42d3-a77a-f39de93335b5",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "skaduweeGranaryCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "08c31c8c-d40b-44a6-9292-cf5841906a77",
+                    "id": "01acb70e-961c-4b0b-9e85-14dc1b1e930e",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "skaduweeGranaryFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "c619655d-f2c6-4544-900a-491d006ef721",
+                    "id": "32f07817-54c2-4312-8a7d-d8b880b0de28",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "skaduweeGranaryFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "155bfaf0-4b32-42e5-89ee-c64fcefa1eb1",
+                    "id": "53871b9e-3ad5-47f0-bea6-f759a57903f2",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "skaduweeGranaryLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

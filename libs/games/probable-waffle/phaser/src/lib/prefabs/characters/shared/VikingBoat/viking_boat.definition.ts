@@ -66,8 +66,8 @@ export const vikingBoatDefinition = {
     housingCost: {
       housingNeeded: 2
     },
-    requirements: {
-      actors: [ObjectNames.Sandhold]
+    buildingPrerequisites: {
+      requiresAnyOf: [ObjectNames.TivaraDock, ObjectNames.SkaduweeDock]
     },
     translatable: {
       tileMoveDuration: 450,

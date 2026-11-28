@@ -95,6 +95,15 @@ import ForestWendigo from "../prefabs/characters/mobs/forest_wendigo/ForestWendi
 import SnowWendigo from "../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
 import VikingBoat from "../prefabs/characters/shared/VikingBoat/VikingBoat";
 import CommonBoat from "../prefabs/characters/shared/CommonBoat/CommonBoat";
+import Catapult from "../prefabs/characters/shared/Catapult/Catapult";
+import Ballista from "../prefabs/characters/shared/Ballista/Ballista";
+import Cannon from "../prefabs/characters/shared/Cannon/Cannon";
+import TivaraGranary from "../prefabs/buildings/tivara/TivaraGranary";
+import TivaraDock from "../prefabs/buildings/tivara/TivaraDock";
+import TivaraSiegeWorkshop from "../prefabs/buildings/tivara/TivaraSiegeWorkshop";
+import SkaduweeGranary from "../prefabs/buildings/skaduwee/SkaduweeGranary";
+import SkaduweeDock from "../prefabs/buildings/skaduwee/SkaduweeDock";
+import SkaduweeSiegeWorkshop from "../prefabs/buildings/skaduwee/SkaduweeSiegeWorkshop";
 import CropsCabbage from "../prefabs/outside/crops/cabbage/CropsCabbage";
 import CropsPeppers from "../prefabs/outside/crops/peppers/CropsPeppers";
 import CropsBeans from "../prefabs/outside/crops/beans/CropsBeans";
@@ -158,7 +167,10 @@ const general: ActorMap = {
   [ObjectNames.GeneralWarrior]: GeneralWarrior,
   [ObjectNames.Centurion]: Centurion,
   [ObjectNames.VikingBoat]: VikingBoat,
-  [ObjectNames.CommonBoat]: CommonBoat
+  [ObjectNames.CommonBoat]: CommonBoat,
+  [ObjectNames.Catapult]: Catapult,
+  [ObjectNames.Ballista]: Ballista,
+  [ObjectNames.Cannon]: Cannon
 };
 
 const mobs: ActorMap = {
@@ -216,6 +228,9 @@ const tivaraBuildings: ActorMap = {
   [ObjectNames.Olival]: Olival,
   [ObjectNames.Sandhold]: Sandhold,
   [ObjectNames.Temple]: Temple,
+  [ObjectNames.TivaraGranary]: TivaraGranary,
+  [ObjectNames.TivaraDock]: TivaraDock,
+  [ObjectNames.TivaraSiegeWorkshop]: TivaraSiegeWorkshop,
   [ObjectNames.Stairs]: Stairs,
   [ObjectNames.WatchTower]: WatchTower,
   [ObjectNames.Wall]: Wall,
@@ -243,6 +258,9 @@ const skaduweeBuildings: ActorMap = {
   [ObjectNames.InfantryInn]: InfantryInn,
   [ObjectNames.Owlery]: Owlery,
   [ObjectNames.Emberstone]: Emberstone,
+  [ObjectNames.SkaduweeGranary]: SkaduweeGranary,
+  [ObjectNames.SkaduweeDock]: SkaduweeDock,
+  [ObjectNames.SkaduweeSiegeWorkshop]: SkaduweeSiegeWorkshop,
   [ObjectNames.WorkMill]: WorkMill,
   [ObjectNames.WatchTower]: WatchTower,
   [ObjectNames.Wall]: Wall,

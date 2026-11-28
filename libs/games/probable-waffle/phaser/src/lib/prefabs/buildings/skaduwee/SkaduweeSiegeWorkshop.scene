@@ -1,0 +1,89 @@
+{
+    "id": "8d39c540-65e2-489e-9f2a-6ae196ad4e63",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "82eccde6-1fcd-4d59-b19b-399dbc247163",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "prefabId": "965e9dca-4cff-406d-9b15-14c8c11cb2c1",
+                    "id": "1ed412b1-7f40-4abb-94b9-cb686e72d041",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "skaduweeSiegeWorkshopCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "07f43851-2f83-473b-b817-aa9bb771d3e4",
+                    "id": "60a3bd99-f8ff-4bf0-84c9-8b951eec3182",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "skaduweeSiegeWorkshopFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "bd26a45c-67db-423b-8785-afd7fabf0923",
+                    "id": "4e4e3fef-07fd-46a1-a9eb-6e0497281587",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "skaduweeSiegeWorkshopFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "109c0d48-6b18-4beb-a083-10f74afd523c",
+                    "id": "8d8d1bd6-55ec-4399-a35d-ea2b89c49d49",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "skaduweeSiegeWorkshopLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -37,6 +37,12 @@ import {
   emitStructureTopologyChangedAtTile
 } from "../../prefabs/buildings/tivara/navigation-topology.events";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
+import type { ConstructionPlacementRule } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-placement-rule";
+import {
+  createNavigationTerrainProbe,
+  isConstructionFootprintValidForRule,
+  isConstructionTileEligibleForRule
+} from "../../entity/components/construction/construction-placement-validator";
 const Vector2 = Phaser.Math.Vector2;
 type Vector2 = Phaser.Math.Vector2;
 
@@ -434,7 +440,9 @@ export class BuildingCursor {
   private _canPlaceAt(
     tiles: Vector2Simple[],
     ignoreGameObjects: GameObjects.GameObject[] = [],
-    trackActorsToMove: boolean = false
+    trackActorsToMove: boolean = false,
+    placementRule: ConstructionPlacementRule = "ground",
+    singleTilePreview: boolean = false
   ): boolean {
     if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent) return false;
 
@@ -445,9 +453,12 @@ export class BuildingCursor {
     });
     if (!allTilesVisible) return false;
 
-    // 2. Check Walkability
-    const allTilesNavigable = tiles.every((tile) => this.navigationService!.isTileNavigable(tile));
-    if (!allTilesNavigable) return false;
+    // 2. Check Terrain Placement Rule (ground vs coastal)
+    const terrainProbe = createNavigationTerrainProbe(this.navigationService, false);
+    const terrainValid = singleTilePreview
+      ? tiles.every((tile) => isConstructionTileEligibleForRule(tile, placementRule, terrainProbe))
+      : isConstructionFootprintValidForRule(tiles, placementRule, terrainProbe);
+    if (!terrainValid) return false;
 
     // 3. Check for collisions with other actors. Owned mobile actors can be
     // ignored here because placement will order them to move before commit.
@@ -501,8 +512,10 @@ export class BuildingCursor {
 
     // Create the list of objects to ignore (don't collide with self or with objects in the ignore list)
     const objectsToIgnore = [building, ...ignoreGameObjects];
+    const placementRule =
+      getPwActorDefinition(building.name as ObjectNames, null)?.components?.constructable?.placementRule ?? "ground";
 
-    return this._canPlaceAt(tilesUnderBuilding, objectsToIgnore, trackActorsToMove);
+    return this._canPlaceAt(tilesUnderBuilding, objectsToIgnore, trackActorsToMove, placementRule, false);
   }
 
   private drawPlacementGrid(location: Vector2Simple) {
@@ -527,6 +540,10 @@ export class BuildingCursor {
     const outerRangeX = innerRangeX + 2; // 2 tiles beyond
     const outerRangeY = innerRangeY + 2; // 2 tiles beyond
 
+    const placementRule =
+      getPwActorDefinition(this.building.name as ObjectNames, null)?.components?.constructable?.placementRule ??
+      "ground";
+
     // Helper function to check if a specific tile position is occupied
     const isTileOccupied = (worldX: number, worldY: number): boolean => {
       if (!this.tileMapComponent) return true;
@@ -538,7 +555,7 @@ export class BuildingCursor {
       tileCoord.y = Math.ceil(tileCoord.y);
 
       const ignoreList = [this.building!, ...this.spawnedCursorGameObjects];
-      return !this._canPlaceAt([tileCoord], ignoreList, false);
+      return !this._canPlaceAt([tileCoord], ignoreList, false, placementRule, true);
     };
 
     const drawDiamond = (isoX: number, isoY: number, color: number, fill: boolean, outline: boolean) => {

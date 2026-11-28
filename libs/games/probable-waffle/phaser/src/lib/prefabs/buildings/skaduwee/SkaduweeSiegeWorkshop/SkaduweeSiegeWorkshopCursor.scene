@@ -1,0 +1,44 @@
+{
+    "id": "965e9dca-4cff-406d-9b15-14c8c11cb2c1",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "25327734-aa48-4927-ab2d-b1e115d1b138",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "ee1c236e-ac58-4736-b497-69cc8ab93c0c",
+                    "label": "skaduweeSiegeWorkshopCursorImage",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/workshop/skaduwee-siege-workshop3.png"
+                    },
+                    "y": -32
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

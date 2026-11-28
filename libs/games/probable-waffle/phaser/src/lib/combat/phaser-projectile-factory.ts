@@ -1,6 +1,9 @@
 import { ProjectileType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/projectile-type";
 import Phaser from "phaser";
 import Arrow from "../prefabs/weapons/Arrow";
+import BallistaBolt from "../prefabs/weapons/BallistaBolt";
+import CannonBall from "../prefabs/weapons/CannonBall";
+import CatapultRock from "../prefabs/weapons/CatapultRock";
 import FireArrow from "../prefabs/weapons/FireArrow";
 import FireBall from "../prefabs/weapons/FireBall";
 import FrostBolt from "../prefabs/weapons/FrostBolt";
@@ -27,6 +30,12 @@ export class PhaserProjectileFactory {
         return new Arrow(scene);
       case ProjectileType.FireArrowProjectile:
         return new FireArrow(scene);
+      case ProjectileType.CatapultRockProjectile:
+        return new CatapultRock(scene);
+      case ProjectileType.BallistaBoltProjectile:
+        return new BallistaBolt(scene);
+      case ProjectileType.CannonBallProjectile:
+        return new CannonBall(scene);
       case ProjectileType.FireballProjectile:
         return new FireBall(scene);
       case ProjectileType.FurballProjectile:

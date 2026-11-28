@@ -49,14 +49,16 @@ export const tivaraWorkerDefinition: PrefabDefinition = {
           ObjectNames.Sandhold,
           ObjectNames.Olival,
           ObjectNames.AnkGuard,
-          ObjectNames.Temple
+          ObjectNames.Temple,
+          ObjectNames.TivaraDock,
+          ObjectNames.TivaraSiegeWorkshop
         ],
         [
           new ConstructableCategory("gui", "action_icons/category_resource_gathering.png", "Resource Gathering", [
             new ConstructableDefinition([
               ObjectNames.WorkMill,
               ObjectNames.MiningCamp,
-              ObjectNames.Granary,
+              ObjectNames.TivaraGranary,
               ObjectNames.Field
             ])
           ]),

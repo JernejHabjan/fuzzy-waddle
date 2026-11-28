@@ -30,6 +30,8 @@ function nextUnstaffedFoodSource(
         target.actorId === order.targetActorId &&
         (target.objectName === foodPrerequisiteObject ||
           target.objectName === ObjectNames.Granary ||
+          target.objectName === ObjectNames.TivaraGranary ||
+          target.objectName === ObjectNames.SkaduweeGranary ||
           catalog.entries.some(
             (entry) =>
               entry.sourceObjectName === target.objectName && entry.acceptsResources?.includes(ResourceType.Food)

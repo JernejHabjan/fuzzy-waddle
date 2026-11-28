@@ -1,0 +1,89 @@
+{
+    "id": "ff9985c7-0689-48cc-a657-7de12d98ec7d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 256,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "84b93b35-6cfa-42d9-b4a5-3aaee38751b7",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-64 -48 0 -80 64 -48 64 16 0 48 -64 16",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "prefabId": "a85dca36-d34d-4e1f-ab31-839621cb297c",
+                    "id": "0d02cd3b-21b4-406f-8864-825d80a7d508",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "tivaraDockCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "13985fa0-f45e-42b9-960a-0ec36fe0aafd",
+                    "id": "240dc32e-ea00-4ef7-9bc0-290be5095cf9",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "tivaraDockFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "ac8184c9-577a-462b-803a-32acfd8e1289",
+                    "id": "668c5797-2f27-4805-b49c-e2b0ea3c6d5c",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "tivaraDockFoundation2",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "8abd01aa-c84e-405d-b8f9-d87e72fdac1d",
+                    "id": "7d010536-477a-494a-9952-4e8b18926c46",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "tivaraDockLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

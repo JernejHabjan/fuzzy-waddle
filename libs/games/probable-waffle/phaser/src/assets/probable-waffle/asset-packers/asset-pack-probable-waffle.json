@@ -3260,6 +3260,39 @@
                 },
                 "type": "spritesheet",
                 "key": "zombie3_walk"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/siege_weapons_catapult.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "siege_weapons_catapult"
+            },
+            {
+                "type": "animation",
+                "url": "assets/probable-waffle/atlas/anims/siege_weapons_catapult.json",
+                "key": "siege_weapons_catapult_anims"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/siege_weapons_ballista.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "siege_weapons_ballista"
+            },
+            {
+                "type": "animation",
+                "url": "assets/probable-waffle/atlas/anims/siege_weapons_ballista.json",
+                "key": "siege_weapons_ballista_anims"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/siege_weapons_cannon.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "siege_weapons_cannon"
+            },
+            {
+                "type": "animation",
+                "url": "assets/probable-waffle/atlas/anims/siege_weapons_cannon.json",
+                "key": "siege_weapons_cannon_anims"
             }
         ]
     },
