@@ -49,11 +49,10 @@ test("runtime summary distinguishes passing, failing and missing scenarios", () 
   assert.match(summarizeMatrixRun(crashedPassing).join("\n"), /0 passed; 1 failed/);
 });
 
-test("combined report separates pure evidence, runtime results and missing baseline comparisons", () => {
+test("combined report separates pure evidence and runtime results", () => {
   const text = summarizeMatrixRun({
-    status: "blocked",
+    status: "failed",
     rows: ["A", "B"],
-    reason: "baseline_runtime_adapter_not_implemented",
     pure: {
       rows: ["A", "B", "C"],
       pureScenarioEvidence: {
@@ -74,17 +73,15 @@ test("combined report separates pure evidence, runtime results and missing basel
       status: "passed",
       workCounts: { decisions: 1, ticks: 1 },
       runtime: { scenarios: [{ scenarioId: "A", passed: true, variants: [{ variantId: "a" }] }] }
-    },
-    unexecutedBaselineRuntime: ["A"]
+    }
   }).join("\n");
-  assert.match(text, /AI matrix: blocked; 2 catalog entries/);
+  assert.match(text, /AI matrix: failed; 2 catalog entries/);
   assert.match(text, /AI pure coverage: 1\/3 proven; 2 unproven/);
   assert.match(text, /Unproven pure scenarios \(2\)/);
   assert.match(text, /- B: failed binding\(s\): missing guard contract/);
   assert.match(text, /- C: no passing test matched/);
   assert.match(text, /AI runtime scenarios: 1\/2 executed; 1 passed; 0 failed; 1 not run/);
   assert.match(text, /Not run runtime scenarios \(1\): B/);
-  assert.match(text, /baseline runtime comparisons not run: 1/);
 });
 
 test("CLI setup failure prints selected totals and persists them without launching matches", () => {

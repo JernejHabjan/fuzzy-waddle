@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { execFileSync, spawn } from "node:child_process";
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runE2eWithAi } from "./e2e-ai-runner.mjs";
@@ -17,7 +16,7 @@ try {
   process.exitCode = 1;
 }
 
-/** Reuse the matrix's clean-source authority before spending time on ordinary E2E, then pin release provenance. */
+/** Reuse the matrix's clean-source authority before spending time on ordinary E2E, then pin candidate provenance. */
 function resolveRelease() {
   if (readWorkingTreeSource().length > 0) {
     throw new Error(
@@ -26,13 +25,8 @@ function resolveRelease() {
     );
   }
   const candidate = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
-  const fixtures = join(root, "tools/probable-waffle/skirmish/ai/testing/fixtures");
-  const manifest = JSON.parse(readFileSync(join(fixtures, "skirmish-scenario-manifest.json"), "utf8"));
-  const baseline = JSON.parse(readFileSync(join(fixtures, manifest.baseline), "utf8")).baselineSourceSha;
-  console.log(
-    "Full AI release matrix: deferred content is not executed; pinned-baseline limitations may block certification."
-  );
-  return { candidate, baseline };
+  console.log("Full AI release matrix: deferred content is not executed.");
+  return { candidate };
 }
 
 function run(args) {

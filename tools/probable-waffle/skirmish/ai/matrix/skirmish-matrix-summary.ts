@@ -24,9 +24,6 @@ export function summarizeMatrixRun(report): string[] {
       "AI scenarios did not start. Commit tracked changes and move or commit untracked files; inspect git status --short."
     );
   }
-  if (report.unexecutedBaselineRuntime?.length) {
-    lines.push(`AI baseline runtime comparisons not run: ${report.unexecutedBaselineRuntime.length}.`);
-  }
   lines.push(RULE_HEAVY);
   return lines;
 }
@@ -105,7 +102,7 @@ function appendRuntimeSummary(lines: string[], report, hasPure: boolean): void {
 /** Preserve requested IDs on setup errors instead of emitting a misleading zero-scenario denominator. */
 export function selectedMatrixIds(manifest, options): string[] {
   const rows = Array.isArray(manifest?.rows) ? manifest.rows.filter((row) => typeof row?.id === "string") : [];
-  if (options.suite === "release" || (!options.suite && (options.candidate || options.baseline))) {
+  if (options.suite === "release" || (!options.suite && options.candidate)) {
     return rows.map((row) => row.id);
   }
   if (options.suite === "stage-smoke") {

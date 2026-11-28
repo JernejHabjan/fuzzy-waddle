@@ -66,8 +66,7 @@ export function invokeHarness(input, context) {
       scenarioIds: input.rows.map((row) => row.id),
       replayArtifactPath: input.options?.artifactPath ?? null,
       untilTick: input.options?.untilTick ?? null,
-      breakOn: input.options?.breakOn ?? null,
-      baselineSupport: input.baselineSupport ?? null
+      breakOn: input.options?.breakOn ?? null
     })
   };
   const workingTreeSource = input.suite === "stage-smoke" ? readWorkingTreeSource() : "";

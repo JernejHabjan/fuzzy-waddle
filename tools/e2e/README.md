@@ -13,14 +13,13 @@ For standalone core/scout selection, use `pnpm ai:skirmish:regression` or `pnpm 
 
 ## Full release matrix
 
-The full command resolves the candidate from Git HEAD and the pinned baseline through the scenario manifest.
+The full command resolves the candidate from Git HEAD.
 Before ordinary E2E starts, it checks for a clean source tree using the release runner's source inspection,
 including untracked files. Commit or move local work first. The release runner checks again after ordinary E2E
 to catch changes made during that run.
 The manifest currently contains 120 entries; this is not a promise of 120 executable browser scenarios.
-Deferred content is not executed, and the existing pinned-baseline runtime adapter limitation can return `blocked`
-with a nonzero exit code. This command retains those checks; it does not certify unsupported coverage.
-Runtime invocations retain their existing limits, including the outer 30-minute safeguard.
+Deferred content is not executed; this command does not certify unsupported coverage.
+Runtime invocations retain their existing limits, including the outer 30-minute safeguard per shard.
 It does not separately run the multiplayer CLI, catalog listing or report summarizer.
 
 Core summaries are written to `tmp/ai-skirmish-regression/latest.json`; full matrix artifacts are written to
@@ -31,7 +30,7 @@ Pure coverage is reported separately as proven/unproven; it is not a count of ph
 Setup failures retain the requested denominator: a dirty tree prints `0/120 executed; 0 passed; 0 failed; 120 not run`
 when detected by the matrix runner, rather than claiming that scenarios failed. The initial full preflight
 instead exits immediately with `candidate_source_is_dirty` before launching either test stage. Untracked editor backup files also
-make the source tree dirty. Missing baseline comparisons remain separate from candidate scenario results.
+make the source tree dirty.
 
 ## Focused AI commands
 

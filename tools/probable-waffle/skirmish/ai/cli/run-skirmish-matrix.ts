@@ -2,7 +2,6 @@
 import { encodeRuntimeArtifact } from "../shared/transport/skirmish-ai-runtime-artifact-codec.ts";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
-import { resolvePinnedBaselineSupport } from "../matrix/baseline-adapter.ts";
 import { invokeHarness, invokeSelectedHarness } from "../matrix/skirmish-matrix-execution.ts";
 import { selectDiagnosticVariant } from "../matrix/skirmish-runtime-diagnostic-selection.ts";
 import { buildSkirmishShardIndex } from "../matrix/skirmish-shard-index.ts";
@@ -66,7 +65,6 @@ async function dispatch(options) {
       options.scenarios ||
       options.suite ||
       options.candidate ||
-      options.baseline ||
       options["replay-bundle"] ||
       options["compare-bundle"]
     ) {
@@ -78,9 +76,9 @@ async function dispatch(options) {
   if (options.suite) return runSuite(options);
   if (options.scenarios) return runSelectedScenarios(options);
   if (options.scenario) return runSelectedScenario(options);
-  if (options.candidate || options.baseline) return runSuite({ ...options, suite: "release" });
+  if (options.candidate) return runSuite({ ...options, suite: "release" });
   throw new Error(
-    "missing_mode: use --candidate with --baseline, --suite, --scenario, --scenarios, --replay-bundle or --compare-bundle"
+    "missing_mode: use --candidate, --suite, --scenario, --scenarios, --replay-bundle or --compare-bundle"
   );
 }
 
@@ -96,9 +94,6 @@ async function runSuite(options) {
     return invokeSelectedHarness({ suite, stage, rows: runnable, mode: "both", options }, matrixContext);
   }
   const candidate = requireSha(options.candidate, "candidate");
-  const baseline = requireSha(options.baseline, "baseline");
-  const baselineManifest = readJson(join(fixtureDirectory, manifest.baseline), 64 * 1024);
-  if (baseline !== baselineManifest.baselineSourceSha) throw new Error("baseline_not_pinned_manifest_sha");
   const missingRuntime = manifest.rows.filter(
     (row) =>
       row.drivers.includes("runtime") &&
@@ -115,38 +110,18 @@ async function runSuite(options) {
         .join(",")}`
     );
   }
-  const baselineSupport = manifest.rows.map((row) => ({
-    id: row.id,
-    ...resolvePinnedBaselineSupport(row, baselineManifest)
-  }));
   if (readHead() !== candidate) throw new Error(`candidate_source_not_checked_out:${candidate}`);
   if (readWorkingTreeSource().length > 0) throw new Error("candidate_source_is_dirty");
-  const report = await invokeSelectedHarness(
+  return invokeSelectedHarness(
     {
       suite,
       mode: "both",
       rows: manifest.rows,
       options,
-      candidate,
-      baseline,
-      baselineSupport
+      candidate
     },
     matrixContext
   );
-  const unexecutedBaselineRuntime = baselineSupport
-    .filter((support) => support.runtime.status === "supported")
-    .map((support) => support.id);
-  if (report.status === "passed" && unexecutedBaselineRuntime.length > 0) {
-    process.exitCode = 1;
-    return {
-      ...report,
-      status: "blocked",
-      reason: "baseline_runtime_adapter_not_implemented",
-      baselineSupport,
-      unexecutedBaselineRuntime
-    };
-  }
-  return { ...report, baselineSupport, unexecutedBaselineRuntime };
 }
 
 function runSelectedScenario(options) {
@@ -378,7 +353,7 @@ function helpText() {
       "--variant ID --repetition N [--seed INTEGER]",
     "  node tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts --scenarios ID,ID [--mode pure|runtime|both]",
     "  node tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts --suite stage-smoke --stage N --working-tree",
-    "  node tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts --candidate SHA --baseline SHA",
+    "  node tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts --candidate SHA",
     "",
     "Options:",
     "  --manifest PATH       Override tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json",

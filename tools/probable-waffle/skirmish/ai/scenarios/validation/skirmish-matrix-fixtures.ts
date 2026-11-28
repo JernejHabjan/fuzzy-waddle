@@ -20,7 +20,6 @@ export function validateManifest(value, fixtureDirectory) {
     throw new Error("malformed_manifest");
   if (value.rows.length !== value.requiredCaseCount || value.requiredCaseCount !== 120)
     throw new Error(`manifest_case_count:${value.rows.length}`);
-  if (!safeReference(value.baseline)) throw new Error("unsafe_baseline_manifest_reference");
   const ids = new Set();
   for (const row of value.rows) {
     if (!row || typeof row.id !== "string" || !/^[A-Z]+-[0-9]{2}$/.test(row.id) || ids.has(row.id))

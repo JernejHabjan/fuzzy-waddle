@@ -32,7 +32,7 @@ test("neither AI mode runs after ordinary E2E fails", async () => {
         },
         resolveRelease: () => {
           assert.equal(calls, 0);
-          return { candidate: "a".repeat(40), baseline: "b".repeat(40) };
+          return { candidate: "a".repeat(40) };
         }
       }),
       4
@@ -41,7 +41,7 @@ test("neither AI mode runs after ordinary E2E fails", async () => {
   }
 });
 
-test("full selects the release catalog and preserves a blocked runner exit", async () => {
+test("full selects the release catalog and preserves the matrix runner exit", async () => {
   const calls = [];
   const exit = await runE2eWithAi({
     mode: "full",
@@ -51,7 +51,7 @@ test("full selects the release catalog and preserves a blocked runner exit", asy
     },
     resolveRelease: () => {
       assert.equal(calls.length, 0);
-      return { candidate: "a".repeat(40), baseline: "b".repeat(40) };
+      return { candidate: "a".repeat(40) };
     }
   });
   assert.equal(exit, 1);
@@ -60,9 +60,7 @@ test("full selects the release catalog and preserves a blocked runner exit", asy
     "--suite",
     "release",
     "--candidate",
-    "a".repeat(40),
-    "--baseline",
-    "b".repeat(40)
+    "a".repeat(40)
   ]);
 });
 

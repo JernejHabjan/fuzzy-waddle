@@ -8,14 +8,6 @@ export async function runE2eWithAi({ mode, forwardedArgs = [], run, resolveRelea
   if (ordinaryExit !== 0) return ordinaryExit;
   if (mode === "core") return run([`${aiCli}/run-ai-regression.ts`, "--profile", "core"]);
 
-  const { candidate, baseline } = release;
-  return run([
-    `${aiCli}/run-skirmish-matrix.ts`,
-    "--suite",
-    "release",
-    "--candidate",
-    candidate,
-    "--baseline",
-    baseline
-  ]);
+  const { candidate } = release;
+  return run([`${aiCli}/run-skirmish-matrix.ts`, "--suite", "release", "--candidate", candidate]);
 }

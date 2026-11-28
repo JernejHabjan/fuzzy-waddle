@@ -2,13 +2,11 @@
   "schemaVersion": 1,
   "manifestVersion": "skirmish",
   "requiredCaseCount": 120,
-  "baseline": "baseline/pinned-reference-implementation.json",
   "defaultSeeds": [759001, 759002, 759003],
   "rowDefaults": {
     "required": true,
     "rosterSupport": "resolve_from_runtime_catalog_when_fixture_is_authored",
     "expectedAssertions": "nonempty_fixture_authored_semantic_and_forbidden_predicates",
-    "baselineCompatibility": "resolve_through_pinned_baseline_adapter_without_candidate_fallback",
     "evidence": "authored_not_run_until_stage_15"
   },
   "rows": [
