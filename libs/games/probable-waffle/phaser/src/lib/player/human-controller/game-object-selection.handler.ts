@@ -72,11 +72,10 @@ export class GameObjectSelectionHandler {
                 this.playAudio(objectIds!);
               }
             } else if (isRightClick) {
-              // Command selected actors to interact with the right-clicked target.
-              // Ownership filtering happens at dispatch time — only own actors are in selection.
+              // Spectator selections are local; only an owned player can dispatch this interaction command.
               const playerNumber = getCurrentPlayerNumber(this.scene);
               const selectedActorIds = getPlayer(this.scene)?.getSelection() ?? [];
-              if (playerNumber && selectedActorIds.length) {
+              if (playerNumber !== undefined && selectedActorIds.length) {
                 const commandBus = getSceneService(this.scene, CommandBusService);
                 commandBus?.dispatch({
                   type: "ACTOR_ACTION",
@@ -107,7 +106,7 @@ export class GameObjectSelectionHandler {
                 (actor) => getActorComponent(actor, IdComponent)!.id
               );
               const playerNumber = getCurrentPlayerNumber(this.scene);
-              if (playerNumber && selectedActorObjectIds.length) {
+              if (playerNumber !== undefined && selectedActorObjectIds.length) {
                 const commandBus = getSceneService(this.scene, CommandBusService);
                 commandBus?.dispatch({
                   type: "MOVE",
@@ -303,6 +302,7 @@ export class GameObjectSelectionHandler {
 
   private selectionIsForCurrentPlayer(actor: GameObject) {
     const currentPlayerNr = getCurrentPlayerNumber(actor.scene);
+    if (currentPlayerNr === undefined) return false;
     const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
     return actorPlayerNr === currentPlayerNr;
   }
