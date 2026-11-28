@@ -4,7 +4,10 @@ import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../../contracts/observation/ai-observation";
 import type { AiDemand, AiPlanStep } from "../../../contracts/planning/ai-plan-contracts";
 import { createAiResourceCostClaims } from "../../economy/forecast/ai-resource-cost-claims";
-import { selectConstructionPosition } from "../../construction/ai-construction-site-selector";
+import {
+  aiFortificationGateClearanceFilter,
+  selectConstructionPosition
+} from "../../construction/ai-construction-site-selector";
 import { nextIds } from "../macro/ai-macro-effect-identity";
 import {
   checkpointActors,
@@ -174,7 +177,8 @@ function proposeOpeningCheckpointIntent(
     ordinal,
     selectedConstructionTileKeys,
     catalog.entries.find((entry) => entry.sourceObjectName === checkpoint.requiredObject)?.constructionProfile
-      ?.footprintRadiusTiles ?? 0
+      ?.footprintRadiusTiles ?? 0,
+    aiFortificationGateClearanceFilter(state.fortifications)
   );
   if (!position) return null;
   const ids = nextIds(state, checkpoint.id, ordinal);

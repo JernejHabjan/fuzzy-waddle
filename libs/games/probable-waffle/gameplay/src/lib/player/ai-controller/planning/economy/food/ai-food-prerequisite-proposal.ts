@@ -3,7 +3,10 @@ import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capa
 import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../../contracts/observation/ai-observation";
 import type { AiDemand } from "../../../contracts/planning/ai-plan-contracts";
-import { selectConstructionPosition } from "../../construction/ai-construction-site-selector";
+import {
+  aiFortificationGateClearanceFilter,
+  selectConstructionPosition
+} from "../../construction/ai-construction-site-selector";
 import { reachableAiAccessNodeIds } from "../../access/ai-access-graph";
 import { canAffordAiEconomyCost } from "../service/ai-economy-policy";
 import { nextIds, unresolvedReservedEffectIds } from "../../production/macro/ai-macro-effect-identity";
@@ -99,13 +102,16 @@ export function proposeAiFoodPrerequisite(
     ordinal,
     selectedConstructionTileKeys,
     entry.constructionProfile?.footprintRadiusTiles ?? 0,
-    (cell) =>
-      !enforceFieldService ||
-      reachableFieldService.some((field) => {
-        if (!cell.groundAccessNodeId || !field.reachableNodeIds.has(cell.groundAccessNodeId)) return false;
-        const distance = Math.abs(cell.position.x - field.position.x) + Math.abs(cell.position.y - field.position.y);
-        return distance <= fieldServiceRadius;
-      })
+    aiFortificationGateClearanceFilter(
+      state.fortifications,
+      (cell) =>
+        !enforceFieldService ||
+        reachableFieldService.some((field) => {
+          if (!cell.groundAccessNodeId || !field.reachableNodeIds.has(cell.groundAccessNodeId)) return false;
+          const distance = Math.abs(cell.position.x - field.position.x) + Math.abs(cell.position.y - field.position.y);
+          return distance <= fieldServiceRadius;
+        })
+    )
   );
   if (!position) return { objectName, ready, demand, intent: null };
   const next = nextIds(state, `food-prerequisite:${objectName}`, ordinal);

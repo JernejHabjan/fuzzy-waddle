@@ -1,6 +1,29 @@
 import type { AiObservation } from "../../contracts/observation/ai-observation";
+import type { AiFortificationState } from "../../contracts/state/ai-fortification-state";
 import { reachableAiAccessNodeIds } from "../access/ai-access-graph";
 import { constructionAccessPolicy } from "./ai-construction-access";
+
+type ConstructionCell = NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number];
+
+/** Keeps generic construction out of the current fortification's gate and two-tile approach. */
+export function aiFortificationGateClearanceFilter(
+  fortifications: readonly AiFortificationState[],
+  acceptCell?: (cell: ConstructionCell) => boolean
+): (cell: ConstructionCell) => boolean {
+  const protectedGateTiles = new Set<string>();
+  for (const plan of fortifications) {
+    if (plan.lifecycle === "abandoned" || !plan.graph) continue;
+    const gate = plan.graph.nodes.find(
+      (node) => node.nodeId === plan.graph?.openingNodeId && node.kind === "gate_slot"
+    );
+    if (!gate) continue;
+    const centerX = Math.round(gate.position.x),
+      centerY = Math.round(gate.position.y);
+    for (let dy = -2; dy <= 2; dy += 1)
+      for (let dx = -2; dx <= 2; dx += 1) protectedGateTiles.add(`${centerX + dx},${centerY + dy}`);
+  }
+  return (cell) => !protectedGateTiles.has(cell.tileKey) && (acceptCell?.(cell) ?? true);
+}
 
 /** Selects an observed buildable footprint and reserves its tiles for this decision. */
 export function selectConstructionPosition(

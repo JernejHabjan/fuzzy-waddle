@@ -1,5 +1,9 @@
 import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
-import { selectConstructionPosition } from "../../construction/ai-construction-site-selector";
+import type { AiFortificationState } from "../../../contracts/state/ai-fortification-state";
+import {
+  aiFortificationGateClearanceFilter,
+  selectConstructionPosition
+} from "../../construction/ai-construction-site-selector";
 import { isAiProducerPositionExposed, reachableAiConstructionTiles } from "../../construction/ai-producer-safety";
 
 /** Builder preference never vetoes all capacity: try the next available worker when the first has no known legal route/site. */
@@ -12,6 +16,7 @@ export function selectAiMilitaryCapacitySite(args: {
   readonly footprintRadiusTiles: number;
   readonly safePolicy: boolean;
   readonly threats: readonly AiObservedActor[];
+  readonly fortifications: readonly AiFortificationState[];
 }) {
   for (const builder of args.builders) {
     const reachable = args.safePolicy ? reachableAiConstructionTiles(args.observation, builder) : null;
@@ -22,11 +27,14 @@ export function selectAiMilitaryCapacitySite(args: {
       args.ordinal,
       args.selectedTileKeys,
       args.footprintRadiusTiles,
-      args.safePolicy
-        ? (cell) =>
-            reachable?.has(cell.tileKey) === true &&
-            !isAiProducerPositionExposed({ ...cell.position, z: cell.elevation }, args.threats)
-        : undefined
+      aiFortificationGateClearanceFilter(
+        args.fortifications,
+        args.safePolicy
+          ? (cell) =>
+              reachable?.has(cell.tileKey) === true &&
+              !isAiProducerPositionExposed({ ...cell.position, z: cell.elevation }, args.threats)
+          : undefined
+      )
     );
     if (position) return { builder, position };
   }

@@ -4,10 +4,7 @@ import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 import { isSettlingCommandOutcome } from "../../../world/services/multiplayer/is-settling-command-outcome";
 
 /** Maps the runtime command envelope into the pure brain's fenced identity. */
-export function adaptGameCommandOutcomeToBrain(
-  outcome: GameCommandOutcome,
-  matchId: GameInstanceId
-): AiCommandOutcome {
+export function adaptGameCommandOutcomeToBrain(outcome: GameCommandOutcome, matchId: GameInstanceId): AiCommandOutcome {
   const identity = {
     matchId,
     authorityEpoch: outcome.authorityEpoch,
@@ -35,8 +32,15 @@ export function adaptGameCommandOutcomeToBrain(
       };
     case "rejected":
     case "cancelled":
-    case "failed":
       return { kind: outcome.kind, identity, tick: outcome.tick, reason: outcome.reason };
+    case "failed":
+      return {
+        kind: outcome.kind,
+        identity,
+        tick: outcome.tick,
+        reason: outcome.reason,
+        actorIds: [...outcome.actorIds]
+      };
   }
 }
 
@@ -45,18 +49,22 @@ export function adaptGameCommandOutcomesToBrain(
   outcomes: readonly GameCommandOutcome[],
   matchId: GameInstanceId
 ): AiCommandOutcome[] {
-  return [...outcomes]
-    // Delivery diagnostics are not a terminal verdict on the original effect. Keep them out of pure claim release.
-    .filter((outcome) => !["rejected", "cancelled", "failed"].includes(outcome.kind) || isSettlingCommandOutcome(outcome))
-    .sort(
-      (left, right) =>
-        left.authorityEpoch - right.authorityEpoch ||
-        left.sequence - right.sequence ||
-        left.tick - right.tick ||
-        left.kind.localeCompare(right.kind) ||
-        left.commandId.localeCompare(right.commandId)
-    )
-    .map((outcome) => adaptGameCommandOutcomeToBrain(outcome, matchId));
+  return (
+    [...outcomes]
+      // Delivery diagnostics are not a terminal verdict on the original effect. Keep them out of pure claim release.
+      .filter(
+        (outcome) => !["rejected", "cancelled", "failed"].includes(outcome.kind) || isSettlingCommandOutcome(outcome)
+      )
+      .sort(
+        (left, right) =>
+          left.authorityEpoch - right.authorityEpoch ||
+          left.sequence - right.sequence ||
+          left.tick - right.tick ||
+          left.kind.localeCompare(right.kind) ||
+          left.commandId.localeCompare(right.commandId)
+      )
+      .map((outcome) => adaptGameCommandOutcomeToBrain(outcome, matchId))
+  );
 }
 
 /** Projects the saved runtime reconciliation cursor into the Stage 2 brain contract. */

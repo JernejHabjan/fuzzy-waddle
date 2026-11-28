@@ -1,6 +1,7 @@
 import { createAiProductionPolicyFixture } from "../../../testing/fixtures/production/ai-production-policy-fixture";
 import { createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
-import { selectConstructionPosition } from "../ai-construction-site-selector";
+import type { AiFortificationState } from "../../../contracts/state/ai-fortification-state";
+import { aiFortificationGateClearanceFilter, selectConstructionPosition } from "../ai-construction-site-selector";
 import { reachableAiConstructionTiles } from "../ai-producer-safety";
 
 describe("construction travel ordering", () => {
@@ -72,5 +73,35 @@ describe("construction travel ordering", () => {
     expect(
       selectConstructionPosition(observation, builder, 1, 0, new Set(), 0, (cell) => cell.position.x === 50)
     ).toEqual({ x: 50, y: 0, z: 0 });
+  });
+
+  it("keeps generic building footprints clear of an active fortification gate", () => {
+    const base = createAiProductionPolicyFixture().observation;
+    if (!base.map?.constructionCells) throw new Error("construction_fixture_map_missing");
+    const plan = {
+      lifecycle: "building",
+      graph: {
+        openingNodeId: "plan:test:node:gate",
+        nodes: [
+          {
+            nodeId: "plan:test:node:gate",
+            kind: "gate_slot",
+            objectName: null,
+            position: { x: 5, y: 5, z: 0 }
+          }
+        ]
+      }
+    } as unknown as AiFortificationState;
+    const accepts = aiFortificationGateClearanceFilter([plan]);
+    const gateCell = base.map.constructionCells.find((cell) => cell.tileKey === "5,5"),
+      clearanceCell = base.map.constructionCells.find((cell) => cell.tileKey === "6,6"),
+      outsideCell = base.map.constructionCells.find((cell) => cell.tileKey === "8,5");
+    expect(gateCell).toBeDefined();
+    expect(clearanceCell).toBeDefined();
+    expect(outsideCell).toBeDefined();
+    if (!gateCell || !clearanceCell || !outsideCell) throw new Error("construction_fixture_cells_missing");
+    expect(accepts(gateCell)).toBe(false);
+    expect(accepts(clearanceCell)).toBe(false);
+    expect(accepts(outsideCell)).toBe(true);
   });
 });

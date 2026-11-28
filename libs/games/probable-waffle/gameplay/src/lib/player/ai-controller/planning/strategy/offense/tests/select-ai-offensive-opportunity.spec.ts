@@ -202,6 +202,23 @@ describe("fastest credible offense", () => {
     );
   });
 
+  it("does not recreate an attack on a stale last-seen mobile contact", () => {
+    const staleMobileContact = {
+      ...guard("enemy-mobile", "enemy", 1),
+      visibility: "last_seen" as const,
+      wasCombatant: true
+    };
+    const result = manager.propose(
+      world([guard("attacker-a", "self", 0), guard("attacker-b", "self", 0), staleMobileContact], 300),
+      brain()
+    );
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ targetActorId: null, reason: "no_reachable_observed_objective" })
+    );
+    expect(result.intents.some((intent) => intent.kind === "attack")).toBe(false);
+  });
+
   it("keeps attacking a visible core instead of yielding to a remembered core scout", () => {
     const initial = brain();
     const guards = [guard("a", "self", 0), guard("b", "self", 0)];

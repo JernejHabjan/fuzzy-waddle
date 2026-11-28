@@ -86,3 +86,31 @@ it("tries the next available builder when the preferred idle worker is outside k
   expect(impossible.intent).toBeNull();
   expect(impossible.demand?.purpose).toBe("critical_producer_resilience");
 });
+
+it("keeps an unfunded capacity proposal from reserving construction space", () => {
+  const fixture = createAiProductionPolicyFixture(),
+    observation = {
+      ...fixture.observation,
+      resources: fixture.observation.resources.map((resource) => ({ ...resource, stockpile: 0 }))
+    },
+    selectedConstructionTileKeys = new Set<string>();
+  const result = proposeAiMilitaryCapacity({
+    observation,
+    state: fixture.state,
+    catalog: fixture.catalog,
+    self: observation.actors,
+    pressureDomain: "ground",
+    targetMilitary: 12,
+    militaryCount: 0,
+    queuedMilitaryCount: 0,
+    openingComplete: true,
+    workforceRecoveryOwnsFood: false,
+    reservedActorIds: new Set(),
+    selectedConstructionTileKeys,
+    priorIntents: [],
+    ordinal: 0
+  });
+
+  expect(result.intent).toMatchObject({ kind: "construct", objectName: fixture.producerName });
+  expect(selectedConstructionTileKeys).toEqual(new Set());
+});

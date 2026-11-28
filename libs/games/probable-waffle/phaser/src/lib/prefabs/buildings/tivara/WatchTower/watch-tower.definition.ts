@@ -4,6 +4,7 @@ import { coreConstructionSiteDefinition } from "../../shared/core-construction-s
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
+import { AiType } from "../../../ai-agents/controller/ai-type";
 
 export const watchTowerDefinition = {
   components: {
@@ -64,9 +65,15 @@ export const watchTowerDefinition = {
     attack: {
       attacks: [weaponDefinitions.BowTower]
     },
+    aiControlled: {
+      type: AiType.Character
+    },
     collider: { enabled: true },
     constructable: {
       ...coreConstructionSiteDefinition
     }
+  },
+  systems: {
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

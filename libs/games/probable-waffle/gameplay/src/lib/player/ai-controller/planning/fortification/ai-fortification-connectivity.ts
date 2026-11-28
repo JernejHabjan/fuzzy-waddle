@@ -82,6 +82,10 @@ export function fortificationPreservesConnectivity(input: {
   readonly openingPosition: Vector3Simple;
   readonly exteriorPosition: Vector3Simple;
   readonly requiredPositions: readonly Vector3Simple[];
+  /** Static/resource positions that need one-tile access, not a wide-unit corridor. */
+  readonly narrowRequiredPositions?: readonly Vector3Simple[];
+  /** Require protected/opening/exterior probes to remain on their authored tiles. */
+  readonly exactRoutePositions?: boolean;
   /** Require a route with this many clear tiles around every path tile. */
   readonly clearanceRadiusTiles?: number;
 }): boolean {
@@ -92,14 +96,27 @@ export function fortificationPreservesConnectivity(input: {
   const exactOpeningKey = `${Math.round(input.openingPosition.x)},${Math.round(input.openingPosition.y)}`;
   // An intentional opening cannot be substituted by a nearby tile when that entrance is actually sealed.
   if (!cells.get(exactOpeningKey)?.groundPassable || blocked.has(exactOpeningKey)) return false;
-  const openingKey = nearestPassableKey(cells, blocked, input.openingPosition, clearanceRadiusTiles);
-  const protectedKey = nearestPassableKey(cells, blocked, input.protectedPosition, clearanceRadiusTiles);
-  const exteriorKey = nearestPassableKey(cells, blocked, input.exteriorPosition, clearanceRadiusTiles);
-  if (!openingKey || !protectedKey || !exteriorKey) return false;
+  const routePositions = [input.protectedPosition, input.openingPosition, input.exteriorPosition];
+  const exactRouteKeys = routePositions.map((position) => `${Math.round(position.x)},${Math.round(position.y)}`);
+  if (input.exactRoutePositions && exactRouteKeys.some((key) => !cells.get(key)?.groundPassable || blocked.has(key)))
+    return false;
+  const [protectedKey, openingKey, exteriorKey] = routePositions.map((position) =>
+    nearestPassableKey(cells, blocked, position, clearanceRadiusTiles)
+  );
+  if (!protectedKey || !openingKey || !exteriorKey) return false;
   const connected = reachable(cells, blocked, openingKey, clearanceRadiusTiles);
   if (!connected.has(protectedKey) || !connected.has(exteriorKey)) return false;
-  return input.requiredPositions.every((position) => {
-    const key = nearestPassableKey(cells, blocked, position, clearanceRadiusTiles);
-    return key !== null && connected.has(key);
+  if (
+    !input.requiredPositions.every((position) => {
+      const key = nearestPassableKey(cells, blocked, position, clearanceRadiusTiles);
+      return key !== null && connected.has(key);
+    })
+  )
+    return false;
+  if (!input.narrowRequiredPositions?.length) return true;
+  const singleTileConnected = clearanceRadiusTiles === 0 ? connected : reachable(cells, blocked, openingKey, 0);
+  return input.narrowRequiredPositions.every((position) => {
+    const key = nearestPassableKey(cells, blocked, position, 0);
+    return key !== null && singleTileConnected.has(key);
   });
 }

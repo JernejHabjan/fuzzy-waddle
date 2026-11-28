@@ -96,8 +96,12 @@ export function isAvailableBuilder(actor: AiObservation["actors"][number]): bool
     actor.resourceState.value.carried.value > 0
   )
     return false;
-  const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value?.orderType : undefined;
-  return order !== OrderType.Build && order !== OrderType.ReturnResources && order !== OrderType.Repair;
+  const unavailableOrders = [actor.activeOrder, actor.pendingOrder].flatMap((order) =>
+    order?.status === "known" && order.value ? [order.value.orderType] : []
+  );
+  return !unavailableOrders.some(
+    (order) => order === OrderType.Build || order === OrderType.ReturnResources || order === OrderType.Repair
+  );
 }
 
 export function hasAssignedBuilder(observation: AiObservation, siteActorId: string): boolean {

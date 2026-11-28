@@ -2,6 +2,7 @@ import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-w
 import { createAiBrainState } from "../../../../brain/state/create-ai-brain-state";
 import type { AiObservedActor } from "../../../../contracts/observation/ai-observation";
 import { unknownAiValue } from "../../../../testing/fixtures/coordination/ai-test-fixtures";
+import { catalog } from "../../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
 import {
   enemyNode,
   homeNode,
@@ -10,6 +11,8 @@ import {
   profile,
   unit
 } from "../../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
+import { createAiSkirmishProposalContext } from "../../missions/ai-skirmish-proposal-draft";
+import { advanceAiSkirmishScouting } from "../ai-skirmish-scouting";
 
 function state() {
   return createAiBrainState({
@@ -56,6 +59,52 @@ describe("AI scouting admission", () => {
     const next = manager.propose(observation(40, [...guards(), neutral()], []), { ...initial, squads });
     expect(next.intents).toEqual([]);
     expect(next.statePatch?.squads).toEqual(squads);
+  });
+
+  it("drops tactical ownership when defense takes a neutral scout's member", () => {
+    const initial = state();
+    const first = manager.propose(observation(20, [...guards(), neutral()], []), initial);
+    const previousScout = first.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral");
+    if (!previousScout) throw new Error("fixture neutral mission missing");
+    const scout = {
+      ...previousScout,
+      tactics: {
+        taskForceId: "task-force:neutral-scout",
+        script: "hold_front" as const,
+        targetActorId: null,
+        targetScore: 0,
+        engagementRatioPermille: 1000,
+        confidencePermille: 1000,
+        predictedFriendlyLossPermille: 0,
+        predictedEnemyLossPermille: 0,
+        lastObservedMemberCount: 1,
+        observedLossCount: 0,
+        lastTransitionTick: 20,
+        nextReconsiderTick: 40,
+        oscillationCount: 0,
+        orderSignature: "move:neutral",
+        orderedActorIds: ["guard"],
+        assignedPositions: [{ actorId: "guard", position: { x: 1, y: 0, z: 0 } }],
+        damageReservations: [{ actorId: "guard", targetActorId: "enemy", expectedDamage: 2, impactTick: 30 }],
+        protectedRouteNodeIds: [],
+        mobileReserveActorIds: [],
+        objectiveAlternatives: []
+      }
+    };
+    const context = createAiSkirmishProposalContext(
+      observation(40, [...guards(), neutral()], []),
+      { ...initial, squads: [scout] },
+      catalog
+    );
+    context.primaryOwnedActors.add("guard");
+
+    advanceAiSkirmishScouting(context);
+
+    expect(context.nextSquads.find((squad) => squad.squadId === "squad:scout:neutral")).toMatchObject({
+      state: "cancelled",
+      actorIds: [],
+      tactics: { orderedActorIds: [], assignedPositions: [], damageReservations: [] }
+    });
   });
 
   it("retires an expired neutral mission and does not recreate it on the next decision", () => {
@@ -169,11 +218,12 @@ describe("AI scouting admission", () => {
     }
   });
 
-  it("does not assign one pawn to both neutral and frontier missions", () => {
+  it("keeps one combat unit home instead of assigning both to neutral and frontier missions", () => {
     const proposal = manager.propose(observation(20, [...guards(), neutral()]), state());
     const assignments = proposal.statePatch?.squads?.flatMap((squad) => squad.actorIds) ?? [];
     expect(new Set(assignments).size).toBe(assignments.length);
-    expect(proposal.statePatch?.squads).toHaveLength(2);
+    expect(proposal.statePatch?.squads).toHaveLength(1);
+    expect(assignments).toHaveLength(1);
   });
 
   it("waits for a ready access graph before assigning frontier scouts", () => {

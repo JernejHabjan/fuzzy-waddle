@@ -1,44 +1,8 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiAccessNodeId } from "../../../contracts/ai-core-types";
 import type { AiSquadState } from "../../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
-import { knownPosition, legalForMembers, movementDomains } from "./ai-tactics-geometry";
-
-function hasKnownGroundRoute(
-  sourceNodeId: AiAccessNodeId,
-  targetNodeId: AiAccessNodeId,
-  observation: AiObservation
-): boolean | undefined {
-  const graph = observation.map?.accessGraph;
-  if (graph?.status !== "ready") return undefined;
-  const nodes = new Map(graph.nodes.map((node) => [node.nodeId, node]));
-  const source = nodes.get(sourceNodeId);
-  const target = nodes.get(targetNodeId);
-  if (!source || !target || source.domain !== "ground" || target.domain !== "ground") return false;
-  if (source.knowledge === "unknown" || target.knowledge === "unknown") return false;
-  if (source.clearance < 1 || target.clearance < 1) return false;
-  const queue = [sourceNodeId];
-  const visited = new Set(queue);
-  for (let cursor = 0; cursor < queue.length; cursor += 1) {
-    const current = queue[cursor];
-    if (current === targetNodeId) return true;
-    for (const link of graph.links) {
-      if (
-        link.domain !== "ground" ||
-        link.knowledge === "unknown" ||
-        link.clearance < 1 ||
-        (link.fromNodeId !== current && (link.directional || link.toNodeId !== current))
-      )
-        continue;
-      const next = link.toNodeId;
-      if (visited.has(next)) continue;
-      visited.add(next);
-      queue.push(next);
-    }
-  }
-  return false;
-}
+import { createGroundRouteLookup, knownPosition, legalForMembers, movementDomains } from "./ai-tactics-geometry";
 
 function distance(left: Vector3Simple, right: Vector3Simple): number {
   return Math.abs(left.x - right.x) + Math.abs(left.y - right.y) + Math.abs(left.z - right.z);
@@ -79,6 +43,7 @@ export function selectAiAttackApproachPositions(
   rejectedPositionByActor: ReadonlyMap<string, string> = new Map(),
   previousAssignments: NonNullable<AiSquadState["tactics"]>["assignedPositions"] = []
 ): NonNullable<AiSquadState["tactics"]>["assignedPositions"] {
+  const routeLookup = createGroundRouteLookup(observation);
   const positionedMembers = members
     .map((member) => ({ member, position: knownPosition(member) }))
     .sort(
@@ -142,8 +107,7 @@ export function selectAiAttackApproachPositions(
       observation.map?.accessGraph?.status === "ready"
     ) {
       if (!candidate.groundAccessNodeId) return false;
-      if (hasKnownGroundRoute(member.accessNodeId.value, candidate.groundAccessNodeId, observation) !== true)
-        return false;
+      if (routeLookup.hasRoute(member.accessNodeId.value, candidate.groundAccessNodeId) !== true) return false;
     }
     return !observation.effects.some(
       (effect) =>

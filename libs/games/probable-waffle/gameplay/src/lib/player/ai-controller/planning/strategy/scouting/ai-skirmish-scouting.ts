@@ -20,8 +20,14 @@ import {
 import { queryAiAccessRoute } from "../../access/ai-access-graph";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { distance } from "../../tactics/combat/ai-tactics-geometry";
+import { retainAiSquadTacticsForActors } from "../../tactics/orders/ai-skirmish-tactics-ownership";
 
 const SCOUT_HOME_RECALL_DISTANCE = 32;
+
+/** Do not send the last unassigned combat unit away from home for another scouting objective. */
+function hasScoutCapacity(context: AiSkirmishProposalContext): boolean {
+  return context.combat.filter((actor) => !context.primaryOwnedActors.has(actor.actorId)).length > 1;
+}
 
 /** Scouting has no transport child owner; only an immediately executable route can admit a member. */
 function canScoutNode(
@@ -80,6 +86,7 @@ function recallScout(context: AiSkirmishProposalContext, scout: AiSquadState): v
     ...scout,
     actorIds: [],
     state: "cancelled",
+    ...(scout.tactics ? { tactics: retainAiSquadTacticsForActors(scout.tactics, []) } : {}),
     ...(scout.lifecycle ? { lifecycle: { ...scout.lifecycle, terminalReason: "known_opponent_low_force" } } : {})
   });
   if (members.length === 0 || !homePosition) return;
@@ -108,9 +115,9 @@ function shouldRecallForHomeThreat(context: AiSkirmishProposalContext): boolean 
 }
 
 function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = true): void {
-  if (context.opponent) return;
   const knownOpponent = context.visibleEnemies.length > 0 || context.rememberedEnemies.length > 0;
   const previous = context.state.squads.find((squad) => squad.squadId === "squad:scout:neutral");
+  if (!previous && context.opponent) return;
   if (previous) {
     const members = context.combat.filter(
       (actor) => previous.actorIds.includes(actor.actorId) && !context.primaryOwnedActors.has(actor.actorId)
@@ -129,16 +136,26 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
     }
     const state = terminal
       ? previous.state
-      : covered
-        ? "completed"
-        : expired || members.length === 0
-          ? "cancelled"
-          : previous.state;
+      : knownOpponent && members.length > 0
+        ? previous.state
+        : covered
+          ? "completed"
+          : expired || members.length === 0
+            ? "cancelled"
+            : previous.state;
     // Keep the mission deadline and terminal record: a new proposal must not renew or redispatch the same claim.
     context.nextSquads.push({
       ...previous,
       state,
       actorIds: members.map((actor) => actor.actorId),
+      ...(previous.tactics
+        ? {
+            tactics: retainAiSquadTacticsForActors(
+              previous.tactics,
+              members.map((actor) => actor.actorId)
+            )
+          }
+        : {}),
       ...(previous.lifecycle
         ? {
             lifecycle: {
@@ -160,7 +177,7 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
       members.forEach((actor) => context.primaryOwnedActors.add(actor.actorId));
     return;
   }
-  if (!allowNewClaim || context.combat.length <= 1 || (knownOpponent && context.combat.length <= 2)) return;
+  if (!allowNewClaim || !hasScoutCapacity(context) || (knownOpponent && context.combat.length <= 2)) return;
   const candidates = context.observation.actors
     .filter((actor) => actor.relation === "neutral" && actor.visibility === "visible" && position(actor) !== undefined)
     .filter(
@@ -265,12 +282,16 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
     );
     if (retained.length > 0) {
       retained.forEach((actorId) => context.primaryOwnedActors.add(actorId));
-      context.nextSquads.push({ ...activeScout, actorIds: retained });
+      context.nextSquads.push({
+        ...activeScout,
+        actorIds: retained,
+        ...(activeScout.tactics ? { tactics: retainAiSquadTacticsForActors(activeScout.tactics, retained) } : {})
+      });
       return;
     }
   }
   // Keep one defender home until another combat unit can cover it during a frontier trip.
-  if (!activeScout && combat.length <= 1) return;
+  if (!activeScout && !hasScoutCapacity(context)) return;
   if (!currentQuestion || !combat[0] || !observation.map?.accessGraph) return;
   const exposedVisibleCore = context.visibleEnemies.some(
     (actor) => actor.mainBuilding?.status === "known" && actor.mainBuilding.value

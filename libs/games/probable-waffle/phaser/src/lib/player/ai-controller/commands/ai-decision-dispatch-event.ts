@@ -27,7 +27,26 @@ export interface AiDecisionDispatchEvent {
   /** Selected opening checkpoints distinguish genuine post-opening controls from temporary startup suppression. */
   readonly opening?: AiBrainState["opening"];
   /** Selected ownership and knowledge, not proof of physical travel, firing or protection. Null means bounded loss. */
-  readonly missionState?: Pick<AiBrainState, "squads" | "knowledge" | "skirmish" | "bases" |
-    "fortifications" | "support" | "progress" | "recoveryEpisodes" | "recovery" | "blockers" | "transport" |
-    "authority" | "pendingOutcomes" | "waitEdges" | "lanes" | "scheduler" | "queries"> | null;
+  readonly missionState?: Pick<
+    AiBrainState,
+    | "squads"
+    | "knowledge"
+    | "skirmish"
+    | "bases"
+    | "fortifications"
+    | "support"
+    | "progress"
+    | "recoveryEpisodes"
+    | "recovery"
+    | "blockers"
+    | "transport"
+    | "authority"
+    | "pendingOutcomes"
+    | "waitEdges"
+    | "lanes"
+    | "scheduler"
+    | "queries"
+  > | null;
+  /** Existing local diagnostic reason for the fortification manager, including when it declines to create a plan. */
+  readonly fortificationPlanningReason?: string | null;
 }

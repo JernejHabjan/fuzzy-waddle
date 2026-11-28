@@ -396,10 +396,15 @@ export function advanceAiSkirmishOffense(
     (squad) => squad.role === "attack" && !["completed", "cancelled"].includes(squad.state)
   ).length;
   const activeFrontierScoutIds = new Set(
-    context.activeScout?.objectiveId?.startsWith("question:") ||
-    (context.activeScout?.objectiveId?.startsWith("neutral:") && context.activeScout.state === "moving")
-      ? context.activeScout.actorIds
-      : []
+    [...context.state.squads, ...(context.activeScout ? [context.activeScout] : [])]
+      .filter(
+        (squad) =>
+          squad.role === "scout" &&
+          !["completed", "cancelled"].includes(squad.state) &&
+          (squad.objectiveId?.startsWith("question:") ||
+            (squad.objectiveId?.startsWith("neutral:") && squad.state === "moving"))
+      )
+      .flatMap((squad) => squad.actorIds)
   );
   const attackers = context.combat.filter(
     (actor) => !context.primaryOwnedActors.has(actor.actorId) && !activeFrontierScoutIds.has(actor.actorId)

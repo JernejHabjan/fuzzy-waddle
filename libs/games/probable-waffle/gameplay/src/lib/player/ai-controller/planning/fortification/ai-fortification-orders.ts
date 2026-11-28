@@ -1,3 +1,4 @@
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainState, AiFortificationState } from "../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
 
@@ -5,7 +6,8 @@ import type { AiIntent } from "../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../contracts/ai-profile-config";
 
-import { constructionEntry, resourceEntries } from "./ai-fortification-support";
+import { AI_FORTIFICATION_CONTINUATION_UTILITY, constructionEntry, resourceEntries } from "./ai-fortification-support";
+import { isSafeAiGathererRetask } from "../economy/gathering/ai-gatherer-retask";
 import { isAvailableBuilder } from "../production/macro/ai-macro-observation";
 
 /** Proposes independent connected-prefix jobs; each available worker belongs to at most one new site. */
@@ -52,13 +54,29 @@ export function createFortificationIntents(
       return true;
     })
     .slice(0, Math.min(2, profile.maxAcceptedCommandBatchesPerStep));
-  const claimed = new Set(
+  // Keep leases the arbiter cannot transfer; safe applied gather leases remain eligible for urgent defense.
+  const reservedActorIds = new Set(
     state.reservations.flatMap((reservation) =>
       reservation.subjectKey?.startsWith("actor:") &&
       (reservation.state.kind !== "provisional" || reservation.state.expiresAt.dueTick > observation.tick)
         ? [reservation.subjectKey.slice("actor:".length)]
         : []
     )
+  );
+  const claimed = new Set(
+    [...reservedActorIds].filter((actorId) => {
+      const actor = observation.actors.find((candidate) => candidate.actorId === actorId);
+      const actorReservations = state.reservations.filter(
+        (reservation) => reservation.subjectKey === `actor:${actorId}`
+      );
+      const safeGatherLease =
+        actor?.activeOrder?.status === "known" &&
+        actor.activeOrder.value?.orderType === OrderType.Gather &&
+        isSafeAiGathererRetask(actor) &&
+        actorReservations.length > 0 &&
+        actorReservations.every((reservation) => reservation.state.kind === "applied_spending");
+      return !safeGatherLease;
+    })
   );
   const activeThreat = state.skirmish.incidents.some(
     (incident) =>
@@ -73,7 +91,17 @@ export function createFortificationIntents(
     const builder = observation.actors
       .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
       .filter((actor) => isAvailableBuilder(actor) && !claimed.has(actor.actorId))
-      .sort((left, right) => left.actorId.localeCompare(right.actorId))
+      .sort((left, right) => {
+        const leftPosition = left.logicalPosition.status === "known" ? left.logicalPosition.value : null;
+        const rightPosition = right.logicalPosition.status === "known" ? right.logicalPosition.value : null;
+        const distance = (position: typeof leftPosition) =>
+          position === null
+            ? Number.POSITIVE_INFINITY
+            : Math.abs(position.x - current.position.x) +
+              Math.abs(position.y - current.position.y) +
+              Math.abs(position.z - current.position.z);
+        return distance(leftPosition) - distance(rightPosition) || left.actorId.localeCompare(right.actorId);
+      })
       .find((actor) =>
         catalog.entries.some(
           (candidate) => candidate.sourceObjectName === actor.objectName && candidate.constructs.includes(objectName)
@@ -106,7 +134,12 @@ export function createFortificationIntents(
         utility:
           activeThreat && current.lifecycle !== "destroyed"
             ? 985
-            : Math.min(900, 500 + current.marginalCoverage * 10 + (current.lifecycle === "destroyed" ? 200 : 0)),
+            : Math.min(
+                900,
+                AI_FORTIFICATION_CONTINUATION_UTILITY +
+                  current.marginalCoverage * 10 +
+                  (current.lifecycle === "destroyed" ? 200 : 0)
+              ),
         preconditions: [
           { kind: "actor_exists" as const, actorId: builder.actorId },
           ...resourceClaims.map((claim) => ({

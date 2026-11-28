@@ -88,7 +88,7 @@ describe("fortification recovery ownership", () => {
         authorityEpoch: 0,
         playerNumber: 2,
         sequence,
-        commandId: `command:${sequence}`,
+        commandId: `command:${sequence}` as const,
         effectId: intent.effectId,
         intentId: intent.intentId
       }

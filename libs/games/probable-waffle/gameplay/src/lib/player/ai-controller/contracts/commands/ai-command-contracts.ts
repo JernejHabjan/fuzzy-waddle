@@ -35,10 +35,18 @@ export type AiCommandOutcome =
       readonly worldLinkIds?: readonly string[];
     }
   | {
-      readonly kind: "rejected" | "cancelled" | "failed";
+      readonly kind: "rejected" | "cancelled";
       readonly identity: AiCommandIdentity;
       readonly tick: AiSimulationTick;
       readonly reason: string;
+    }
+  | {
+      readonly kind: "failed";
+      readonly identity: AiCommandIdentity;
+      readonly tick: AiSimulationTick;
+      readonly reason: string;
+      /** Native actor subjects let recovery avoid retrying the same failed worker/site pair. */
+      readonly actorIds?: readonly ActorId[];
     };
 
 /** Persisted reconciliation cursor and bounded unresolved command set. */

@@ -635,7 +635,7 @@ describe("AiTacticsManager", () => {
       expect.objectContaining({ kind: "move", logicalPosition: { x: 0, y: 0, z: 0 } })
     );
     const retreated = requireValue(initial.statePatch?.squadUpdates?.[0], "missing_oscillation_retreat_update");
-    const strongFriend = combatActor("guard", "self", 5, "ground", 1000, { damage: 100 });
+    const strongFriend = combatActor("guard", "self", 2, "ground", 1000, { damage: 100 });
     const weakEnemy = combatActor("enemy-a", "enemy", 7, "ground", 100, { damage: 1 });
     const relaunch = manager.propose(observation([strongFriend, weakEnemy], 110), {
       ...fixtureState([]),
@@ -648,6 +648,121 @@ describe("AiTacticsManager", () => {
       })
     );
     expect(relaunch.intents.some((intent) => intent.kind === "attack")).toBe(false);
+  });
+
+  it("does not relaunch a protected retreat while its active move order is still in flight", () => {
+    const guard = {
+      ...combatActor("guard", "self", 0, "ground", 300, { damage: 100 }),
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 110,
+        value: { orderType: OrderType.Move, targetActorId: null, targetPosition: { x: 45, y: 11, z: 0 } }
+      }
+    };
+    const enemy = combatActor("enemy", "enemy", 2, "ground", 100, { damage: 1 });
+    const prior = squad("squad:attack", "attack", [guard.actorId]);
+    const mission = {
+      ...prior,
+      state: "retreat" as const,
+      objectiveId: enemy.actorId,
+      tactics: {
+        ...prior.tactics!,
+        script: "protected_retreat" as const,
+        oscillationCount: 1,
+        nextReconsiderTick: 100,
+        lastTransitionTick: 60,
+        assignedPositions: []
+      }
+    };
+
+    const result = manager.propose(observation([guard, enemy], 110), fixtureState([mission]));
+
+    expect(result.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        state: "retreat",
+        tactics: expect.objectContaining({
+          script: "protected_retreat",
+          assignedPositions: [{ actorId: guard.actorId, position: { x: 45, y: 11, z: 0 } }]
+        })
+      })
+    );
+    expect(
+      result.intents.some(
+        (intent) => intent.kind === "attack" || (intent.kind === "move" && intent.actorIds.includes(guard.actorId))
+      )
+    ).toBe(false);
+  });
+
+  it("drops a protected retreat destination after the observed access graph proves it unreachable", () => {
+    const guard = {
+      ...combatActor("guard", "self", 0, "ground", 1000, { damage: 10 }),
+      accessNodeId: { status: "known" as const, observedTick: 110, value: "access:home" as const },
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 110,
+        value: { orderType: OrderType.Move, targetActorId: null, targetPosition: { x: 45, y: 11, z: 0 } }
+      }
+    };
+    const enemies = [
+      combatActor("enemy-a", "enemy", 2, "ground", 1000, { damage: 50 }),
+      combatActor("enemy-b", "enemy", 3, "ground", 1000, { damage: 50 }),
+      combatActor("enemy-c", "enemy", 4, "ground", 1000, { damage: 50 })
+    ];
+    const source = observation([guard, ...enemies], 110);
+    const map = requireValue(source.map, "retreat_map_missing");
+    const mission = {
+      ...squad("squad:attack", "attack", [guard.actorId]),
+      state: "retreat" as const,
+      objectiveId: "enemy-a",
+      tactics: {
+        ...squad("squad:attack", "attack", [guard.actorId]).tactics!,
+        script: "protected_retreat" as const,
+        oscillationCount: 0,
+        nextReconsiderTick: 1000,
+        lastTransitionTick: 60,
+        assignedPositions: [{ actorId: guard.actorId, position: { x: 45, y: 11, z: 0 } }]
+      }
+    };
+    const result = manager.propose(
+      {
+        ...source,
+        map: {
+          ...map,
+          constructionCells: map.constructionCells?.map((cell) => ({ ...cell, groundAccessNodeId: "access:home" })),
+          accessGraph: {
+            schemaVersion: 1,
+            generation: 1,
+            status: "ready",
+            staticRevision: 1,
+            dynamicRevision: 0,
+            threatRevision: 0,
+            builtTick: 110,
+            continuationCursor: 0,
+            nodes: [
+              {
+                nodeId: "access:home",
+                domain: "ground",
+                knowledge: "known_static",
+                clearance: 1,
+                tileCount: 1,
+                representativePosition: { x: 0, y: 0, z: 0 },
+                elevation: 0
+              }
+            ],
+            links: [],
+            transferPoints: [],
+            unknownNodeIds: []
+          }
+        }
+      },
+      fixtureState([mission])
+    );
+
+    expect(result.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(result.statePatch?.squadUpdates?.[0]?.tactics?.assignedPositions).not.toContainEqual({
+      actorId: guard.actorId,
+      position: { x: 45, y: 11, z: 0 }
+    });
   });
 
   it("FIGHT-07 keeps a squad engaged when the estimated exchange is poor but most committed units remain", () => {
