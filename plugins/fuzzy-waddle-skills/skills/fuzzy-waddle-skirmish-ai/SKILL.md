@@ -11,7 +11,7 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
    Read [coverage and follow-ups](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/coverage-status.md)
    when evidence status or unfinished work matters. GitHub issues own follow-ups. Multiplayer and extended save/load
    certification remain deferred.
-   Automatic AI CI jobs/tag triggers are disabled until explicitly requested otherwise.
+   `e2e:ai` runtime cases run in CI on non-draft PRs to `main` via `.github/workflows/pull-request-checks.yml`; `develop` PRs and pushes remain free of AI runtime jobs.
    Use descriptive unsuffixed AI filenames and symbols; do not add a generation suffix to a source name.
    Validate save/fixture/report shape at its existing boundary independently of source naming.
 2. Read only the named manifest rows/fixtures implicated by the task. Use the [RTS source index](../fuzzy-waddle-phaser/references/rts-source-index.md) once, then navigate exact symbols and adjacent specs.

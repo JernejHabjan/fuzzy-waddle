@@ -102,4 +102,4 @@ cover every registered scenario. Each selected runtime test shares the three-min
 `pnpm e2e` runs ordinary E2E. Use `pnpm e2e:ai` to add the core regression or `pnpm e2e:ai-full`
 to add the full release matrix. The full matrix requires a clean source tree and does not execute deferred content;
 see `tools/e2e/README.md`. `RUN_AI_REGRESSION` no longer changes `pnpm e2e`.
-Automatic CI remains disabled under `.github/disabled-workflows/`; do not re-enable it without a request.
+`e2e:ai` runtime cases run automatically in CI on non-draft PRs to `main` via `.github/workflows/pull-request-checks.yml`.

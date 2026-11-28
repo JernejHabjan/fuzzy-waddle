@@ -2,7 +2,7 @@
 
 ## Current execution policy
 
-Automatic extended AI CI remains disabled under `.github/disabled-workflows/`. Local runs are opt-in.
+`e2e:ai` runtime cases run in CI on non-draft PRs to `main` via `.github/workflows/pull-request-checks.yml`; broader local runs remain opt-in.
 Full matrix certification, real-peer multiplayer and extended save/load certification are incomplete;
 see [coverage and follow-ups](./coverage-status.md). An authored or playable scenario is not a passing test.
 
