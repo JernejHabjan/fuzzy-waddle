@@ -1,4 +1,3 @@
-import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { runPureJestWithScenarioEvidence } from "./pure-scenario-evidence.ts";
@@ -10,7 +9,11 @@ import { createRuntimeResultPath, readRuntimeResultOutcome } from "./skirmish-ru
 import { writeRuntimeRequest } from "../shared/transport/skirmish-ai-runtime-request-transport.ts";
 import { readNativeScenarioFixture } from "../scenarios/registration/read-native-scenario-fixture.ts";
 import { assembleRuntimeParts } from "../shared/transport/skirmish-ai-runtime-parts.ts";
-import { mergeRuntimeShardReports, planRuntimeExecutionShards } from "./skirmish-runtime-shards.ts";
+import {
+  mergeRuntimeShardReports,
+  planRuntimeExecutionShards,
+  spawnStreamingRuntime
+} from "./skirmish-runtime-shards.ts";
 
 export async function invokeSelectedHarness(input, context) {
   const { manifest, fixtureDirectory } = context;
@@ -365,65 +368,4 @@ export function requiresMultiplayerForRuntime(fixtures, diagnosticSelection) {
   return (
     diagnosticSelection?.requiresMultiplayer ?? fixtures.some((fixture) => fixture.recipe.requiresMultiplayer === true)
   );
-}
-
-/** Stream Playwright per-test lines live while capturing bounded stdout/stderr for the retained report. */
-function spawnStreamingRuntime(command, args, options) {
-  return new Promise<{
-    status: number | null;
-    signal: NodeJS.Signals | null;
-    stdout: string;
-    stderr: string;
-    error?: Error;
-  }>((resolveResult) => {
-    const child = spawn(command, args, {
-      cwd: options.cwd,
-      env: options.env,
-      stdio: ["ignore", "pipe", "pipe"],
-      windowsHide: true
-    });
-    let stdout = "";
-    let stderr = "";
-    let lineBuffer = "";
-    let timedOut = false;
-    const timer = setTimeout(() => {
-      timedOut = true;
-      if (process.platform === "win32" && child.pid) {
-        spawn("taskkill.exe", ["/PID", String(child.pid), "/T", "/F"], { stdio: "ignore", windowsHide: true });
-      } else {
-        child.kill("SIGTERM");
-      }
-    }, options.timeout);
-    const appendBounded = (current, chunk) =>
-      current.length >= options.maxBuffer ? current : current + chunk.slice(0, options.maxBuffer - current.length);
-    child.stdout.on("data", (chunk) => {
-      const text = chunk.toString("utf8");
-      stdout = appendBounded(stdout, text);
-      lineBuffer += text;
-      const lines = lineBuffer.split(/\r?\n/);
-      lineBuffer = lines.pop() ?? "";
-      for (const line of lines) {
-        if (!line.startsWith("[WebServer]")) process.stdout.write(`${line}\n`);
-      }
-    });
-    child.stderr.on("data", (chunk) => {
-      const text = chunk.toString("utf8");
-      stderr = appendBounded(stderr, text);
-    });
-    child.once("error", (error) => {
-      clearTimeout(timer);
-      resolveResult({ status: null, signal: null, stdout, stderr, error });
-    });
-    child.once("close", (status, signal) => {
-      clearTimeout(timer);
-      if (lineBuffer && !lineBuffer.startsWith("[WebServer]")) process.stdout.write(`${lineBuffer}\n`);
-      resolveResult({
-        status,
-        signal,
-        stdout,
-        stderr,
-        ...(timedOut ? { error: new Error(`runtime_shard_timeout:${options.timeout}ms`) } : {})
-      });
-    });
-  });
 }
